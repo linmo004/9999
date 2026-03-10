@@ -150,21 +150,21 @@ function appendMessageBubble(msg, role, chatUserAvatar, animate) {
     }
   });
 
-  const avatarEl     = document.createElement('img');
+    const avatarEl     = document.createElement('img');
   avatarEl.className = 'chat-msg-avatar' + (isUser ? ' user-avatar' : '');
   avatarEl.src       = isUser ? uAvatar : roleAvatar;
   avatarEl.alt       = '';
 
+  /* 角色头像点击弹出状态栏 */
   if (!isUser && msg.statusBar) {
     avatarEl.style.cursor = 'pointer';
     avatarEl.title = '查看此刻状态 ✦';
     avatarEl.addEventListener('click', function (e) {
       e.stopPropagation();
-      if (typeof window.rpShowStatusBarFromMsg === 'function') {
-        window.rpShowStatusBarFromMsg(msg.statusBar, role);
-      }
+      liaoShowStatusBar(msg.statusBar, role);
     });
   }
+
 
 
   const msgType = msg.type || 'text';
@@ -470,6 +470,57 @@ document.getElementById('liao-fake-photo-close').addEventListener('click', () =>
   document.getElementById('liao-fake-photo-modal').style.display = 'none';
 });
 
+/* ================================================================
+   状态栏弹窗（在了了聊天界面内，点击角色头像触发）
+   ================================================================ */
+function liaoShowStatusBar(statusBar, role) {
+  var modal = document.getElementById('liao-status-bar-modal');
+  if (!modal) return;
+
+  var roleName = (role && (role.nickname || role.realname)) || '角色';
+
+  var html =
+    '<div class="rp-sb-item">' +
+      '<span class="rp-sb-label">' + roleName + ' 状态</span>' +
+      '<span class="rp-sb-value">' + escHtml(statusBar.status || '—') + '</span>' +
+    '</div>' +
+    '<div class="rp-sb-item">' +
+      '<span class="rp-sb-label">' + roleName + ' 心情</span>' +
+      '<span class="rp-sb-value">' + escHtml(statusBar.mood || '—') + '</span>' +
+    '</div>' +
+    '<div class="rp-sb-item">' +
+      '<span class="rp-sb-label">' + roleName + ' 内心所想</span>' +
+      '<span class="rp-sb-value">' + escHtml(statusBar.inner || '—') + '</span>' +
+    '</div>' +
+    '<div class="rp-sb-item">' +
+      '<span class="rp-sb-label">' + roleName + ' 消息草稿箱（未发出的消息）</span>' +
+      '<span class="rp-sb-value rp-sb-draft">' + escHtml(statusBar.draft || '（空）') + '</span>' +
+    '</div>' +
+    '<div class="rp-sb-item">' +
+      '<span class="rp-sb-label">两句话角色趣事</span>' +
+      '<span class="rp-sb-value">' + escHtml(statusBar.funFact || '—') + '</span>' +
+    '</div>' +
+    '<div class="rp-sb-item rp-sb-theater">' +
+      '<span class="rp-sb-label">随机小剧场</span>' +
+      '<span class="rp-sb-value">' + escHtml(statusBar.theater || '—') + '</span>' +
+    '</div>';
+
+  var body = document.getElementById('liao-sb-body');
+  if (body) body.innerHTML = html;
+  modal.style.display = 'flex';
+}
+
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.id === 'liao-sb-close') {
+    var modal = document.getElementById('liao-status-bar-modal');
+    if (modal) modal.style.display = 'none';
+  }
+  /* 点遮罩关闭 */
+  if (e.target && e.target.id === 'liao-status-bar-modal') {
+    e.target.style.display = 'none';
+  }
+});
+
 /* ============================================================
    特殊功能状态栏
    ============================================================ */
@@ -497,17 +548,7 @@ function initSpecialBar() {
     document.getElementById('liao-image-modal').style.display = 'flex';
   });
 
-  /* ---- 角色手机入口：替换原来的 alert ---- */
-  document.getElementById('csb-rolephone').addEventListener('click', () => {
-    if (currentChatIdx < 0) { alert('请先打开一个聊天'); return; }
-    const chat = liaoChats[currentChatIdx];
-    if (!chat) { alert('请先打开一个聊天'); return; }
-    if (typeof window.RolePhone !== 'undefined') {
-      window.RolePhone.open(chat.roleId);
-    } else {
-      alert('角色手机模块未加载');
-    }
-  });
+  /* ---- rolephone 入口：完全由 rolephone.js 的 bindRpEntry 处理，此处不重复绑定 ---- */
 
   document.getElementById('csb-edit').addEventListener('click', () => {
     toggleEditMode();

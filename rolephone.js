@@ -1265,58 +1265,6 @@ document.addEventListener('click', function (e) {
   }
 });
 
-/* ================================================================
-   状态栏弹窗（供 liao-special.js 调用）
-   ================================================================ */
-function rpShowStatusBarFromMsg(statusBar, role) {
-  var modal = document.getElementById('rp-status-bar-modal');
-  if (!modal) return;
-
-  var roleName = (role && (role.nickname || role.realname))
-    || (rpCurrentRole && (rpCurrentRole.nickname || rpCurrentRole.realname))
-    || '角色';
-
-  var html =
-    '<div class="rp-sb-item">' +
-      '<span class="rp-sb-label">' + roleName + ' 状态</span>' +
-      '<span class="rp-sb-value">' + (statusBar.status || '—') + '</span>' +
-    '</div>' +
-    '<div class="rp-sb-item">' +
-      '<span class="rp-sb-label">' + roleName + ' 心情</span>' +
-      '<span class="rp-sb-value">' + (statusBar.mood || '—') + '</span>' +
-    '</div>' +
-    '<div class="rp-sb-item">' +
-      '<span class="rp-sb-label">' + roleName + ' 内心所想</span>' +
-      '<span class="rp-sb-value">' + (statusBar.inner || '—') + '</span>' +
-    '</div>' +
-    '<div class="rp-sb-item">' +
-      '<span class="rp-sb-label">' + roleName + ' 消息草稿箱（未发出的消息）</span>' +
-      '<span class="rp-sb-value rp-sb-draft">' + (statusBar.draft || '（空）') + '</span>' +
-    '</div>' +
-    '<div class="rp-sb-item">' +
-      '<span class="rp-sb-label">两句话角色趣事</span>' +
-      '<span class="rp-sb-value">' + (statusBar.funFact || '—') + '</span>' +
-    '</div>' +
-    '<div class="rp-sb-item rp-sb-theater">' +
-      '<span class="rp-sb-label">随机小剧场</span>' +
-      '<span class="rp-sb-value">' + (statusBar.theater || '—') + '</span>' +
-    '</div>';
-
-  var body = document.getElementById('rp-sb-body');
-  if (body) body.innerHTML = html;
-  modal.style.display = 'flex';
-}
-
-/* 暴露到全局，供 liao-special.js 调用 */
-window.rpShowStatusBarFromMsg = rpShowStatusBarFromMsg;
-
-/* 状态栏关闭按钮 */
-document.addEventListener('click', function (e) {
-  if (e.target && e.target.id === 'rp-sb-close') {
-    var modal = document.getElementById('rp-status-bar-modal');
-    if (modal) modal.style.display = 'none';
-  }
-});
 
 /* ================================================================
    工具函数
@@ -1341,23 +1289,28 @@ window.RolePhone = {
 };
 
 /* ================================================================
-   csb-rolephone 按钮入口
+   csb-rolephone 按钮入口（统一在此处理，liao-special.js 不重复绑定）
    ================================================================ */
 (function bindRpEntry() {
   document.addEventListener('click', function (e) {
-    if (e.target && e.target.id === 'csb-rolephone') {
-      if (typeof currentChatIdx === 'undefined' || currentChatIdx < 0) {
-        alert('请先打开一个聊天'); return;
-      }
-      if (typeof liaoChats === 'undefined' || typeof liaoRoles === 'undefined') {
-        alert('数据未加载'); return;
-      }
-      var chat = liaoChats[currentChatIdx];
-      if (!chat) { alert('请先打开一个聊天'); return; }
-      rpOpen(chat.roleId);
+    if (!e.target) return;
+    var btn = e.target.id === 'csb-rolephone'
+      ? e.target
+      : e.target.closest && e.target.closest('#csb-rolephone');
+    if (!btn) return;
+
+    if (typeof currentChatIdx === 'undefined' || currentChatIdx < 0) {
+      alert('请先打开一个聊天'); return;
     }
+    if (typeof liaoChats === 'undefined' || typeof liaoRoles === 'undefined') {
+      alert('数据未加载'); return;
+    }
+    var chat = liaoChats[currentChatIdx];
+    if (!chat) { alert('请先打开一个聊天'); return; }
+    rpOpen(chat.roleId);
   });
 })();
+
 
 /* ================================================================
    角色手机设置页逻辑
