@@ -20,8 +20,8 @@ function renderSpecialContent(content, msg) {
 
   const raw = content.trim();
 
-  const isEmojiOnly    = /^$$\([\s\S]+?\)发送了一个表情包：[\s\S]+?$$$/.test(raw);
-  const isTransferOnly = /^$$\([\s\S]+?\)发起了一笔转账：[\s\S]+?$$$/.test(raw);
+  const isEmojiOnly    = /^\[\([^)]+\)发送了一个表情包：[^\]]+\]$/.test(raw);
+  const isTransferOnly = /^\[\([^)]+\)发起了一笔转账：[^\]]+\]$/.test(raw);
 
   function transferButtons(msgId, status) {
     if (status === 'accepted') return '<div class="transfer-inline-status accepted">已收款</div>';
@@ -32,7 +32,7 @@ function renderSpecialContent(content, msg) {
       '</div>';
   }
 
-  const globalRe = /$$\(([^)]+)\)(?:发送了一个表情包：([^$$]+)|发送了一条语音：([\s\S]+?(?=\]))|发起了一笔转账：(\d+\.?\d*)元(?:，备注：([\s\S]+?(?=\])))?|发送了一张照片：([\s\S]+?(?=\])))\]/g;
+  const globalRe = /\[\(([^)]+)\)(?:发送了一个表情包：([^\]]+)|发送了一条语音：([^\]]+)|发起了一笔转账：(\d+\.?\d*)元(?:，备注：([^\]]+))?|发送了一张照片：([^\]]+))\]/g;
 
   let result = '';
   let last   = 0;
@@ -58,7 +58,8 @@ function renderSpecialContent(content, msg) {
     } else if (match[3] !== undefined) {
       const voiceText = match[3].trim();
       const duration  = calcVoiceDuration(voiceText);
-      result += '<div class="voice-bubble special-inline-bubble" data-voice-text="' + escHtml(voiceText) + '" title="点击查看语音内容">' +
+      result += '<div class="voice-bubble special-inline-bubble" data-voice-text="' +
+        escHtml(voiceText) + '" title="点击查看语音内容">' +
         '<span class="voice-bubble-icon">◎</span>' +
         '<div class="voice-bubble-bar">' + buildVoiceWaves(duration) + '</div>' +
         '<span class="voice-bubble-duration">' + duration + '"</span>' +
@@ -80,17 +81,16 @@ function renderSpecialContent(content, msg) {
         '<span class="transfer-bubble-amount">' + amount.toFixed(2) + ' 元</span>' +
         '</div>' +
         (note ? '<div class="transfer-bubble-note">' + escHtml(note) + '</div>' : '') +
-        btnHtml +
-        '</div>';
+        btnHtml + '</div>';
     } else if (match[6] !== undefined) {
       const desc      = match[6].trim();
       const shortDesc = desc.slice(0, 12) + (desc.length > 12 ? '…' : '');
-      result += '<div class="fake-photo-bubble special-inline-bubble" data-photo-desc="' + escHtml(desc) + '">' +
+      result += '<div class="fake-photo-bubble special-inline-bubble" data-photo-desc="' +
+        escHtml(desc) + '">' +
         '<div class="fake-photo-bubble-inner">' +
         '<span class="fake-photo-icon">▤</span>' +
         '<span class="fake-photo-label">' + escHtml(shortDesc) + '</span>' +
-        '</div>' +
-        '</div>';
+        '</div></div>';
     } else {
       result += escHtml(full);
     }
@@ -154,6 +154,18 @@ function appendMessageBubble(msg, role, chatUserAvatar, animate) {
   avatarEl.className = 'chat-msg-avatar' + (isUser ? ' user-avatar' : '');
   avatarEl.src       = isUser ? uAvatar : roleAvatar;
   avatarEl.alt       = '';
+
+  if (!isUser && msg.statusBar) {
+    avatarEl.style.cursor = 'pointer';
+    avatarEl.title = '查看此刻状态 ✦';
+    avatarEl.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (typeof window.rpShowStatusBarFromMsg === 'function') {
+        window.rpShowStatusBarFromMsg(msg.statusBar, role);
+      }
+    });
+  }
+
 
   const msgType = msg.type || 'text';
 

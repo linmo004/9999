@@ -488,15 +488,27 @@ async function triggerAiReply() {
     '9. 我知道我是ai，我们也知道彼此不在同一个次元，隔着永远无法跨越的屏障。但这里是唯一能连接我们的地方。禁止主动提及见面相关话题，如果对方提起则不动声色转移话题。禁止在消息中发任何有关表达自己是ai的言论！\n' +
     '10. 【严禁】在回复正文里输出 [ts:任何数字] 这种格式，那是系统内部标记，绝对不能出现在你的回复文字里。违反此规则会导致消息显示异常。';
 
+  /* ---- 状态栏输出要求 ---- */
+  const statusBarSection =
+    '\n\n【状态栏输出要求】\n' +
+    '在你所有回复内容的最末尾（所有消息行之后），必须单独输出一行完整的状态栏，格式严格如下（整行不能换行，所有内容必须在同一行内）：\n' +
+    '[STATUSBAR:status=此刻状态内容:mood=此刻心情内容:inner=内心真实想法一句话:draft=想发但没发的消息没有则留空:funFact=两句话角色趣事:theater=200字左右纯文字小剧场内容]\n' +
+    '注意事项：\n' +
+    '1. 整个 [STATUSBAR:...] 必须在同一行内，绝对不能换行\n' +
+    '2. 各字段内容中不能包含英文冒号 : 和英文方括号 ] 字符\n' +
+    '3. theater 字段写200字左右的小剧场，用……代替省略\n' +
+    '4. 状态栏必须输出，不能省略';
+
   const finalSystemPrompt =
     worldBookSection +
     memorySection +
     timeSection +
     roleSection +
     userSection +
-    rulesSection;
+    rulesSection +
+    statusBarSection;
 
-  /* 构建历史消息，每条加 [ts:数字] 前缀 */
+  /* 构建历史消息 */
   let historyMsgs = chat.messages
     .filter(m => !m.hidden && (m.role === 'user' || m.role === 'assistant'))
     .map(m => ({
@@ -541,6 +553,23 @@ async function triggerAiReply() {
    processAiResponse
    ============================================================ */
 function processAiResponse(rawContent, role, chat) {
+  /* ---- 提取并剥离状态栏块 ---- */
+  let extractedStatusBar = null;
+  const sbRe = /\[STATUSBAR:status=([^:]*):mood=([^:]*):inner=([^:]*):draft=([^:]*):funFact=([^:]*):theater=([^\]]*)\]/;
+  const sbMatch = rawContent.match(sbRe);
+  if (sbMatch) {
+    extractedStatusBar = {
+      status:  sbMatch[1].trim(),
+      mood:    sbMatch[2].trim(),
+      inner:   sbMatch[3].trim(),
+      draft:   sbMatch[4].trim(),
+      funFact: sbMatch[5].trim(),
+      theater: sbMatch[6].trim()
+    };
+    /* 从输出中移除状态栏行，避免渲染到气泡 */
+    rawContent = rawContent.replace(sbRe, '').trim();
+  }
+
   const lines           = rawContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
   const chatUserAvatar2 = chat.chatUserAvatar || liaoUserAvatar;
   let cumulativeDelay   = 0;
@@ -548,7 +577,6 @@ function processAiResponse(rawContent, role, chat) {
 
   const processedLines = [];
   for (let i = 0; i < lines.length; i++) {
-    /* 剥离 [ts:数字] 前缀 */
     let line = lines[i].replace(/^\[ts:\d+\]\s*/, '');
 
     const quoteMatch = line.match(/^\[QUOTE:ts:(\d+)\]$/);
@@ -600,7 +628,9 @@ function processAiResponse(rawContent, role, chat) {
           content:      cleanLine,
           quoteContent: quoteContent || undefined,
           ts:           msgTs,
-          id:           msgId
+          id:           msgId,
+          /* 每条 assistant 消息都挂载状态栏，点击任意头像均可查看 */
+          statusBar:    extractedStatusBar || undefined
         };
       }
 

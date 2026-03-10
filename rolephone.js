@@ -25,14 +25,14 @@ function rpLoad(roleId) {
     var raw = localStorage.getItem('halo9_rolephone_' + roleId);
     if (!raw) return rpDefaultData();
     var data = JSON.parse(raw);
-    if (!data.notes)              data.notes = { todos: [], diaries: [], memos: [] };
-    if (!data.notes.todos)        data.notes.todos = [];
-    if (!data.notes.diaries)      data.notes.diaries = [];
-    if (!data.notes.memos)        data.notes.memos = [];
-    if (!data.liaoChats)          data.liaoChats = [];
-    if (!data.screenHealth)       data.screenHealth = [];
-    if (!data.forum)              data.forum = [];
-    if (!data.memoWidgetItems)    data.memoWidgetItems = [];
+    if (!data.notes)           data.notes = { todos: [], diaries: [], memos: [] };
+    if (!data.notes.todos)     data.notes.todos = [];
+    if (!data.notes.diaries)   data.notes.diaries = [];
+    if (!data.notes.memos)     data.notes.memos = [];
+    if (!data.liaoChats)       data.liaoChats = [];
+    if (!data.screenHealth)    data.screenHealth = [];
+    if (!data.forum)           data.forum = [];
+    if (!data.memoWidgetItems) data.memoWidgetItems = [];
     return data;
   } catch (e) { return rpDefaultData(); }
 }
@@ -42,43 +42,72 @@ function rpSave(roleId, data) {
 }
 
 /* ================================================================
-   API 调用
+   API 调用（修复：正确读取主程序配置）
    ================================================================ */
 function rpCallAPI(messages, onSuccess, onError) {
   var cfg   = null;
   var model = '';
-  try { cfg   = JSON.parse(localStorage.getItem('halo9_apiActiveConfig') || 'null'); } catch (e) {}
-  try { model = JSON.parse(localStorage.getItem('halo9_apiCurrentModel') || '""'); } catch (e) {}
-  if (!cfg || !cfg.url) { onError('未配置API'); return; }
-  var headers = { 'Content-Type': 'application/json' };
+  try {
+    cfg = (typeof loadApiConfig === 'function') ? loadApiConfig()
+      : JSON.parse(localStorage.getItem('halo9_apiActiveConfig') || 'null');
+  } catch (e) {}
+  try {
+    model = (typeof loadApiModel === 'function') ? loadApiModel()
+      : JSON.parse(localStorage.getItem('halo9_apiCurrentModel') || '""');
+  } catch (e) {}
+
+  if (!cfg || !cfg.url) { onError('未配置API，请先在设置中配置 API 地址和密钥'); return; }
+  if (!model)           { onError('未选择模型，请先在设置中选择模型'); return; }
+
+  var headers  = { 'Content-Type': 'application/json' };
   if (cfg.key) headers['Authorization'] = 'Bearer ' + cfg.key;
+
   fetch(cfg.url.replace(/\/$/, '') + '/chat/completions', {
     method: 'POST',
     headers: headers,
-    body: JSON.stringify({ model: model || 'gpt-3.5-turbo', messages: messages, stream: false })
+    body: JSON.stringify({ model: model, messages: messages, stream: false })
   })
-  .then(function (r) { return r.json(); })
+  .then(function (r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  })
   .then(function (j) {
-    var content = (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || '';
-    onSuccess(content);
+    var content = (j.choices && j.choices[0] && j.choices[0].message
+      && j.choices[0].message.content) ? j.choices[0].message.content : '';
+    onSuccess(content.trim());
   })
   .catch(function (e) { onError(e.message || '请求失败'); });
 }
 
 /* ================================================================
+   正则提取工具
+   ================================================================ */
+function rpExtractJSON(raw, type) {
+  var str = (raw || '').trim();
+  if (type === 'array') {
+    var m = str.match(/\[[\s\S]*\]/);
+    if (m) { try { return JSON.parse(m[0]); } catch (e) {} }
+  } else {
+    var m2 = str.match(/\{[\s\S]*\}/);
+    if (m2) { try { return JSON.parse(m2[0]); } catch (e) {} }
+  }
+  return null;
+}
+
+/* ================================================================
    全局状态
    ================================================================ */
-var rpCurrentRoleId   = '';
-var rpCurrentRoleData = null;
-var rpCurrentRole     = null;
-var rpPinBuffer       = '';
-var rpPinErrorCount   = 0;
-var rpPinLength       = 4;
-var rpWeatherStr      = '获取中…';
-var rpClockTimer      = null;
-var rpCurrentNotesTab = 'rp-todo-tab';
+var rpCurrentRoleId      = '';
+var rpCurrentRoleData    = null;
+var rpCurrentRole        = null;
+var rpPinBuffer          = '';
+var rpPinErrorCount      = 0;
+var rpPinLength          = 4;
+var rpWeatherStr         = '--';
+var rpClockTimer         = null;
+var rpCurrentNotesTab    = 'rp-todo-tab';
 var rpCurrentForumPostId = '';
-var rpLoadingCount    = 0;
+var rpLoadingCount       = 0;
 
 /* ================================================================
    加载弹窗
@@ -123,20 +152,16 @@ function rpShowView(id) {
    打开 / 关闭角色手机
    ================================================================ */
 function rpOpen(roleId) {
-  rpCurrentRoleId = roleId;
-
-  /* 找到角色信息 */
-  rpCurrentRole = null;
+  rpCurrentRoleId   = roleId;
+  rpCurrentRole     = null;
   if (typeof liaoRoles !== 'undefined') {
     rpCurrentRole = liaoRoles.find(function (r) { return r.id === roleId; }) || null;
   }
-
   rpCurrentRoleData = rpLoad(roleId);
 
   var app = document.getElementById('rolephone-app');
   if (app) app.style.display = 'flex';
 
-  /* 有壁纸则应用 */
   rpApplyWallpaper();
 
   if (rpCurrentRoleData.pin && rpCurrentRoleData.pin.length === rpPinLength) {
@@ -174,7 +199,6 @@ function rpInitLockscreen() {
   rpPinBuffer     = '';
   rpPinErrorCount = 0;
 
-  /* 注入角色信息 */
   var avatarEl = document.getElementById('rp-ls-avatar');
   var nameEl   = document.getElementById('rp-ls-name');
   if (avatarEl && rpCurrentRole) avatarEl.src = rpCurrentRole.avatar || '';
@@ -194,7 +218,6 @@ function rpUpdateLsTime() {
   var m   = String(now.getMinutes()).padStart(2, '0');
   var mo  = now.getMonth() + 1;
   var d   = now.getDate();
-
   var timeEl = document.getElementById('rp-ls-time');
   var dateEl = document.getElementById('rp-ls-date');
   if (timeEl) timeEl.textContent = h + ':' + m;
@@ -250,30 +273,27 @@ function rpHandlePinKey(val) {
       rpInitHome();
     } else {
       rpPinErrorCount++;
-      if (rpPinErrorCount >= 3) {
-        rpShowPinError('密码错误，请联系角色重置');
-      } else {
-        rpShowPinError('密码错误，请重试（' + rpPinErrorCount + '/3）');
-      }
+      rpShowPinError(rpPinErrorCount >= 3
+        ? '密码错误，请联系角色重置'
+        : '密码错误，请重试（' + rpPinErrorCount + '/3）');
     }
   }
 }
 
-/* 绑定锁屏键盘 */
 (function bindRpPinKeys() {
   document.addEventListener('click', function (e) {
     var key = e.target.closest('.rp-pin-key[data-key]');
     if (!key) return;
-    if (!document.getElementById('rp-lockscreen-view') ||
-        document.getElementById('rp-lockscreen-view').style.display === 'none') return;
+    var ls = document.getElementById('rp-lockscreen-view');
+    if (!ls || ls.style.display === 'none') return;
     rpHandlePinKey(key.dataset.key);
   });
 
   document.addEventListener('touchstart', function (e) {
     var key = e.target.closest('.rp-pin-key[data-key]');
     if (!key) return;
-    if (!document.getElementById('rp-lockscreen-view') ||
-        document.getElementById('rp-lockscreen-view').style.display === 'none') return;
+    var ls = document.getElementById('rp-lockscreen-view');
+    if (!ls || ls.style.display === 'none') return;
     e.preventDefault();
     key.classList.add('pressed');
     rpHandlePinKey(key.dataset.key);
@@ -285,7 +305,6 @@ function rpHandlePinKey(val) {
   }, { passive: true });
 })();
 
-/* 忘记密码 */
 document.addEventListener('click', function (e) {
   if (e.target && e.target.id === 'rp-pin-forget') {
     alert('请在聊天设置 — 角色手机中重置密码');
@@ -306,11 +325,11 @@ function rpInitHome() {
 }
 
 function rpUpdateHomeTime() {
-  var now  = new Date();
-  var h    = String(now.getHours()).padStart(2, '0');
-  var m    = String(now.getMinutes()).padStart(2, '0');
-  var mo   = now.getMonth() + 1;
-  var d    = now.getDate();
+  var now = new Date();
+  var h   = String(now.getHours()).padStart(2, '0');
+  var m   = String(now.getMinutes()).padStart(2, '0');
+  var mo  = now.getMonth() + 1;
+  var d   = now.getDate();
   var timeEl = document.getElementById('rp-home-time');
   var dateEl = document.getElementById('rp-home-date');
   if (timeEl) timeEl.textContent = h + ':' + m;
@@ -327,7 +346,7 @@ function rpFetchWeather() {
       if (weatherEl) weatherEl.textContent = rpWeatherStr;
     })
     .catch(function () {
-      rpWeatherStr = '天气获取失败';
+      rpWeatherStr = '☀️ --°C';
       if (weatherEl) weatherEl.textContent = rpWeatherStr;
     });
 }
@@ -342,57 +361,72 @@ function rpRenderMemoWidget() {
   }
   list.innerHTML = '';
   items.forEach(function (item) {
-    var div       = document.createElement('div');
-    div.className = 'rp-memo-item';
+    var div = document.createElement('div');
+    div.className   = 'rp-memo-item';
     div.textContent = item.text;
     list.appendChild(div);
   });
 }
 
 function rpRenderPolaroid() {
-  var img      = document.getElementById('rp-photo-img');
-  var emptyEl  = document.getElementById('rp-photo-empty');
+  var img     = document.getElementById('rp-photo-img');
+  var emptyEl = document.getElementById('rp-photo-empty');
   var polaroid = rpCurrentRoleData.polaroidImg || '';
   if (img && emptyEl) {
     if (polaroid) {
-      img.src           = polaroid;
-      img.style.display = 'block';
+      img.src = polaroid;
+      img.style.display    = 'block';
       emptyEl.style.display = 'none';
     } else {
-      img.style.display = 'none';
+      img.style.display    = 'none';
       emptyEl.style.display = 'flex';
     }
   }
 }
 
-/* 备忘录小组件 + 按钮 */
+/* ----------------------------------------------------------------
+   备忘录小组件 + 按钮（使用内联弹窗，不用 prompt）
+   ---------------------------------------------------------------- */
 document.addEventListener('click', function (e) {
   if (e.target && e.target.id === 'rp-memo-add-btn') {
-    var text = prompt('添加备忘内容');
-    if (!text || !text.trim()) return;
+    var modal = document.getElementById('rp-memo-modal');
+    var input = document.getElementById('rp-memo-input');
+    if (!modal || !input) return;
+    input.value = '';
+    modal.style.display = 'flex';
+    setTimeout(function () { input.focus(); }, 100);
+  }
+});
+
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.id === 'rp-memo-confirm') {
+    var input = document.getElementById('rp-memo-input');
+    var text  = input ? input.value.trim() : '';
+    if (!text) return;
     if (!rpCurrentRoleData.memoWidgetItems) rpCurrentRoleData.memoWidgetItems = [];
-    rpCurrentRoleData.memoWidgetItems.unshift({
-      id:   'memo_' + Date.now(),
-      text: text.trim(),
-      ts:   Date.now()
-    });
+    rpCurrentRoleData.memoWidgetItems.unshift({ id: 'memo_' + Date.now(), text: text, ts: Date.now() });
     rpSave(rpCurrentRoleId, rpCurrentRoleData);
     rpRenderMemoWidget();
+    var modal = document.getElementById('rp-memo-modal');
+    if (modal) modal.style.display = 'none';
+  }
+  if (e.target && e.target.id === 'rp-memo-cancel') {
+    var modal = document.getElementById('rp-memo-modal');
+    if (modal) modal.style.display = 'none';
   }
 });
 
 /* 拍立得点击换图 */
 document.addEventListener('click', function (e) {
+  var hw = document.getElementById('rp-home-view');
+  if (!hw || hw.style.display === 'none') return;
   if (e.target && (e.target.id === 'rp-photo-img' || e.target.id === 'rp-photo-empty' ||
-      e.target.closest('.rp-widget-photo'))) {
-    if (document.getElementById('rp-home-view') &&
-        document.getElementById('rp-home-view').style.display !== 'none') {
-      var url = prompt('输入拍立得图片URL');
-      if (url && url.trim()) {
-        rpCurrentRoleData.polaroidImg = url.trim();
-        rpSave(rpCurrentRoleId, rpCurrentRoleData);
-        rpRenderPolaroid();
-      }
+      (e.target.closest && e.target.closest('.rp-widget-photo')))) {
+    var url = prompt('输入拍立得图片URL');
+    if (url && url.trim()) {
+      rpCurrentRoleData.polaroidImg = url.trim();
+      rpSave(rpCurrentRoleId, rpCurrentRoleData);
+      rpRenderPolaroid();
     }
   }
 });
@@ -401,8 +435,8 @@ document.addEventListener('click', function (e) {
 document.addEventListener('click', function (e) {
   var item = e.target.closest('.rp-app-item[data-rpapp]');
   if (!item) return;
-  if (document.getElementById('rp-home-view') &&
-      document.getElementById('rp-home-view').style.display === 'none') return;
+  var hw = document.getElementById('rp-home-view');
+  if (!hw || hw.style.display === 'none') return;
   var app = item.dataset.rpapp;
   if (app === 'liao')   { rpShowView('rp-liao-view');   rpInitLiaoApp(); }
   if (app === 'notes')  { rpShowView('rp-notes-view');  rpInitNotesApp(); }
@@ -412,13 +446,11 @@ document.addEventListener('click', function (e) {
 
 /* Dock 按钮 */
 document.addEventListener('click', function (e) {
-  if (e.target && (e.target.id === 'rp-dock-home-btn' ||
-      e.target.closest('#rp-dock-home-btn'))) {
+  if (e.target && (e.target.id === 'rp-dock-home-btn' || e.target.closest('#rp-dock-home-btn'))) {
     rpShowView('rp-home-view');
     rpInitHome();
   }
-  if (e.target && (e.target.id === 'rp-dock-back-btn' ||
-      e.target.closest('#rp-dock-back-btn'))) {
+  if (e.target && (e.target.id === 'rp-dock-back-btn' || e.target.closest('#rp-dock-back-btn'))) {
     rpClose();
   }
 });
@@ -431,18 +463,16 @@ document.addEventListener('click', function (e) {
   if (!btn) return;
   var target = btn.dataset.rpback;
   rpShowView(target);
-  if (target === 'rp-home-view')   rpInitHome();
-  if (target === 'rp-liao-view')   rpRenderLiaoList();
-  if (target === 'rp-notes-view')  rpRenderCurrentNotesTab();
-  if (target === 'rp-forum-view')  rpRenderForumList();
+  if (target === 'rp-home-view')  rpInitHome();
+  if (target === 'rp-liao-view')  rpRenderLiaoList();
+  if (target === 'rp-notes-view') rpRenderCurrentNotesTab();
+  if (target === 'rp-forum-view') rpRenderForumList();
 });
 
 /* ================================================================
    了了 App
    ================================================================ */
-function rpInitLiaoApp() {
-  rpRenderLiaoList();
-}
+function rpInitLiaoApp() { rpRenderLiaoList(); }
 
 function rpRenderLiaoList() {
   var list = document.getElementById('rp-liao-chat-list');
@@ -454,32 +484,29 @@ function rpRenderLiaoList() {
   }
   list.innerHTML = '';
   chats.forEach(function (chat) {
-    var last    = (chat.messages && chat.messages.length)
-                    ? chat.messages[chat.messages.length - 1]
-                    : null;
+    var last    = (chat.messages && chat.messages.length) ? chat.messages[chat.messages.length - 1] : null;
     var preview = last ? (last.content || '').slice(0, 24) : '暂无消息';
     var timeStr = last ? rpFormatTime(last.ts) : '';
 
-    var item       = document.createElement('div');
+    var item = document.createElement('div');
     item.className = 'rp-chat-item';
-    item.dataset.chatId = chat.id;
 
-    var avatarEl       = document.createElement('img');
+    var avatarEl = document.createElement('img');
     avatarEl.className = 'rp-chat-item-avatar';
-    avatarEl.src       = chat.avatar || '';
+    avatarEl.src = chat.avatar || '';
 
-    var body       = document.createElement('div');
+    var body = document.createElement('div');
     body.className = 'rp-chat-item-body';
 
-    var nameEl       = document.createElement('div');
+    var nameEl = document.createElement('div');
     nameEl.className = 'rp-chat-item-name';
     nameEl.textContent = chat.name || '未知';
 
-    var previewEl       = document.createElement('div');
+    var previewEl = document.createElement('div');
     previewEl.className = 'rp-chat-item-preview';
     previewEl.textContent = preview;
 
-    var timeEl       = document.createElement('div');
+    var timeEl = document.createElement('div');
     timeEl.className = 'rp-chat-item-time';
     timeEl.textContent = timeStr;
 
@@ -489,9 +516,7 @@ function rpRenderLiaoList() {
     item.appendChild(body);
     item.appendChild(timeEl);
 
-    item.addEventListener('click', function () {
-      rpOpenLiaoChat(chat.id);
-    });
+    item.addEventListener('click', function () { rpOpenLiaoChat(chat.id); });
     list.appendChild(item);
   });
 }
@@ -515,19 +540,17 @@ function rpRenderLiaoMessages(chat) {
   area.innerHTML = '';
   var msgs = chat.messages || [];
   msgs.forEach(function (msg) {
-    var row       = document.createElement('div');
+    var row = document.createElement('div');
     row.className = 'rp-msg-row' + (msg.role === 'self' ? ' rp-user-row' : '');
 
-    var avatarEl       = document.createElement('img');
+    var avatarEl = document.createElement('img');
     avatarEl.className = 'rp-msg-avatar';
-    if (msg.role === 'self') {
-      avatarEl.src = (rpCurrentRole && rpCurrentRole.avatar) ? rpCurrentRole.avatar : '';
-    } else {
-      avatarEl.src = chat.avatar || '';
-    }
+    avatarEl.src = msg.role === 'self'
+      ? ((rpCurrentRole && rpCurrentRole.avatar) ? rpCurrentRole.avatar : '')
+      : (chat.avatar || '');
 
-    var bubble       = document.createElement('div');
-    bubble.className = 'rp-msg-bubble';
+    var bubble = document.createElement('div');
+    bubble.className   = 'rp-msg-bubble';
     bubble.textContent = msg.content || '';
 
     if (msg.role === 'self') {
@@ -542,97 +565,129 @@ function rpRenderLiaoMessages(chat) {
   area.scrollTop = area.scrollHeight;
 }
 
-/* 了了 + 按钮：生成新聊天 */
+/* ---- 了了 + 按钮：生成新聊天（正则替换格式） ---- */
 document.addEventListener('click', function (e) {
   if (e.target && e.target.id === 'rp-liao-compose-btn') {
     if (!rpCurrentRole) { alert('角色信息未加载'); return; }
     var roleName    = rpCurrentRole.nickname || rpCurrentRole.realname || '角色';
     var roleSetting = rpCurrentRole.setting || '';
+    var extraLimit  = (rpCurrentRoleData.appPromptLimits && rpCurrentRoleData.appPromptLimits.liao) || '';
+
     var systemPrompt =
-      '你扮演角色' + roleName + '，' + roleSetting + '。' +
-      '请生成一条角色手机里"了了"App中，角色与某个人的聊天记录，' +
-      '以JSON数组格式输出，格式：' +
-      '[{"role":"other","name":"对方名字","avatar":"","content":"消息内容","ts":时间戳},' +
-      '{"role":"self","content":"消息内容","ts":时间戳}]，' +
-      '生成8到15条消息，贴合角色人设，内容生活化。只输出JSON数组，不输出其他内容。';
+      '你扮演角色' + roleName + '，' + roleSetting + '。\n' +
+      '请生成一条角色手机里"了了"App中，角色与某个人的聊天记录。\n' +
+      (extraLimit ? '额外要求：' + extraLimit + '\n' : '') +
+      '输出格式要求：每条消息单独一行，使用以下正则格式：\n' +
+      '[CHAT:role=other|self:name=对方名字:avatar=emoji:content=消息内容:ts=时间戳]\n' +
+      'role为other表示对方发的，self表示角色自己发的。\n' +
+      '生成10到15条消息，贴合角色人设，内容生活化。\n' +
+      '只输出上述格式的行，不输出任何其他内容。';
+
     rpShowLoading();
     rpCallAPI(
       [{ role: 'system', content: systemPrompt }],
       function (raw) {
         rpHideLoading();
-        try {
-          var jsonStr = raw.trim();
-          var m = jsonStr.match(/\[[\s\S]*\]/);
-          if (m) jsonStr = m[0];
-          var msgs = JSON.parse(jsonStr);
-          if (!Array.isArray(msgs) || !msgs.length) throw new Error('empty');
-          var otherName   = '';
-          var otherAvatar = '';
-          msgs.forEach(function (msg) {
-            if (msg.role === 'other' && !otherName) {
-              otherName   = msg.name   || '好友';
-              otherAvatar = msg.avatar || '';
-            }
-          });
-          var newChat = {
-            id:       'rpchat_' + Date.now(),
-            name:     otherName,
-            avatar:   otherAvatar,
-            messages: msgs
-          };
-          rpCurrentRoleData.liaoChats.unshift(newChat);
-          rpSave(rpCurrentRoleId, rpCurrentRoleData);
-          rpRenderLiaoList();
-        } catch (err) {
-          alert('生成失败，请重试：' + err.message);
+        var msgs = [];
+        var otherName   = '';
+        var otherAvatar = '';
+        var baseTs = Date.now() - 3600000;
+        var re = /\[CHAT:role=(other|self):name=([^:]+):avatar=([^:]+):content=([^:]+):ts=(\d+)\]/g;
+        var m;
+        var idx = 0;
+        while ((m = re.exec(raw)) !== null) {
+          var msgRole    = m[1];
+          var msgName    = m[2].trim();
+          var msgAvatar  = m[3].trim();
+          var msgContent = m[4].trim();
+          var msgTs      = parseInt(m[5]) || (baseTs + idx * 60000);
+          if (msgRole === 'other' && !otherName) {
+            otherName   = msgName;
+            otherAvatar = msgAvatar;
+          }
+          msgs.push({ role: msgRole, name: msgName, avatar: msgAvatar, content: msgContent, ts: msgTs });
+          idx++;
         }
+        if (!msgs.length) {
+          var parsed = rpExtractJSON(raw, 'array');
+          if (parsed && Array.isArray(parsed) && parsed.length) {
+            msgs = parsed;
+            msgs.forEach(function (msg) {
+              if (msg.role === 'other' && !otherName) {
+                otherName   = msg.name   || '好友';
+                otherAvatar = msg.avatar || '👤';
+              }
+            });
+          } else { alert('生成失败，请重试'); return; }
+        }
+        var newChat = {
+          id:       'rpchat_' + Date.now(),
+          name:     otherName   || '好友',
+          avatar:   otherAvatar || '👤',
+          messages: msgs
+        };
+        rpCurrentRoleData.liaoChats.unshift(newChat);
+        rpSave(rpCurrentRoleId, rpCurrentRoleData);
+        rpRenderLiaoList();
       },
-      function (err) {
-        rpHideLoading();
-        alert('API 请求失败：' + err);
-      }
+      function (err) { rpHideLoading(); alert('API 请求失败：' + err); }
     );
   }
 });
 
-/* 了了聊天详情 + 按钮：生成新消息 */
+/* ---- 了了聊天详情 + 按钮：继续生成（正则替换格式） ---- */
 document.addEventListener('click', function (e) {
   if (e.target && e.target.id === 'rp-liao-gen-btn') {
-    var nameEl  = document.getElementById('rp-liao-chat-name');
+    var nameEl   = document.getElementById('rp-liao-chat-name');
     var chatName = nameEl ? nameEl.textContent : '';
-    var chat = (rpCurrentRoleData.liaoChats || []).find(function (c) { return c.name === chatName; });
+    var chat     = (rpCurrentRoleData.liaoChats || []).find(function (c) { return c.name === chatName; });
     if (!chat) return;
     var roleName    = (rpCurrentRole && (rpCurrentRole.nickname || rpCurrentRole.realname)) || '角色';
     var roleSetting = (rpCurrentRole && rpCurrentRole.setting) || '';
+    var extraLimit  = (rpCurrentRoleData.appPromptLimits && rpCurrentRoleData.appPromptLimits.liao) || '';
+    var lastMsgs    = (chat.messages || []).slice(-6)
+      .map(function (m) { return (m.role === 'self' ? roleName : (m.name || '对方')) + '：' + m.content; })
+      .join('\n');
+
     var systemPrompt =
-      '你扮演角色' + roleName + '，' + roleSetting + '。' +
-      '请继续以下聊天，再生成3到5条消息，格式与之前相同的JSON数组。' +
-      '只输出JSON数组，不输出其他内容。';
+      '你扮演角色' + roleName + '，' + roleSetting + '。\n' +
+      '以下是最近聊天记录：\n' + lastMsgs + '\n' +
+      '请继续生成3到5条消息。\n' +
+      (extraLimit ? '额外要求：' + extraLimit + '\n' : '') +
+      '输出格式：每条消息单独一行：\n' +
+      '[CHAT:role=other|self:name=对方名字:avatar=emoji:content=消息内容:ts=时间戳]\n' +
+      '只输出上述格式的行，不输出任何其他内容。';
+
     rpShowLoading();
     rpCallAPI(
-      [
-        { role: 'system', content: systemPrompt },
-        { role: 'user',   content: JSON.stringify(chat.messages.slice(-6)) }
-      ],
+      [{ role: 'system', content: systemPrompt }],
       function (raw) {
         rpHideLoading();
-        try {
-          var jsonStr = raw.trim();
-          var m = jsonStr.match(/\[[\s\S]*\]/);
-          if (m) jsonStr = m[0];
-          var newMsgs = JSON.parse(jsonStr);
-          if (!Array.isArray(newMsgs)) throw new Error('empty');
-          newMsgs.forEach(function (msg) { chat.messages.push(msg); });
-          rpSave(rpCurrentRoleId, rpCurrentRoleData);
-          rpRenderLiaoMessages(chat);
-        } catch (err) {
-          alert('生成失败：' + err.message);
+        var newMsgs = [];
+        var re  = /\[CHAT:role=(other|self):name=([^:]+):avatar=([^:]+):content=([^:]+):ts=(\d+)\]/g;
+        var m;
+        var baseTs = Date.now();
+        var idx = 0;
+        while ((m = re.exec(raw)) !== null) {
+          newMsgs.push({
+            role:    m[1].trim(),
+            name:    m[2].trim(),
+            avatar:  m[3].trim(),
+            content: m[4].trim(),
+            ts:      parseInt(m[5]) || (baseTs + idx * 30000)
+          });
+          idx++;
         }
+        if (!newMsgs.length) {
+          var parsed = rpExtractJSON(raw, 'array');
+          if (parsed && Array.isArray(parsed)) newMsgs = parsed;
+          else { alert('生成失败，请重试'); return; }
+        }
+        newMsgs.forEach(function (msg) { chat.messages.push(msg); });
+        rpSave(rpCurrentRoleId, rpCurrentRoleData);
+        rpRenderLiaoMessages(chat);
       },
-      function (err) {
-        rpHideLoading();
-        alert('API 请求失败：' + err);
-      }
+      function (err) { rpHideLoading(); alert('API 请求失败：' + err); }
     );
   }
 });
@@ -646,55 +701,66 @@ function rpInitNotesApp() {
 }
 
 function rpRenderCurrentNotesTab() {
-  if (rpCurrentNotesTab === 'rp-todo-tab')   rpRenderTodoList();
-  if (rpCurrentNotesTab === 'rp-diary-tab')  rpRenderDiaryList();
-  if (rpCurrentNotesTab === 'rp-memo-tab')   rpRenderMemoList();
+  if (rpCurrentNotesTab === 'rp-todo-tab')  rpRenderTodoList();
+  if (rpCurrentNotesTab === 'rp-diary-tab') rpRenderDiaryList();
+  if (rpCurrentNotesTab === 'rp-memo-tab')  rpRenderMemoList();
 }
 
-/* Tab 切换 */
 document.addEventListener('click', function (e) {
   var btn = e.target.closest('.rp-tab-btn[data-rptab]');
   if (!btn) return;
-  document.querySelectorAll('.rp-tab-btn').forEach(function (b) {
-    b.classList.remove('active');
-  });
-  document.querySelectorAll('.rp-tab-panel').forEach(function (p) {
-    p.classList.remove('active');
-  });
+  document.querySelectorAll('.rp-tab-btn').forEach(function (b) { b.classList.remove('active'); });
+  document.querySelectorAll('.rp-tab-panel').forEach(function (p) { p.classList.remove('active'); });
   btn.classList.add('active');
-  var panelId = btn.dataset.rptab;
-  rpCurrentNotesTab = panelId;
-  var panel = document.getElementById(panelId);
+  rpCurrentNotesTab = btn.dataset.rptab;
+  var panel = document.getElementById(rpCurrentNotesTab);
   if (panel) panel.classList.add('active');
   rpRenderCurrentNotesTab();
 });
 
-/* 便签 + 按钮 */
 document.addEventListener('click', function (e) {
   if (e.target && e.target.id === 'rp-notes-add-btn') {
-    if (rpCurrentNotesTab === 'rp-todo-tab') {
-      rpAddTodo();
-    } else if (rpCurrentNotesTab === 'rp-diary-tab') {
-      rpGenerateDiary();
-    } else if (rpCurrentNotesTab === 'rp-memo-tab') {
-      rpGenerateMemo();
-    }
+    if (rpCurrentNotesTab === 'rp-todo-tab')       rpShowTodoModal();
+    else if (rpCurrentNotesTab === 'rp-diary-tab') rpGenerateDiary();
+    else if (rpCurrentNotesTab === 'rp-memo-tab')  rpGenerateMemo();
   }
 });
 
-/* ---- 待办 ---- */
-function rpAddTodo() {
-  var text = prompt('输入待办内容');
-  if (!text || !text.trim()) return;
-  rpCurrentRoleData.notes.todos.unshift({
-    id:   'todo_' + Date.now(),
-    text: text.trim(),
-    done: false,
-    ts:   Date.now()
-  });
-  rpSave(rpCurrentRoleId, rpCurrentRoleData);
-  rpRenderTodoList();
+/* ---- 待办（内联弹窗） ---- */
+function rpShowTodoModal() {
+  var modal = document.getElementById('rp-notes-modal');
+  var title = document.getElementById('rp-notes-modal-title');
+  var wSel  = document.getElementById('rp-notes-weather-select');
+  var cont  = document.getElementById('rp-notes-content-input');
+  if (!modal) return;
+  if (title) title.textContent = '添加待办';
+  if (wSel)  wSel.style.display = 'none';
+  if (cont)  { cont.value = ''; cont.placeholder = '输入待办内容…'; }
+  modal.dataset.mode  = 'todo';
+  modal.style.display = 'flex';
 }
+
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.id === 'rp-notes-modal-confirm') {
+    var modal = document.getElementById('rp-notes-modal');
+    var mode  = modal ? modal.dataset.mode : '';
+    var cont  = document.getElementById('rp-notes-content-input');
+    var text  = cont ? cont.value.trim() : '';
+    if (!text) return;
+    if (mode === 'todo') {
+      rpCurrentRoleData.notes.todos.unshift({
+        id: 'todo_' + Date.now(), text: text, done: false, ts: Date.now()
+      });
+      rpSave(rpCurrentRoleId, rpCurrentRoleData);
+      rpRenderTodoList();
+    }
+    if (modal) modal.style.display = 'none';
+  }
+  if (e.target && e.target.id === 'rp-notes-modal-cancel') {
+    var modal = document.getElementById('rp-notes-modal');
+    if (modal) modal.style.display = 'none';
+  }
+});
 
 function rpRenderTodoList() {
   var list = document.getElementById('rp-todo-list');
@@ -706,22 +772,21 @@ function rpRenderTodoList() {
   }
   list.innerHTML = '';
   todos.forEach(function (todo, idx) {
-    var item       = document.createElement('div');
+    var item  = document.createElement('div');
     item.className = 'rp-todo-item';
 
-    var check       = document.createElement('div');
+    var check = document.createElement('div');
     check.className = 'rp-todo-check' + (todo.done ? ' checked' : '');
-    check.dataset.todoIdx = idx;
 
-    var body       = document.createElement('div');
+    var body  = document.createElement('div');
     body.className = 'rp-todo-body';
 
-    var textEl       = document.createElement('div');
-    textEl.className = 'rp-todo-text' + (todo.done ? ' done' : '');
+    var textEl = document.createElement('div');
+    textEl.className   = 'rp-todo-text' + (todo.done ? ' done' : '');
     textEl.textContent = todo.text;
 
-    var timeEl       = document.createElement('div');
-    timeEl.className = 'rp-todo-time';
+    var timeEl = document.createElement('div');
+    timeEl.className   = 'rp-todo-time';
     timeEl.textContent = rpFormatTime(todo.ts);
 
     body.appendChild(textEl);
@@ -738,41 +803,51 @@ function rpRenderTodoList() {
   });
 }
 
-/* ---- 日记 ---- */
+/* ---- 日记（AI生成，正则替换格式） ---- */
 function rpGenerateDiary() {
   if (!rpCurrentRole) { alert('角色信息未加载'); return; }
   var roleName    = rpCurrentRole.nickname || rpCurrentRole.realname || '角色';
   var roleSetting = rpCurrentRole.setting || '';
+  var extraLimit  = (rpCurrentRoleData.appPromptLimits && rpCurrentRoleData.appPromptLimits.notes) || '';
   var now         = new Date();
   var dateStr     = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日';
   var weather     = rpWeatherStr || '晴天';
+
   var systemPrompt =
-    '你扮演角色' + roleName + '，' + roleSetting + '。' +
-    '今天是' + dateStr + '，天气' + weather + '。' +
-    '请以角色第一人称写一篇今日日记，600字左右，细腻真实，贴合人设，' +
-    '格式：第一行是日期和天气，然后换行写日记正文。只输出日记内容。';
+    '你扮演角色' + roleName + '，' + roleSetting + '。\n' +
+    '今天是' + dateStr + '，天气' + weather + '。\n' +
+    (extraLimit ? '额外要求：' + extraLimit + '\n' : '') +
+    '请以角色第一人称写一篇今日日记，600字左右，细腻真实，贴合人设。\n' +
+    '输出格式（严格按照以下正则格式，整行不能换行）：\n' +
+    '[DIARY:date=' + dateStr + ':weather=' + weather + ':content=日记正文内容（用空格代替换行）]\n' +
+    '只输出上述格式的一行，不输出任何其他内容。';
+
   rpShowLoading();
   rpCallAPI(
     [{ role: 'system', content: systemPrompt }],
     function (raw) {
       rpHideLoading();
-      var content = raw.trim();
+      var re      = /\[DIARY:date=([^:]+):weather=([^:]+):content=([^\]]+)\]/;
+      var m       = raw.match(re);
+      var content = '';
+      var dDate   = dateStr;
+      var dWeather = weather;
+      if (m) {
+        dDate    = m[1].trim();
+        dWeather = m[2].trim();
+        content  = m[3].trim();
+      } else {
+        content = raw.trim();
+      }
       if (!content) { alert('生成失败，请重试'); return; }
       rpCurrentRoleData.notes.diaries.unshift({
-        id:      'diary_' + Date.now(),
-        date:    dateStr,
-        weather: weather,
-        content: content,
-        starred: false,
-        ts:      Date.now()
+        id: 'diary_' + Date.now(), date: dDate, weather: dWeather,
+        content: content, starred: false, ts: Date.now()
       });
       rpSave(rpCurrentRoleId, rpCurrentRoleData);
       rpRenderDiaryList();
     },
-    function (err) {
-      rpHideLoading();
-      alert('API 请求失败：' + err);
-    }
+    function (err) { rpHideLoading(); alert('API 请求失败：' + err); }
   );
 }
 
@@ -786,22 +861,22 @@ function rpRenderDiaryList() {
   }
   list.innerHTML = '';
   diaries.forEach(function (diary, idx) {
-    var item       = document.createElement('div');
+    var item = document.createElement('div');
     item.className = 'rp-diary-item';
 
-    var header       = document.createElement('div');
+    var header = document.createElement('div');
     header.className = 'rp-diary-item-header';
 
-    var dateEl       = document.createElement('span');
-    dateEl.className = 'rp-diary-item-date';
+    var dateEl = document.createElement('span');
+    dateEl.className   = 'rp-diary-item-date';
     dateEl.textContent = diary.date || '';
 
-    var weatherEl       = document.createElement('span');
-    weatherEl.className = 'rp-diary-item-weather';
+    var weatherEl = document.createElement('span');
+    weatherEl.className   = 'rp-diary-item-weather';
     weatherEl.textContent = diary.weather || '';
 
-    var preview       = document.createElement('div');
-    preview.className = 'rp-diary-item-preview';
+    var preview = document.createElement('div');
+    preview.className   = 'rp-diary-item-preview';
     preview.textContent = (diary.content || '').slice(0, 60);
 
     header.appendChild(dateEl);
@@ -810,42 +885,41 @@ function rpRenderDiaryList() {
     item.appendChild(preview);
     list.appendChild(item);
 
-    item.addEventListener('click', function () {
-      rpOpenDiaryDetail(idx, 'diary');
-    });
+    item.addEventListener('click', function () { rpOpenDiaryDetail(idx, 'diary'); });
   });
 }
 
-/* ---- 随记 ---- */
+/* ---- 随记（AI生成，正则替换格式） ---- */
 function rpGenerateMemo() {
   if (!rpCurrentRole) { alert('角色信息未加载'); return; }
   var roleName    = rpCurrentRole.nickname || rpCurrentRole.realname || '角色';
   var roleSetting = rpCurrentRole.setting || '';
+  var extraLimit  = (rpCurrentRoleData.appPromptLimits && rpCurrentRoleData.appPromptLimits.notes) || '';
+
   var systemPrompt =
-    '你扮演角色' + roleName + '，' + roleSetting + '。' +
-    '请以角色第一人称写一条随手记，50到100字，' +
-    '内容随意，可以是突然看见的事、心里的想法、小感悟等，口语化，不加任何标题。只输出随记内容。';
+    '你扮演角色' + roleName + '，' + roleSetting + '。\n' +
+    (extraLimit ? '额外要求：' + extraLimit + '\n' : '') +
+    '请以角色第一人称写一条随手记，50到100字，内容随意，口语化，不加任何标题。\n' +
+    '输出格式（严格按照以下正则格式，整行不能换行）：\n' +
+    '[MEMO:content=随记正文内容]\n' +
+    '只输出上述格式的一行，不输出任何其他内容。';
+
   rpShowLoading();
   rpCallAPI(
     [{ role: 'system', content: systemPrompt }],
     function (raw) {
       rpHideLoading();
-      var content = raw.trim();
+      var re      = /\[MEMO:content=([^\]]+)\]/;
+      var m       = raw.match(re);
+      var content = m ? m[1].trim() : raw.trim();
       if (!content) { alert('生成失败，请重试'); return; }
-      var now = new Date();
       rpCurrentRoleData.notes.memos.unshift({
-        id:      'rmemo_' + Date.now(),
-        content: content,
-        starred: false,
-        ts:      Date.now()
+        id: 'rmemo_' + Date.now(), content: content, starred: false, ts: Date.now()
       });
       rpSave(rpCurrentRoleId, rpCurrentRoleData);
       rpRenderMemoList();
     },
-    function (err) {
-      rpHideLoading();
-      alert('API 请求失败：' + err);
-    }
+    function (err) { rpHideLoading(); alert('API 请求失败：' + err); }
   );
 }
 
@@ -859,18 +933,18 @@ function rpRenderMemoList() {
   }
   list.innerHTML = '';
   memos.forEach(function (memo, idx) {
-    var item       = document.createElement('div');
+    var item = document.createElement('div');
     item.className = 'rp-diary-item';
 
-    var header       = document.createElement('div');
+    var header = document.createElement('div');
     header.className = 'rp-diary-item-header';
 
-    var timeEl       = document.createElement('span');
-    timeEl.className = 'rp-diary-item-date';
+    var timeEl = document.createElement('span');
+    timeEl.className   = 'rp-diary-item-date';
     timeEl.textContent = rpFormatTime(memo.ts);
 
-    var preview       = document.createElement('div');
-    preview.className = 'rp-diary-item-preview';
+    var preview = document.createElement('div');
+    preview.className   = 'rp-diary-item-preview';
     preview.textContent = (memo.content || '').slice(0, 60);
 
     header.appendChild(timeEl);
@@ -878,9 +952,7 @@ function rpRenderMemoList() {
     item.appendChild(preview);
     list.appendChild(item);
 
-    item.addEventListener('click', function () {
-      rpOpenDiaryDetail(idx, 'memo');
-    });
+    item.addEventListener('click', function () { rpOpenDiaryDetail(idx, 'memo'); });
   });
 }
 
@@ -891,8 +963,7 @@ var rpDetailIndex = 0;
 function rpOpenDiaryDetail(idx, type) {
   rpDetailType  = type;
   rpDetailIndex = idx;
-
-  var item    = type === 'diary'
+  var item = type === 'diary'
     ? rpCurrentRoleData.notes.diaries[idx]
     : rpCurrentRoleData.notes.memos[idx];
   if (!item) return;
@@ -910,10 +981,9 @@ function rpOpenDiaryDetail(idx, type) {
   rpShowView('rp-diary-detail-view');
 }
 
-/* 收藏 / 删除 */
 document.addEventListener('click', function (e) {
   if (e.target && e.target.id === 'rp-detail-fav-btn') {
-    var arr  = rpDetailType === 'diary'
+    var arr = rpDetailType === 'diary'
       ? rpCurrentRoleData.notes.diaries
       : rpCurrentRoleData.notes.memos;
     arr[rpDetailIndex].starred = !arr[rpDetailIndex].starred;
@@ -933,19 +1003,17 @@ document.addEventListener('click', function (e) {
 });
 
 /* ================================================================
-   屏幕健康 App
+   屏幕健康 App（正则替换格式）
    ================================================================ */
-function rpInitHealthApp() {
-  rpRenderHealthData();
-}
+function rpInitHealthApp() { rpRenderHealthData(); }
 
 function rpRenderHealthData() {
   var totalEl = document.getElementById('rp-health-total');
   var listEl  = document.getElementById('rp-health-list');
   if (!listEl) return;
 
-  var records = rpCurrentRoleData.screenHealth || [];
-  var today   = new Date().toDateString();
+  var records     = rpCurrentRoleData.screenHealth || [];
+  var today       = new Date().toDateString();
   var todayRecord = records.find(function (r) { return r.date === today; });
 
   if (!todayRecord || !todayRecord.apps || !todayRecord.apps.length) {
@@ -956,8 +1024,8 @@ function rpRenderHealthData() {
 
   var apps      = todayRecord.apps;
   var totalMins = apps.reduce(function (s, a) { return s + (a.minutes || 0); }, 0);
-  var h         = Math.floor(totalMins / 60);
-  var m         = totalMins % 60;
+  var h = Math.floor(totalMins / 60);
+  var m = totalMins % 60;
   if (totalEl) totalEl.textContent = h + 'h ' + m + 'm';
 
   var maxMins = Math.max.apply(null, apps.map(function (a) { return a.minutes || 0; }));
@@ -969,9 +1037,8 @@ function rpRenderHealthData() {
     var am  = app.minutes % 60;
     var timeStr = ah > 0 ? ah + 'h ' + am + 'm' : am + 'm';
 
-    var item       = document.createElement('div');
+    var item = document.createElement('div');
     item.className = 'rp-health-item';
-
     item.innerHTML =
       '<div class="rp-health-item-header">' +
         '<div class="rp-health-item-info">' +
@@ -983,63 +1050,66 @@ function rpRenderHealthData() {
       '<div class="rp-health-bar-wrap">' +
         '<div class="rp-health-bar-fill" style="width:' + pct + '%"></div>' +
       '</div>';
-
     listEl.appendChild(item);
   });
 }
 
-/* 屏幕健康 + 按钮 */
+/* 屏幕健康 + 按钮（正则替换格式） */
 document.addEventListener('click', function (e) {
-  if (e.target && e.target.closest('#rp-health-view') &&
-      e.target.classList.contains('rp-topbar-right-btn')) {
-    if (document.getElementById('rp-health-view') &&
-        document.getElementById('rp-health-view').style.display === 'none') return;
-    if (!rpCurrentRole) { alert('角色信息未加载'); return; }
-    var roleName    = rpCurrentRole.nickname || rpCurrentRole.realname || '角色';
-    var roleSetting = rpCurrentRole.setting || '';
-    var systemPrompt =
-      '你扮演角色' + roleName + '，' + roleSetting + '。' +
-      '请生成角色今天使用手机各App的时长数据，以JSON数组格式输出，' +
-      '格式：[{"name":"App名","icon":"emoji","minutes":数字}]，' +
-      '生成6到10个App，时长合理，App种类参考真实手机App和了了、便签、屏幕健康、趣问等。只输出JSON数组。';
-    rpShowLoading();
-    rpCallAPI(
-      [{ role: 'system', content: systemPrompt }],
-      function (raw) {
-        rpHideLoading();
-        try {
-          var jsonStr = raw.trim();
-          var m = jsonStr.match(/\[[\s\S]*\]/);
-          if (m) jsonStr = m[0];
-          var apps = JSON.parse(jsonStr);
-          if (!Array.isArray(apps)) throw new Error('empty');
-          var today = new Date().toDateString();
-          var records = rpCurrentRoleData.screenHealth || [];
-          var existIdx = records.findIndex(function (r) { return r.date === today; });
-          var newRecord = { date: today, apps: apps };
-          if (existIdx >= 0) records[existIdx] = newRecord;
-          else records.unshift(newRecord);
-          rpCurrentRoleData.screenHealth = records;
-          rpSave(rpCurrentRoleId, rpCurrentRoleData);
-          rpRenderHealthData();
-        } catch (err) {
-          alert('生成失败：' + err.message);
-        }
-      },
-      function (err) {
-        rpHideLoading();
-        alert('API 请求失败：' + err);
+  var hv = document.getElementById('rp-health-view');
+  if (!hv || hv.style.display === 'none') return;
+  var btn = e.target.closest('#rp-health-view .rp-topbar-right-btn');
+  if (!btn) return;
+  if (!rpCurrentRole) { alert('角色信息未加载'); return; }
+
+  var roleName    = rpCurrentRole.nickname || rpCurrentRole.realname || '角色';
+  var roleSetting = rpCurrentRole.setting || '';
+  var extraLimit  = (rpCurrentRoleData.appPromptLimits && rpCurrentRoleData.appPromptLimits.health) || '';
+
+  var systemPrompt =
+    '你扮演角色' + roleName + '，' + roleSetting + '。\n' +
+    (extraLimit ? '额外要求：' + extraLimit + '\n' : '') +
+    '请生成角色今天使用手机各App的时长数据。\n' +
+    '生成6到10个App，时长合理（总时长不超过8小时），App种类参考真实手机App。\n' +
+    '输出格式（每行一条，严格按照以下正则格式）：\n' +
+    '[HEALTH:name=App名称:icon=emoji:minutes=分钟数]\n' +
+    '例如：[HEALTH:name=微信:icon=💬:minutes=87]\n' +
+    '只输出上述格式的行，不输出任何其他内容。';
+
+  rpShowLoading();
+  rpCallAPI(
+    [{ role: 'system', content: systemPrompt }],
+    function (raw) {
+      rpHideLoading();
+      var apps = [];
+      var re   = /\[HEALTH:name=([^:]+):icon=([^:]+):minutes=(\d+)\]/g;
+      var m;
+      while ((m = re.exec(raw)) !== null) {
+        apps.push({ name: m[1].trim(), icon: m[2].trim(), minutes: parseInt(m[3]) || 0 });
       }
-    );
-  }
+      if (!apps.length) {
+        var parsed = rpExtractJSON(raw, 'array');
+        if (parsed && Array.isArray(parsed) && parsed.length) apps = parsed;
+        else { alert('生成失败，请重试'); return; }
+      }
+      var today    = new Date().toDateString();
+      var records  = rpCurrentRoleData.screenHealth || [];
+      var existIdx = records.findIndex(function (r) { return r.date === today; });
+      var newRecord = { date: today, apps: apps };
+      if (existIdx >= 0) records[existIdx] = newRecord;
+      else records.unshift(newRecord);
+      rpCurrentRoleData.screenHealth = records;
+      rpSave(rpCurrentRoleId, rpCurrentRoleData);
+      rpRenderHealthData();
+    },
+    function (err) { rpHideLoading(); alert('API 请求失败：' + err); }
+  );
 });
 
 /* ================================================================
-   趣问 App
+   趣问 App（正则替换格式）
    ================================================================ */
-function rpInitForumApp() {
-  rpRenderForumList();
-}
+function rpInitForumApp() { rpRenderForumList(); }
 
 function rpRenderForumList() {
   var list = document.getElementById('rp-forum-list');
@@ -1051,29 +1121,21 @@ function rpRenderForumList() {
   }
   list.innerHTML = '';
   posts.forEach(function (post) {
-    var item       = document.createElement('div');
+    var item = document.createElement('div');
     item.className = 'rp-forum-item';
-
-    var avatarEmoji = (rpCurrentRole && rpCurrentRole.avatar) ? '' : '👤';
-
     item.innerHTML =
       '<div class="rp-forum-item-header">' +
-        '<div class="rp-forum-item-avatar">' + avatarEmoji + '</div>' +
+        '<div class="rp-forum-item-avatar">👤</div>' +
         '<div class="rp-forum-item-name">' +
           ((rpCurrentRole && (rpCurrentRole.nickname || rpCurrentRole.realname)) || '角色') +
         '</div>' +
       '</div>' +
       '<div class="rp-forum-item-title">' + (post.title || '') + '</div>' +
       '<div class="rp-forum-item-footer">' +
-        '<div class="rp-forum-item-replies">' +
-        (post.replies ? post.replies.length : 0) + ' 条回复' +
-        '</div>' +
+        '<div class="rp-forum-item-replies">' + (post.replies ? post.replies.length : 0) + ' 条回复</div>' +
         '<div class="rp-forum-item-time">' + rpFormatTime(post.ts) + '</div>' +
       '</div>';
-
-    item.addEventListener('click', function () {
-      rpOpenForumPost(post.id);
-    });
+    item.addEventListener('click', function () { rpOpenForumPost(post.id); });
     list.appendChild(item);
   });
 }
@@ -1089,79 +1151,93 @@ function rpOpenForumPost(postId) {
 
   contentEl.innerHTML =
     '<div class="rp-forum-post-title">' + (post.title || '') + '</div>' +
-    '<div class="rp-forum-post-body">' + (post.content || '') + '</div>';
+    '<div class="rp-forum-post-body">'  + (post.content || '') + '</div>';
 
   repliesEl.innerHTML = '';
-  var replies = post.replies || [];
-  replies.forEach(function (reply) {
-    var item       = document.createElement('div');
+  (post.replies || []).forEach(function (reply) {
+    var item = document.createElement('div');
     item.className = 'rp-forum-reply-item';
     item.innerHTML =
       '<div class="rp-forum-reply-header">' +
         '<div class="rp-forum-reply-avatar">' + (reply.avatar || '👤') + '</div>' +
-        '<div class="rp-forum-reply-name">' + (reply.name || '路人') + '</div>' +
-        '<div class="rp-forum-reply-time">' + rpFormatTime(reply.ts || post.ts) + '</div>' +
+        '<div class="rp-forum-reply-name">'   + (reply.name    || '路人') + '</div>' +
+        '<div class="rp-forum-reply-time">'   + rpFormatTime(reply.ts || post.ts) + '</div>' +
       '</div>' +
       '<div class="rp-forum-reply-content">' + (reply.content || '') + '</div>';
     repliesEl.appendChild(item);
   });
 
   rpShowView('rp-forum-detail-view');
-
-  /* 清空输入框 */
   var inputEl = document.getElementById('rp-forum-reply-input');
   if (inputEl) inputEl.value = '';
 }
 
-/* 趣问 + 按钮：生成新帖子 */
+/* 趣问 + 按钮（正则替换格式） */
 document.addEventListener('click', function (e) {
   if (e.target && e.target.id === 'rp-forum-add-btn') {
     if (!rpCurrentRole) { alert('角色信息未加载'); return; }
     var roleName    = rpCurrentRole.nickname || rpCurrentRole.realname || '角色';
     var roleSetting = rpCurrentRole.setting || '';
+    var extraLimit  = (rpCurrentRoleData.appPromptLimits && rpCurrentRoleData.appPromptLimits.forum) || '';
+
     var systemPrompt =
-      '你扮演角色' + roleName + '，' + roleSetting + '。' +
-      '请生成一条角色在论坛"趣问"App里发的提问帖子，以JSON格式输出，' +
-      '格式：{"title":"帖子标题","content":"帖子正文100字左右",' +
-      '"replies":[{"name":"路人昵称","avatar":"emoji","content":"回复内容"}]}，' +
-      '生成15到20条路人回复，回复风格多样（支持、质疑、共鸣、搞笑、认真建议等），' +
-      '其中最后一条回复的name为角色名，是角色对某条路人回复的回应。只输出JSON。';
+      '你扮演角色' + roleName + '，' + roleSetting + '。\n' +
+      (extraLimit ? '额外要求：' + extraLimit + '\n' : '') +
+      '请生成一条角色在论坛"趣问"App里发的提问帖子，以及路人回复。\n' +
+      '输出格式（严格按照以下正则格式，每项占一行）：\n' +
+      '[FORUM:title=帖子标题:content=帖子正文100字左右]\n' +
+      '[REPLY:name=路人昵称:avatar=emoji:content=回复内容]\n' +
+      '生成15到20条REPLY行，回复风格多样，最后一条REPLY的name为' + roleName + '（角色回应某条路人）。\n' +
+      '只输出上述格式的行，不输出任何其他内容。';
+
     rpShowLoading();
     rpCallAPI(
       [{ role: 'system', content: systemPrompt }],
       function (raw) {
         rpHideLoading();
-        try {
-          var jsonStr = raw.trim();
-          var m = jsonStr.match(/\{[\s\S]*\}/);
-          if (m) jsonStr = m[0];
-          var post = JSON.parse(jsonStr);
-          if (!post.title) throw new Error('empty');
-          var newPost = {
-            id:      'post_' + Date.now(),
-            title:   post.title   || '',
-            content: post.content || '',
-            ts:      Date.now(),
-            replies: (post.replies || []).map(function (r) {
-              return {
-                name:    r.name    || '路人',
-                avatar:  r.avatar  || '👤',
-                content: r.content || '',
-                ts:      Date.now()
-              };
-            })
-          };
-          rpCurrentRoleData.forum.unshift(newPost);
-          rpSave(rpCurrentRoleId, rpCurrentRoleData);
-          rpRenderForumList();
-        } catch (err) {
-          alert('生成失败：' + err.message);
+        var forumRe = /\[FORUM:title=([^:]+):content=([^\]]+)\]/;
+        var replyRe = /\[REPLY:name=([^:]+):avatar=([^:]+):content=([^\]]+)\]/g;
+        var fm = raw.match(forumRe);
+        if (!fm) {
+          var parsed = rpExtractJSON(raw, 'object');
+          if (parsed && parsed.title) {
+            var newPost2 = {
+              id: 'post_' + Date.now(), title: parsed.title || '',
+              content: parsed.content || '', ts: Date.now(),
+              replies: (parsed.replies || []).map(function (r) {
+                return { name: r.name || '路人', avatar: r.avatar || '👤', content: r.content || '', ts: Date.now() };
+              })
+            };
+            rpCurrentRoleData.forum.unshift(newPost2);
+            rpSave(rpCurrentRoleId, rpCurrentRoleData);
+            rpRenderForumList();
+          } else { alert('生成失败，请重试'); }
+          return;
         }
+        var title   = fm[1].trim();
+        var content = fm[2].trim();
+        var replies = [];
+        var rm;
+        while ((rm = replyRe.exec(raw)) !== null) {
+          replies.push({
+            name:    rm[1].trim(),
+            avatar:  rm[2].trim(),
+            content: rm[3].trim(),
+            ts:      Date.now()
+          });
+        }
+        var newPost = {
+          id:      'post_' + Date.now(),
+          title:   title,
+          content: content,
+          ts:      Date.now(),
+          replies: replies
+        };
+        rpCurrentRoleData.forum.unshift(newPost);
+        rpSave(rpCurrentRoleId, rpCurrentRoleData);
+        rpRenderForumList();
       },
-      function (err) {
-        rpHideLoading();
-        alert('API 请求失败：' + err);
-      }
+      function (err) { rpHideLoading(); alert('API 请求失败：' + err); }
     );
   }
 });
@@ -1181,12 +1257,64 @@ document.addEventListener('click', function (e) {
       name:    (rpCurrentRole && (rpCurrentRole.nickname || rpCurrentRole.realname)) || '我',
       avatar:  '💬',
       content: text,
-      ts:      Date.now(),
-      isRole:  false
+      ts:      Date.now()
     });
     rpSave(rpCurrentRoleId, rpCurrentRoleData);
     if (inputEl) inputEl.value = '';
     rpOpenForumPost(rpCurrentForumPostId);
+  }
+});
+
+/* ================================================================
+   状态栏弹窗（供 liao-special.js 调用）
+   ================================================================ */
+function rpShowStatusBarFromMsg(statusBar, role) {
+  var modal = document.getElementById('rp-status-bar-modal');
+  if (!modal) return;
+
+  var roleName = (role && (role.nickname || role.realname))
+    || (rpCurrentRole && (rpCurrentRole.nickname || rpCurrentRole.realname))
+    || '角色';
+
+  var html =
+    '<div class="rp-sb-item">' +
+      '<span class="rp-sb-label">' + roleName + ' 状态</span>' +
+      '<span class="rp-sb-value">' + (statusBar.status || '—') + '</span>' +
+    '</div>' +
+    '<div class="rp-sb-item">' +
+      '<span class="rp-sb-label">' + roleName + ' 心情</span>' +
+      '<span class="rp-sb-value">' + (statusBar.mood || '—') + '</span>' +
+    '</div>' +
+    '<div class="rp-sb-item">' +
+      '<span class="rp-sb-label">' + roleName + ' 内心所想</span>' +
+      '<span class="rp-sb-value">' + (statusBar.inner || '—') + '</span>' +
+    '</div>' +
+    '<div class="rp-sb-item">' +
+      '<span class="rp-sb-label">' + roleName + ' 消息草稿箱（未发出的消息）</span>' +
+      '<span class="rp-sb-value rp-sb-draft">' + (statusBar.draft || '（空）') + '</span>' +
+    '</div>' +
+    '<div class="rp-sb-item">' +
+      '<span class="rp-sb-label">两句话角色趣事</span>' +
+      '<span class="rp-sb-value">' + (statusBar.funFact || '—') + '</span>' +
+    '</div>' +
+    '<div class="rp-sb-item rp-sb-theater">' +
+      '<span class="rp-sb-label">随机小剧场</span>' +
+      '<span class="rp-sb-value">' + (statusBar.theater || '—') + '</span>' +
+    '</div>';
+
+  var body = document.getElementById('rp-sb-body');
+  if (body) body.innerHTML = html;
+  modal.style.display = 'flex';
+}
+
+/* 暴露到全局，供 liao-special.js 调用 */
+window.rpShowStatusBarFromMsg = rpShowStatusBarFromMsg;
+
+/* 状态栏关闭按钮 */
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.id === 'rp-sb-close') {
+    var modal = document.getElementById('rp-status-bar-modal');
+    if (modal) modal.style.display = 'none';
   }
 });
 
@@ -1201,9 +1329,7 @@ function rpFormatTime(ts) {
   if (diff < 3600000)  return Math.floor(diff / 60000) + '分钟前';
   if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
   var d  = new Date(ts);
-  var mo = d.getMonth() + 1;
-  var dd = d.getDate();
-  return mo + '/' + dd;
+  return (d.getMonth() + 1) + '/' + d.getDate();
 }
 
 /* ================================================================
@@ -1215,18 +1341,16 @@ window.RolePhone = {
 };
 
 /* ================================================================
-   csb-rolephone 按钮入口（从了了聊天界面打开）
+   csb-rolephone 按钮入口
    ================================================================ */
 (function bindRpEntry() {
   document.addEventListener('click', function (e) {
     if (e.target && e.target.id === 'csb-rolephone') {
       if (typeof currentChatIdx === 'undefined' || currentChatIdx < 0) {
-        alert('请先打开一个聊天');
-        return;
+        alert('请先打开一个聊天'); return;
       }
       if (typeof liaoChats === 'undefined' || typeof liaoRoles === 'undefined') {
-        alert('数据未加载');
-        return;
+        alert('数据未加载'); return;
       }
       var chat = liaoChats[currentChatIdx];
       if (!chat) { alert('请先打开一个聊天'); return; }
@@ -1234,3 +1358,207 @@ window.RolePhone = {
     }
   });
 })();
+
+/* ================================================================
+   角色手机设置页逻辑
+   ================================================================ */
+function rpGetCurrentRoleId() {
+  if (typeof currentChatIdx === 'undefined' || currentChatIdx < 0) return '';
+  var chat = liaoChats[currentChatIdx];
+  return chat ? chat.roleId : '';
+}
+
+function rpUpdatePinStatus() {
+  var roleId   = rpGetCurrentRoleId();
+  var statusEl = document.getElementById('rp-pin-status');
+  if (!statusEl) return;
+  if (!roleId) { statusEl.textContent = '未设置'; return; }
+  var data = rpLoad(roleId);
+  statusEl.textContent = (data.pin && data.pin.length === 4) ? '已设置（4位）' : '未设置';
+}
+
+function rpLoadSettingsPage() {
+  var roleId = rpGetCurrentRoleId();
+  if (!roleId) return;
+  var data = rpLoad(roleId);
+
+  rpUpdatePinStatus();
+
+  var wpEl = document.getElementById('rp-wallpaper-url');
+  if (wpEl) wpEl.value = data.wallpaper || '';
+  var poEl = document.getElementById('rp-polaroid-url');
+  if (poEl) poEl.value = data.polaroidImg || '';
+
+  var limits = data.appPromptLimits || {};
+  var liao   = document.getElementById('rp-limit-liao');
+  var notes  = document.getElementById('rp-limit-notes');
+  var health = document.getElementById('rp-limit-health');
+  var forum  = document.getElementById('rp-limit-forum');
+  if (liao)   liao.value   = limits.liao   || '';
+  if (notes)  notes.value  = limits.notes  || '';
+  if (health) health.value = limits.health || '';
+  if (forum)  forum.value  = limits.forum  || '';
+
+  var icons   = data.appIcons || {};
+  var iLiao   = document.getElementById('rp-icon-liao');
+  var iNotes  = document.getElementById('rp-icon-notes');
+  var iHealth = document.getElementById('rp-icon-health');
+  var iForum  = document.getElementById('rp-icon-forum');
+  if (iLiao)   iLiao.value   = icons.liao   || '';
+  if (iNotes)  iNotes.value  = icons.notes  || '';
+  if (iHealth) iHealth.value = icons.health || '';
+  if (iForum)  iForum.value  = icons.forum  || '';
+}
+
+var origSwitchChatSettingsTab = (typeof switchChatSettingsTab === 'function') ? switchChatSettingsTab : null;
+switchChatSettingsTab = function (tabId) {
+  if (origSwitchChatSettingsTab) origSwitchChatSettingsTab(tabId);
+  if (tabId === 'cs-tab-rolephone') rpLoadSettingsPage();
+};
+
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.id === 'rp-ai-gen-pin-btn') {
+    var roleId = rpGetCurrentRoleId();
+    if (!roleId) { alert('请先打开一个聊天'); return; }
+    var role = liaoRoles.find(function (r) { return r.id === roleId; });
+    if (!role) return;
+    var roleName    = role.nickname || role.realname || '角色';
+    var roleSetting = role.setting || '';
+    var systemPrompt =
+      '你扮演角色' + roleName + '，' + roleSetting + '。' +
+      '请为你的手机设置一个4位数密码，只输出4位数字，不输出任何其他内容。';
+    var msgEl = document.getElementById('rp-pin-msg');
+    if (msgEl) { msgEl.style.color = '#9aafc4'; msgEl.textContent = 'AI 生成中…'; }
+
+    rpCallAPI(
+      [{ role: 'system', content: systemPrompt }],
+      function (raw) {
+        var pin = raw.replace(/\D/g, '').slice(0, 4);
+        if (pin.length !== 4) {
+          if (msgEl) { msgEl.style.color = '#e07a7a'; msgEl.textContent = '生成的密码格式不正确，请重试'; }
+          return;
+        }
+        var data = rpLoad(roleId);
+        data.pin = pin;
+        rpSave(roleId, data);
+
+        var chat = liaoChats.find(function (c) { return c.roleId === roleId; });
+        if (chat) {
+          if (!chat.memory) chat.memory = { longTerm: [], shortTerm: [], important: [], other: {} };
+          if (!chat.memory.other) chat.memory.other = {};
+          if (!chat.memory.other.rolephone) chat.memory.other.rolephone = [];
+          chat.memory.other.rolephone.push({
+            id: 'rpmem_' + Date.now(), content: '我的手机密码是' + pin, ts: Date.now()
+          });
+          lSave('chats', liaoChats);
+        }
+        rpUpdatePinStatus();
+        if (msgEl) { msgEl.style.color = '#4caf84'; msgEl.textContent = 'AI 已生成密码并保存（密码已存入角色记忆）'; }
+        setTimeout(function () { if (msgEl) msgEl.textContent = ''; }, 3000);
+      },
+      function (err) {
+        if (msgEl) { msgEl.style.color = '#e07a7a'; msgEl.textContent = '生成失败：' + err; }
+      }
+    );
+  }
+});
+
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.id === 'rp-manual-pin-btn') {
+    var roleId = rpGetCurrentRoleId();
+    if (!roleId) { alert('请先打开一个聊天'); return; }
+    var pin = prompt('请输入4位数字密码');
+    if (!pin) return;
+    if (!/^\d{4}$/.test(pin)) { alert('密码必须为4位数字'); return; }
+    var data = rpLoad(roleId);
+    data.pin = pin;
+    rpSave(roleId, data);
+    rpUpdatePinStatus();
+    var msgEl = document.getElementById('rp-pin-msg');
+    if (msgEl) { msgEl.style.color = '#4caf84'; msgEl.textContent = '密码已保存'; }
+    setTimeout(function () { if (msgEl) msgEl.textContent = ''; }, 2000);
+  }
+});
+
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.id === 'rp-clear-pin-btn') {
+    var roleId = rpGetCurrentRoleId();
+    if (!roleId) return;
+    if (!confirm('确定清除手机密码？')) return;
+    var data = rpLoad(roleId);
+    data.pin = '';
+    rpSave(roleId, data);
+    rpUpdatePinStatus();
+    var msgEl = document.getElementById('rp-pin-msg');
+    if (msgEl) { msgEl.style.color = '#4caf84'; msgEl.textContent = '密码已清除'; }
+    setTimeout(function () { if (msgEl) msgEl.textContent = ''; }, 2000);
+  }
+});
+
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.id === 'rp-wallpaper-local-btn') {
+    var fi = document.getElementById('rp-wallpaper-file');
+    if (fi) fi.click();
+  }
+});
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.id === 'rp-wallpaper-file') {
+    var file = e.target.files[0]; if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      var urlEl = document.getElementById('rp-wallpaper-url');
+      if (urlEl) urlEl.value = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  }
+});
+
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.id === 'rp-polaroid-local-btn') {
+    var fi = document.getElementById('rp-polaroid-file');
+    if (fi) fi.click();
+  }
+});
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.id === 'rp-polaroid-file') {
+    var file = e.target.files[0]; if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      var urlEl = document.getElementById('rp-polaroid-url');
+      if (urlEl) urlEl.value = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  }
+});
+
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.id === 'rp-settings-save-btn') {
+    var roleId = rpGetCurrentRoleId();
+    if (!roleId) { alert('请先打开一个聊天'); return; }
+    var data = rpLoad(roleId);
+
+    var wpVal = (document.getElementById('rp-wallpaper-url') || {}).value || '';
+    var poVal = (document.getElementById('rp-polaroid-url')  || {}).value || '';
+    data.wallpaper   = wpVal.trim();
+    data.polaroidImg = poVal.trim();
+
+    data.appPromptLimits = {
+      liao:   ((document.getElementById('rp-limit-liao')   || {}).value || '').trim(),
+      notes:  ((document.getElementById('rp-limit-notes')  || {}).value || '').trim(),
+      health: ((document.getElementById('rp-limit-health') || {}).value || '').trim(),
+      forum:  ((document.getElementById('rp-limit-forum')  || {}).value || '').trim()
+    };
+
+    data.appIcons = {
+      liao:   ((document.getElementById('rp-icon-liao')   || {}).value || '').trim(),
+      notes:  ((document.getElementById('rp-icon-notes')  || {}).value || '').trim(),
+      health: ((document.getElementById('rp-icon-health') || {}){}).value || '').trim(),
+      forum:  ((document.getElementById('rp-icon-forum')  || {}).value || '').trim()
+    };
+
+    rpSave(roleId, data);
+    alert('角色手机设置已保存');
+  }
+});
