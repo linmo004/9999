@@ -1,5 +1,5 @@
 /* ============================================================
-   rolephone.css — 角色手机 App 完整样式
+   rolephone.css — 角色手机 App 完整样式（日系温柔简约风）
    ============================================================ */
 
 /* ---- 根容器 ---- */
@@ -7,7 +7,7 @@
   position: fixed;
   inset: 0;
   z-index: 600;
-  background: #0a0f1a;
+  background: #f7f3ee;
   font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   overflow: hidden;
   display: flex;
@@ -20,7 +20,7 @@
   inset: 0;
   display: flex;
   flex-direction: column;
-  background: #0a0f1a;
+  background: #f7f3ee;
   overflow: hidden;
 }
 
@@ -28,7 +28,7 @@
    锁屏界面
    ================================================================ */
 #rp-lockscreen-view {
-  background: linear-gradient(160deg, #0a0f1a 0%, #0e1828 50%, #111e35 100%);
+  background: linear-gradient(160deg, #ede8e0 0%, #f0ebe3 50%, #f7f3ee 100%);
   align-items: center;
   justify-content: flex-start;
 }
@@ -37,8 +37,8 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 20%, rgba(74,158,255,0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(74,158,255,0.05) 0%, transparent 50%);
+    radial-gradient(circle at 20% 20%, rgba(126,200,200,0.10) 0%, transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(126,200,200,0.07) 0%, transparent 55%);
   pointer-events: none;
 }
 
@@ -56,22 +56,22 @@
   height: 56px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(74,158,255,0.4);
-  background: #141c2e;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  border: 2px solid rgba(126,200,200,0.45);
+  background: #e8e0d4;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
 }
 
 .rp-ls-name {
   font-size: 15px;
-  font-weight: 600;
-  color: #e8edf5;
-  letter-spacing: 0.04em;
+  font-weight: 500;
+  color: #2c2c2c;
+  letter-spacing: 0.06em;
 }
 
 .rp-ls-time {
   font-size: 60px;
   font-weight: 200;
-  color: #f0f4ff;
+  color: #2c2c2c;
   letter-spacing: -2px;
   line-height: 1;
   margin-top: 12px;
@@ -80,8 +80,8 @@
 
 .rp-ls-date {
   font-size: 13px;
-  color: #7a8fa8;
-  letter-spacing: 0.04em;
+  color: #9a9080;
+  letter-spacing: 0.06em;
 }
 
 /* 4位密码点 */
@@ -96,20 +96,20 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 2px solid rgba(74,158,255,0.5);
+  border: 2px solid rgba(126,200,200,0.55);
   background: transparent;
   transition: background 0.15s, border-color 0.15s, transform 0.12s;
 }
 
 .rp-pin-dot.filled {
-  background: #4a9eff;
-  border-color: #4a9eff;
+  background: #7ec8c8;
+  border-color: #7ec8c8;
   transform: scale(1.15);
 }
 
 .rp-pin-dot.error {
-  border-color: #e05c5c;
-  background: rgba(224,92,92,0.35);
+  border-color: #d97a7a;
+  background: rgba(217,122,122,0.25);
   animation: rpPinShake 0.38s ease;
 }
 
@@ -123,7 +123,7 @@
 
 .rp-pin-error {
   font-size: 12px;
-  color: #e05c5c;
+  color: #d97a7a;
   height: 18px;
   margin-top: 8px;
   letter-spacing: 0.04em;
@@ -137,7 +137,7 @@
 
 .rp-pin-forget {
   font-size: 11px;
-  color: rgba(74,158,255,0.6);
+  color: rgba(126,200,200,0.85);
   margin-top: 10px;
   cursor: pointer;
   z-index: 1;
@@ -145,7 +145,7 @@
   text-underline-offset: 2px;
 }
 
-.rp-pin-forget:active { opacity: 0.7; }
+.rp-pin-forget:active { opacity: 0.65; }
 
 /* 数字键盘 */
 .rp-pin-keyboard {
@@ -164,9 +164,9 @@
 .rp-pin-key {
   aspect-ratio: 1;
   border-radius: 50%;
-  background: rgba(74,158,255,0.08);
-  border: 1.5px solid rgba(74,158,255,0.18);
-  color: #f0f4ff;
+  background: rgba(255,255,255,0.72);
+  border: 1.5px solid rgba(126,200,200,0.22);
+  color: #2c2c2c;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -176,11 +176,12 @@
   -webkit-user-select: none;
   transition: background 0.12s, transform 0.1s;
   gap: 1px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .rp-pin-key:active,
 .rp-pin-key.pressed {
-  background: rgba(74,158,255,0.25);
+  background: rgba(126,200,200,0.20);
   transform: scale(0.93);
 }
 
@@ -188,12 +189,12 @@
   font-size: 22px;
   font-weight: 300;
   line-height: 1;
-  color: #f0f4ff;
+  color: #2c2c2c;
 }
 
 .rp-key-alpha {
   font-size: 8px;
-  color: #7a8fa8;
+  color: #b0a898;
   letter-spacing: 0.1em;
   line-height: 1;
 }
@@ -201,23 +202,24 @@
 .rp-key-empty {
   background: transparent !important;
   border-color: transparent !important;
+  box-shadow: none !important;
   pointer-events: none;
 }
 
 .rp-key-del {
   font-size: 18px;
-  color: #7a8fa8;
+  color: #9a9080;
 }
 
 .rp-key-del:active {
-  background: rgba(120,143,168,0.15) !important;
+  background: rgba(180,170,160,0.18) !important;
 }
 
 /* ================================================================
    主页
    ================================================================ */
 #rp-home-view {
-  background: #0a0f1a;
+  background: #f7f3ee;
 }
 
 /* 状态栏 */
@@ -232,7 +234,7 @@
 .rp-status-time {
   font-size: 13px;
   font-weight: 600;
-  color: #e8edf5;
+  color: #2c2c2c;
   font-variant-numeric: tabular-nums;
 }
 
@@ -241,7 +243,7 @@
   align-items: center;
   gap: 8px;
   font-size: 11px;
-  color: #7a8fa8;
+  color: #9a9080;
 }
 
 /* 主体 */
@@ -277,16 +279,17 @@
   gap: 5px;
   cursor: pointer;
   padding: 10px 4px;
-  border-radius: 16px;
-  background: #141c2e;
-  border: 1px solid rgba(74,158,255,0.1);
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   transition: background 0.15s, transform 0.12s;
   -webkit-user-select: none;
   user-select: none;
 }
 
 .rp-app-item:active {
-  background: #1c2840;
+  background: #f0ece6;
   transform: scale(0.95);
 }
 
@@ -300,20 +303,34 @@
   font-size: 20px;
 }
 
-.rp-icon-liao    { background: linear-gradient(135deg, #1a4a8a, #2d6abf); }
-.rp-icon-notes   { background: linear-gradient(135deg, #1a5c3a, #2a8a5a); }
-.rp-icon-health  { background: linear-gradient(135deg, #5a1a6a, #8a2aaf); }
-.rp-icon-forum   { background: linear-gradient(135deg, #6a3a1a, #a85a2a); }
+/* App 图标：柔和渐变，圆角正方形 */
+.rp-icon-liao    {
+  background: linear-gradient(135deg, #a8d8d8 0%, #7ec8c8 60%, #6bbaba 100%);
+  border-radius: 12px;
+}
+.rp-icon-notes   {
+  background: linear-gradient(135deg, #c8dfc8 0%, #9ecf9e 60%, #85bf85 100%);
+  border-radius: 12px;
+}
+.rp-icon-health  {
+  background: linear-gradient(135deg, #d8c8e8 0%, #c4a8d8 60%, #b090c8 100%);
+  border-radius: 12px;
+}
+.rp-icon-forum   {
+  background: linear-gradient(135deg, #f0d8b8 0%, #e8c898 60%, #d8b480 100%);
+  border-radius: 12px;
+}
 .rp-icon-placeholder {
-  background: #1c2840;
-  border: 1.5px dashed rgba(74,158,255,0.2);
+  background: #f0ece6;
+  border: 1.5px dashed rgba(126,200,200,0.35);
+  border-radius: 12px;
 }
 
 .rp-app-placeholder { opacity: 0.4; pointer-events: none; }
 
 .rp-app-name {
   font-size: 10px;
-  color: #8a9ab8;
+  color: #6a6258;
   text-align: center;
   line-height: 1.3;
 }
@@ -322,9 +339,10 @@
 .rp-widget {
   flex: 1;
   min-width: 0;
-  background: #141c2e;
-  border-radius: 16px;
-  border: 1px solid rgba(74,158,255,0.12);
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -341,27 +359,30 @@
 .rp-widget-title {
   font-size: 11px;
   font-weight: 600;
-  color: #4a9eff;
-  letter-spacing: 0.04em;
+  color: #7ec8c8;
+  letter-spacing: 0.05em;
 }
 
 .rp-widget-add-btn {
-  background: rgba(74,158,255,0.15);
+  background: rgba(126,200,200,0.15);
   border: none;
-  color: #4a9eff;
+  color: #7ec8c8;
   font-size: 16px;
   width: 22px;
   height: 22px;
-  border-radius: 6px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   line-height: 1;
   font-family: inherit;
+  transition: background 0.15s;
 }
 
-.rp-widget-add-btn:active { opacity: 0.7; }
+.rp-widget-add-btn:active {
+  background: rgba(126,200,200,0.30);
+}
 
 .rp-memo-list {
   flex: 1;
@@ -374,20 +395,20 @@
 
 .rp-memo-empty {
   font-size: 11px;
-  color: #3a4a60;
+  color: #c0b8b0;
   text-align: center;
   padding: 8px 0;
 }
 
 .rp-memo-item {
   font-size: 11px;
-  color: #c8d4e8;
+  color: #5a5248;
   line-height: 1.4;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 3px 0;
-  border-bottom: 1px solid rgba(74,158,255,0.06);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 .rp-memo-item:last-child { border-bottom: none; }
@@ -402,16 +423,16 @@
   min-height: 130px;
 }
 
-.rp-widget-photo:active { opacity: 0.85; }
+.rp-widget-photo:active { opacity: 0.82; }
 
 .rp-photo-frame {
   width: 100%;
   flex: 1;
   min-height: 90px;
-  background: #0e1828;
-  border-radius: 10px;
-  border: 3px solid #e8e0d0;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  background: #f0ece6;
+  border-radius: 12px;
+  border: 3px solid #e8e0d4;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
   overflow: hidden;
   position: relative;
   display: flex;
@@ -428,14 +449,14 @@
 
 .rp-photo-empty {
   font-size: 11px;
-  color: #3a4a60;
+  color: #c0b8b0;
   text-align: center;
   line-height: 1.6;
 }
 
 .rp-photo-caption {
   font-size: 10px;
-  color: #5a6a80;
+  color: #9a9080;
   text-align: center;
 }
 
@@ -445,10 +466,10 @@
   align-items: center;
   justify-content: space-around;
   padding: 10px 20px 22px;
-  background: rgba(14,24,40,0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-top: 1px solid rgba(74,158,255,0.1);
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(0,0,0,0.07);
   flex-shrink: 0;
 }
 
@@ -465,7 +486,7 @@
 }
 
 .rp-dock-item:active {
-  background: rgba(74,158,255,0.15);
+  background: rgba(126,200,200,0.15);
   transform: scale(0.92);
 }
 
@@ -478,14 +499,14 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(74,158,255,0.15);
-  border: 2px solid rgba(74,158,255,0.4);
-  box-shadow: 0 0 12px rgba(74,158,255,0.2);
+  background: rgba(126,200,200,0.18);
+  border: 2px solid rgba(126,200,200,0.50);
+  box-shadow: 0 0 10px rgba(126,200,200,0.20);
 }
 
 .rp-dock-back .rp-dock-icon {
   font-size: 18px;
-  color: #7a8fa8;
+  color: #9a9080;
 }
 
 /* ================================================================
@@ -496,47 +517,49 @@
   align-items: center;
   height: 50px;
   padding: 0 12px;
-  background: #0e1828;
-  border-bottom: 1px solid rgba(74,158,255,0.1);
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
   flex-shrink: 0;
   gap: 8px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
 }
 
 .rp-back-btn {
   background: none;
   border: none;
-  color: #4a9eff;
+  color: #7ec8c8;
   font-size: 20px;
   cursor: pointer;
   padding: 4px 6px;
-  border-radius: 8px;
+  border-radius: 999px;
   font-family: inherit;
   flex-shrink: 0;
   line-height: 1;
   transition: background 0.15s;
 }
 
-.rp-back-btn:active { background: rgba(74,158,255,0.15); }
+.rp-back-btn:active { background: rgba(126,200,200,0.15); }
 
 .rp-app-topbar-title {
   flex: 1;
   font-size: 15px;
-  font-weight: 600;
-  color: #e8edf5;
+  font-weight: 500;
+  color: #2c2c2c;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: 0.04em;
 }
 
 .rp-topbar-right-btn {
   background: none;
   border: none;
-  color: #4a9eff;
+  color: #7ec8c8;
   font-size: 18px;
   cursor: pointer;
   padding: 4px 6px;
-  border-radius: 8px;
+  border-radius: 999px;
   font-family: inherit;
   flex-shrink: 0;
   line-height: 1;
@@ -545,9 +568,9 @@
   text-align: center;
 }
 
-.rp-topbar-right-btn:active { background: rgba(74,158,255,0.15); }
+.rp-topbar-right-btn:active { background: rgba(126,200,200,0.15); }
 
-.rp-danger-btn { color: #e05c5c !important; }
+.rp-danger-btn { color: #d97a7a !important; }
 
 .rp-topbar-actions {
   display: flex;
@@ -561,7 +584,7 @@
 .rp-list-empty {
   text-align: center;
   font-size: 13px;
-  color: #3a4a60;
+  color: #c0b8b0;
   padding: 40px 20px;
 }
 
@@ -572,6 +595,7 @@
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  background: #f7f3ee;
 }
 
 .rp-chat-item {
@@ -579,20 +603,26 @@
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  border-bottom: 1px solid rgba(74,158,255,0.06);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
   cursor: pointer;
+  background: #ffffff;
+  margin: 0 12px 6px;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  
+box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   transition: background 0.15s;
 }
 
-.rp-chat-item:active { background: rgba(74,158,255,0.06); }
+.rp-chat-item:active { background: #f0ece6; }
 
 .rp-chat-item-avatar {
   width: 42px;
   height: 42px;
   border-radius: 50%;
   object-fit: cover;
-  background: #141c2e;
-  border: 1.5px solid rgba(74,158,255,0.2);
+  background: #e8e0d4;
+  border: 1.5px solid rgba(126,200,200,0.30);
   flex-shrink: 0;
 }
 
@@ -604,7 +634,7 @@
 .rp-chat-item-name {
   font-size: 13px;
   font-weight: 600;
-  color: #d8e4f8;
+  color: #2c2c2c;
   margin-bottom: 3px;
   white-space: nowrap;
   overflow: hidden;
@@ -613,7 +643,7 @@
 
 .rp-chat-item-preview {
   font-size: 11px;
-  color: #5a6a80;
+  color: #9a9080;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -621,7 +651,7 @@
 
 .rp-chat-item-time {
   font-size: 10px;
-  color: #3a4a60;
+  color: #b0a898;
   flex-shrink: 0;
 }
 
@@ -641,8 +671,8 @@
   height: 28px;
   border-radius: 50%;
   object-fit: cover;
-  background: #141c2e;
-  border: 1.5px solid rgba(74,158,255,0.25);
+  background: #e8e0d4;
+  border: 1.5px solid rgba(126,200,200,0.35);
   flex-shrink: 0;
 }
 
@@ -654,6 +684,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  background: #f7f3ee;
 }
 
 .rp-msg-row {
@@ -671,28 +702,30 @@
   height: 28px;
   border-radius: 50%;
   object-fit: cover;
-  background: #141c2e;
-  border: 1.5px solid rgba(74,158,255,0.2);
+  background: #e8e0d4;
+  border: 1.5px solid rgba(126,200,200,0.25);
   flex-shrink: 0;
 }
 
 .rp-msg-bubble {
   max-width: 68%;
-  padding: 8px 12px;
-  border-radius: 4px 14px 14px 14px;
+  padding: 9px 13px;
+  border-radius: 4px 16px 16px 16px;
   font-size: 13px;
-  line-height: 1.5;
-  color: #d8e4f8;
-  background: #141c2e;
-  border: 1px solid rgba(74,158,255,0.12);
+  line-height: 1.6;
+  color: #2c2c2c;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.07);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   word-break: break-word;
 }
 
 .rp-msg-row.rp-user-row .rp-msg-bubble {
-  border-radius: 14px 4px 14px 14px;
-  background: #1a3a6e;
-  border-color: rgba(74,158,255,0.25);
-  color: #e8f0ff;
+  border-radius: 16px 4px 16px 16px;
+  background: #7ec8c8;
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(126,200,200,0.30);
 }
 
 /* ================================================================
@@ -700,8 +733,8 @@
    ================================================================ */
 .rp-tabs {
   display: flex;
-  background: #0e1828;
-  border-bottom: 1px solid rgba(74,158,255,0.1);
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
   flex-shrink: 0;
 }
 
@@ -713,15 +746,15 @@
   border-bottom: 2px solid transparent;
   font-size: 13px;
   font-weight: 500;
-  color: #5a6a80;
+  color: #b0a898;
   cursor: pointer;
   font-family: inherit;
   transition: color 0.15s, border-color 0.15s;
 }
 
 .rp-tab-btn.active {
-  color: #4a9eff;
-  border-bottom-color: #4a9eff;
+  color: #7ec8c8;
+  border-bottom-color: #7ec8c8;
   font-weight: 600;
 }
 
@@ -730,6 +763,7 @@
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  background: #f7f3ee;
 }
 
 .rp-tab-panel.active { display: flex; flex-direction: column; }
@@ -746,21 +780,22 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  background: #141c2e;
-  border-radius: 12px;
+  background: #ffffff;
+  border-radius: 16px;
   padding: 11px 13px;
-  border: 1px solid rgba(74,158,255,0.08);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   cursor: pointer;
   transition: background 0.15s;
 }
 
-.rp-todo-item:active { background: #1c2840; }
+.rp-todo-item:active { background: #f0ece6; }
 
 .rp-todo-check {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 2px solid rgba(74,158,255,0.4);
+  border: 2px solid rgba(126,200,200,0.50);
   background: transparent;
   flex-shrink: 0;
   margin-top: 1px;
@@ -771,8 +806,8 @@
 }
 
 .rp-todo-check.checked {
-  background: #4a9eff;
-  border-color: #4a9eff;
+  background: #7ec8c8;
+  border-color: #7ec8c8;
 }
 
 .rp-todo-check.checked::after {
@@ -786,33 +821,34 @@
 
 .rp-todo-text {
   font-size: 13px;
-  color: #d8e4f8;
-  line-height: 1.4;
+  color: #2c2c2c;
+  line-height: 1.5;
   word-break: break-word;
 }
 
 .rp-todo-text.done {
   text-decoration: line-through;
-  color: #3a4a60;
+  color: #c0b8b0;
 }
 
 .rp-todo-time {
   font-size: 10px;
-  color: #3a4a60;
+  color: #b0a898;
   margin-top: 3px;
 }
 
 /* 日记/随记条目 */
 .rp-diary-item {
-  background: #141c2e;
-  border-radius: 12px;
-  padding: 12px 14px;
-  border: 1px solid rgba(74,158,255,0.08);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 13px 15px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   cursor: pointer;
   transition: background 0.15s;
 }
 
-.rp-diary-item:active { background: #1c2840; }
+.rp-diary-item:active { background: #f0ece6; }
 
 .rp-diary-item-header {
   display: flex;
@@ -824,7 +860,8 @@
 .rp-diary-item-date {
   font-size: 11px;
   font-weight: 600;
-  color: #4a9eff;
+  color: #7ec8c8;
+  letter-spacing: 0.04em;
 }
 
 .rp-diary-item-weather {
@@ -833,8 +870,8 @@
 
 .rp-diary-item-preview {
   font-size: 12px;
-  color: #7a8fa8;
-  line-height: 1.5;
+  color: #8a8078;
+  line-height: 1.6;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -851,22 +888,25 @@
   justify-content: center;
   gap: 8px;
   font-size: 12px;
-  color: #7a8fa8;
+  color: #9a9080;
 }
 
 .rp-diary-detail-body {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 20px 18px;
+  padding: 24px 20px;
+  background: #f7f3ee;
 }
 
 .rp-diary-detail-content {
   font-size: 15px;
-  color: #d8e4f8;
-  line-height: 1.8;
+  color: #2c2c2c;
+  line-height: 1.9;
   white-space: pre-wrap;
   word-break: break-word;
+  font-weight: 300;
+  letter-spacing: 0.02em;
 }
 
 /* ================================================================
@@ -877,28 +917,30 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 16px 14px;
+  background: #f7f3ee;
 }
 
 .rp-health-summary {
-  background: #141c2e;
-  border-radius: 16px;
+  background: #ffffff;
+  border-radius: 20px;
   padding: 20px;
   text-align: center;
   margin-bottom: 16px;
-  border: 1px solid rgba(74,158,255,0.12);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
 .rp-health-label {
   font-size: 12px;
-  color: #5a6a80;
+  color: #9a9080;
   margin-bottom: 8px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
 .rp-health-total {
   font-size: 36px;
   font-weight: 200;
-  color: #4a9eff;
+  color: #7ec8c8;
   letter-spacing: -1px;
   font-variant-numeric: tabular-nums;
 }
@@ -910,10 +952,11 @@
 }
 
 .rp-health-item {
-  background: #141c2e;
-  border-radius: 12px;
+  background: #ffffff;
+  border-radius: 16px;
   padding: 12px 14px;
-  border: 1px solid rgba(74,158,255,0.08);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 
 .rp-health-item-header {
@@ -937,26 +980,26 @@
 
 .rp-health-item-name {
   font-size: 13px;
-  color: #d8e4f8;
+  color: #2c2c2c;
   font-weight: 500;
 }
 
 .rp-health-item-time {
   font-size: 12px;
-  color: #4a9eff;
+  color: #7ec8c8;
   font-variant-numeric: tabular-nums;
 }
 
 .rp-health-bar-wrap {
   height: 4px;
-  background: rgba(74,158,255,0.12);
+  background: rgba(126,200,200,0.15);
   border-radius: 999px;
   overflow: hidden;
 }
 
 .rp-health-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #4a9eff, #7ab8ff);
+  background: linear-gradient(90deg, #7ec8c8, #a8d8d8);
   border-radius: 999px;
   transition: width 0.5s ease;
 }
@@ -972,18 +1015,20 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  background: #f7f3ee;
 }
 
 .rp-forum-item {
-  background: #141c2e;
-  border-radius: 12px;
-  padding: 12px 14px;
-  border: 1px solid rgba(74,158,255,0.08);
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 14px 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   cursor: pointer;
   transition: background 0.15s;
 }
 
-.rp-forum-item:active { background: #1c2840; }
+.rp-forum-item:active { background: #f0ece6; }
 
 .rp-forum-item-header {
   display: flex;
@@ -996,8 +1041,8 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: #1c2840;
-  border: 1.5px solid rgba(74,158,255,0.2);
+  background: #e8e0d4;
+  border: 1.5px solid rgba(126,200,200,0.30);
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -1007,15 +1052,15 @@
 
 .rp-forum-item-name {
   font-size: 11px;
-  color: #5a6a80;
+  color: #9a9080;
 }
 
 .rp-forum-item-title {
   font-size: 13px;
-  color: #d8e4f8;
+  color: #2c2c2c;
   font-weight: 500;
-  margin-bottom: 6px;
-  line-height: 1.4;
+  margin-bottom: 8px;
+  line-height: 1.5;
 }
 
 .rp-forum-item-footer {
@@ -1026,12 +1071,12 @@
 
 .rp-forum-item-replies {
   font-size: 11px;
-  color: #5a6a80;
+  color: #7ec8c8;
 }
 
 .rp-forum-item-time {
   font-size: 10px;
-  color: #3a4a60;
+  color: #b0a898;
 }
 
 /* ================================================================
@@ -1044,28 +1089,31 @@
   padding: 14px 14px 80px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
+  background: #f7f3ee;
 }
 
 .rp-forum-post-content {
-  background: #141c2e;
-  border-radius: 14px;
-  padding: 16px;
-  border: 1px solid rgba(74,158,255,0.12);
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 18px 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
 .rp-forum-post-title {
   font-size: 15px;
-    font-weight: 600;
-  color: #e8edf5;
+  font-weight: 600;
+  color: #2c2c2c;
   margin-bottom: 10px;
-  line-height: 1.4;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
 }
 
 .rp-forum-post-body {
   font-size: 13px;
-  color: #c8d4e8;
-  line-height: 1.7;
+  color: #5a5248;
+  line-height: 1.8;
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -1073,8 +1121,8 @@
 .rp-forum-replies-title {
   font-size: 12px;
   font-weight: 600;
-  color: #4a9eff;
-  letter-spacing: 0.04em;
+  color: #7ec8c8;
+  letter-spacing: 0.05em;
   padding: 0 2px;
 }
 
@@ -1085,10 +1133,11 @@
 }
 
 .rp-forum-reply-item {
-  background: #141c2e;
-  border-radius: 12px;
-  padding: 10px 12px;
-  border: 1px solid rgba(74,158,255,0.08);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 11px 13px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .rp-forum-reply-header {
@@ -1102,32 +1151,32 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #1c2840;
-  border: 1.5px solid rgba(74,158,255,0.18);
+  background: #e8e0d4;
+  border: 1.5px solid rgba(126,200,200,0.25);
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 11px;
-  color: #4a9eff;
+  color: #7ec8c8;
 }
 
 .rp-forum-reply-name {
   font-size: 11px;
-  color: #4a9eff;
+  color: #7ec8c8;
   font-weight: 500;
 }
 
 .rp-forum-reply-time {
   font-size: 10px;
-  color: #3a4a60;
+  color: #b0a898;
   margin-left: auto;
 }
 
 .rp-forum-reply-content {
   font-size: 13px;
-  color: #c8d4e8;
-  line-height: 1.5;
+  color: #5a5248;
+  line-height: 1.6;
   word-break: break-word;
 }
 
@@ -1140,26 +1189,33 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px 20px;
-  background: #0e1828;
-  border-top: 1px solid rgba(74,158,255,0.1);
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(0,0,0,0.07);
 }
 
 .rp-forum-reply-input {
   flex: 1;
-  background: #141c2e;
-  border: 1px solid rgba(74,158,255,0.2);
+  background: #f7f3ee;
+  border: 1px solid rgba(126,200,200,0.35);
   border-radius: 999px;
   padding: 8px 14px;
   font-size: 13px;
-  color: #d8e4f8;
+  color: #2c2c2c;
   outline: none;
   font-family: inherit;
+  transition: border-color 0.2s;
 }
 
-.rp-forum-reply-input::placeholder { color: #3a4a60; }
+.rp-forum-reply-input:focus {
+  border-color: rgba(126,200,200,0.65);
+}
+
+.rp-forum-reply-input::placeholder { color: #c0b8b0; }
 
 .rp-forum-reply-send {
-  background: #4a9eff;
+  background: #7ec8c8;
   border: none;
   border-radius: 999px;
   padding: 8px 16px;
@@ -1170,6 +1226,7 @@
   font-family: inherit;
   flex-shrink: 0;
   transition: opacity 0.15s;
+  box-shadow: 0 2px 8px rgba(126,200,200,0.30);
 }
 
 .rp-forum-reply-send:active { opacity: 0.75; }
@@ -1180,32 +1237,32 @@
 .rp-loading-mask {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.65);
+  background: rgba(247,243,238,0.72);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .rp-loading-box {
-  background: #141c2e;
-  border-radius: 16px;
+  background: #ffffff;
+  border-radius: 20px;
   padding: 24px 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  border: 1px solid rgba(74,158,255,0.18);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  border: 1px solid rgba(0,0,0,0.07);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
 .rp-loading-spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(74,158,255,0.2);
-  border-top-color: #4a9eff;
+  border: 3px solid rgba(126,200,200,0.20);
+  border-top-color: #7ec8c8;
   border-radius: 50%;
   animation: rpSpin 0.8s linear infinite;
 }
@@ -1217,7 +1274,7 @@
 
 .rp-loading-text {
   font-size: 13px;
-  color: #7a8fa8;
+  color: #9a9080;
   letter-spacing: 0.04em;
 }
 
@@ -1227,43 +1284,44 @@
 .rp-inner-modal-mask {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.60);
+  background: rgba(44,44,44,0.18);
   display: flex;
   align-items: flex-end;
   justify-content: center;
   z-index: 10;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .rp-inner-modal-box {
-  background: #141c2e;
+  background: #ffffff;
   border-radius: 20px 20px 0 0;
   width: 100%;
   padding: 20px 16px 32px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  border-top: 1px solid rgba(74,158,255,0.18);
-  box-shadow: 0 -8px 32px rgba(0,0,0,0.4);
+  border-top: 1px solid rgba(0,0,0,0.07);
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.10);
 }
 
 .rp-inner-modal-title {
   font-size: 15px;
-  font-weight: 600;
-  color: #e8edf5;
+  font-weight: 500;
+  color: #2c2c2c;
   text-align: center;
   margin-bottom: 4px;
+  letter-spacing: 0.04em;
 }
 
 .rp-inner-modal-input {
   width: 100%;
-  background: #0e1828;
-  border: 1px solid rgba(74,158,255,0.2);
-  border-radius: 12px;
+  background: #f7f3ee;
+  border: 1px solid rgba(126,200,200,0.30);
+  border-radius: 14px;
   padding: 10px 13px;
   font-size: 13px;
-  color: #d8e4f8;
+  color: #2c2c2c;
   outline: none;
   font-family: inherit;
   box-sizing: border-box;
@@ -1271,10 +1329,10 @@
 }
 
 .rp-inner-modal-input:focus {
-  border-color: rgba(74,158,255,0.5);
+  border-color: rgba(126,200,200,0.60);
 }
 
-.rp-inner-modal-input::placeholder { color: #3a4a60; }
+.rp-inner-modal-input::placeholder { color: #c0b8b0; }
 
 .rp-inner-modal-btns {
   display: flex;
@@ -1284,7 +1342,7 @@
 
 .rp-inner-btn-primary {
   flex: 1;
-  background: #4a9eff;
+  background: #7ec8c8;
   border: none;
   border-radius: 999px;
   padding: 11px 0;
@@ -1294,24 +1352,25 @@
   cursor: pointer;
   font-family: inherit;
   transition: opacity 0.15s;
+  box-shadow: 0 2px 10px rgba(126,200,200,0.28);
 }
 
 .rp-inner-btn-primary:active { opacity: 0.78; }
 
 .rp-inner-btn-ghost {
   flex: 1;
-  background: rgba(74,158,255,0.08);
-  border: 1px solid rgba(74,158,255,0.2);
+  background: #ffffff;
+  border: 1.5px solid #7ec8c8;
   border-radius: 999px;
   padding: 10px 0;
   font-size: 14px;
-  color: #7a8fa8;
+  color: #7ec8c8;
   cursor: pointer;
   font-family: inherit;
   transition: background 0.15s;
 }
 
-.rp-inner-btn-ghost:active { background: rgba(74,158,255,0.15); }
+.rp-inner-btn-ghost:active { background: rgba(126,200,200,0.10); }
 
 /* ================================================================
    趣问帖子详情 — 相对定位（确保回复栏绝对定位正确）
