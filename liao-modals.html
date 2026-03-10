@@ -1,0 +1,148 @@
+<!-- ===================== 新建角色弹窗 ===================== -->
+<div id="liao-new-role-modal">
+  <div class="liao-modal-box">
+    <div class="liao-modal-title">新建角色</div>
+    <div class="liao-avatar-preview-row">
+      <img class="liao-avatar-preview" id="liao-role-avatar-preview"
+        src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=new" alt="">
+      <div class="liao-avatar-upload-btns">
+        <input class="liao-modal-input" id="liao-role-avatar-url"
+          placeholder="头像图片 URL…" style="padding:7px 10px;">
+        <button class="liao-avatar-btn" id="liao-role-avatar-local-btn">本地上传</button>
+        <input type="file" id="liao-role-avatar-file" accept="image/*" style="display:none;">
+      </div>
+    </div>
+    <label class="liao-modal-label">角色备注名（昵称）</label>
+    <input class="liao-modal-input" id="liao-role-nickname" placeholder="如：小月">
+    <label class="liao-modal-label">角色真实名字</label>
+    <input class="liao-modal-input" id="liao-role-realname" placeholder="如：月明">
+    <label class="liao-modal-label">角色设定</label>
+    <textarea class="liao-modal-textarea" id="liao-role-setting"
+      placeholder="在这里描述角色的性格、背景、说话方式等…"></textarea>
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-role-confirm-btn">确定</button>
+      <button class="liao-btn-ghost"   id="liao-role-cancel-btn">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 新建群聊弹窗 ===================== -->
+<div id="liao-new-group-modal">
+  <div class="liao-modal-box">
+    <div class="liao-modal-title">新建群聊</div>
+    <label class="liao-modal-label">群聊名称</label>
+    <input class="liao-modal-input" id="liao-group-name" placeholder="输入群聊名称…">
+    <label class="liao-modal-label" style="margin-top:10px;">选择角色（功能建设中）</label>
+    <div style="font-size:12px;color:var(--text-light);padding:8px 0;">
+      多角色群聊功能即将上线，敬请期待
+    </div>
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-group-confirm">确定</button>
+      <button class="liao-btn-ghost"   id="liao-group-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 文件导入角色弹窗 ===================== -->
+<div id="liao-import-modal">
+  <div class="liao-modal-box">
+    <div class="liao-modal-title">导入角色</div>
+    <div style="font-size:12px;color:var(--text-light);line-height:1.7;margin-bottom:14px;">
+      支持 JSON 格式，可包含单个角色对象或角色数组。<br>
+      字段：<code>nickname</code>、<code>realname</code>、<code>avatar</code>、<code>setting</code>
+    </div>
+    <button class="liao-btn-primary" id="liao-import-file-btn" style="width:100%;margin-bottom:10px;">
+      选择 JSON 文件
+    </button>
+    <input type="file" id="liao-import-file" accept=".json" style="display:none;">
+    <div class="liao-modal-btns">
+      <button class="liao-btn-ghost" id="liao-import-cancel" style="flex:1;">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 发随言弹窗 ===================== -->
+<div id="liao-post-modal">
+  <div class="liao-modal-box">
+    <div class="liao-modal-title">发随言</div>
+    <textarea class="liao-modal-textarea" id="liao-post-content"
+      placeholder="此刻有什么想说的…" style="min-height:100px;"></textarea>
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-post-confirm">发布</button>
+      <button class="liao-btn-ghost"   id="liao-post-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 评论弹窗 ===================== -->
+<div id="liao-comment-modal">
+  <div class="liao-modal-box">
+    <div class="liao-modal-title">评论</div>
+    <div class="liao-comment-list" id="liao-comment-list"></div>
+    <input class="liao-modal-input" id="liao-comment-input"
+      placeholder="写下你的评论…" style="margin-top:6px;">
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-comment-confirm">发送</button>
+      <button class="liao-btn-ghost"   id="liao-comment-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 随言背景图弹窗 ===================== -->
+<div id="liao-suiyan-bg-modal" style="
+  position:fixed;inset:0;z-index:520;
+  background:rgba(26,31,46,0.38);
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  display:none;align-items:flex-end;justify-content:center;">
+  <div class="liao-modal-box">
+    <div class="liao-modal-title">更换随言背景图</div>
+    <label class="liao-modal-label">图片 URL</label>
+    <input class="liao-modal-input" id="liao-suiyan-bg-url" placeholder="https://…">
+    <div style="margin:10px 0 4px;font-size:11.5px;color:var(--text-mid);">或</div>
+    <button class="liao-btn-ghost" id="liao-suiyan-bg-local"
+      style="width:100%;margin-bottom:8px;">本地上传</button>
+    <input type="file" id="liao-suiyan-bg-file" accept="image/*" style="display:none;">
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-suiyan-bg-confirm">确认</button>
+      <button class="liao-btn-ghost"   id="liao-suiyan-bg-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 随言头像弹窗 ===================== -->
+<div id="liao-suiyan-avatar-modal" style="
+  position:fixed;inset:0;z-index:520;
+  background:rgba(26,31,46,0.38);
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  display:none;align-items:flex-end;justify-content:center;">
+  <div class="liao-modal-box">
+    <div class="liao-modal-title">更换我的头像</div>
+    <label class="liao-modal-label">图片 URL</label>
+    <input class="liao-modal-input" id="liao-suiyan-avatar-url-input" placeholder="https://…">
+    <div style="margin:10px 0 4px;font-size:11.5px;color:var(--text-mid);">或</div>
+    <button class="liao-btn-ghost" id="liao-suiyan-avatar-local"
+      style="width:100%;margin-bottom:8px;">本地上传</button>
+    <input type="file" id="liao-suiyan-avatar-file" accept="image/*" style="display:none;">
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-suiyan-avatar-confirm">确认</button>
+      <button class="liao-btn-ghost"   id="liao-suiyan-avatar-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 随言用户名弹窗 ===================== -->
+<div id="liao-suiyan-name-modal" style="
+  position:fixed;inset:0;z-index:520;
+  background:rgba(26,31,46,0.38);
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  display:none;align-items:flex-end;justify-content:center;">
+  <div class="liao-modal-box">
+    <div class="liao-modal-title">修改用户名</div>
+    <label class="liao-modal-label">用户名</label>
+    <input class="liao-modal-input" id="liao-suiyan-name-input" placeholder="输入新用户名…">
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-suiyan-name-confirm">确认</button>
+      <button class="liao-btn-ghost"   id="liao-suiyan-name-cancel">取消</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,506 @@
+/* ============================================================
+   liao-special-2.css — 表情包面板 / 管理 / 联想推荐栏 /
+                        开关控件 / 人设库卡片 / 收藏夹卡片
+   ============================================================ */
+
+/* ================================================================
+   表情包面板
+   ================================================================ */
+.emoji-panel {
+  height: 28vh;
+  min-height: 180px;
+  max-height: 260px;
+  background: #fff;
+  border-top: 1px solid rgba(153,200,237,0.18);
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+}
+
+.emoji-panel-sidebar {
+  width: 60px;
+  border-right: 1px solid rgba(153,200,237,0.14);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 0;
+  gap: 2px;
+  flex-shrink: 0;
+  scrollbar-width: none;
+}
+
+.emoji-panel-sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.emoji-sidebar-btn {
+  background: none;
+  border: none;
+  font-size: 10px;
+  color: var(--text-light, #9aafc4);
+  cursor: pointer;
+  padding: 7px 4px;
+  border-radius: 8px;
+  font-family: inherit;
+  -webkit-appearance: none;
+  transition: background .13s, color .13s;
+  text-align: center;
+  line-height: 1.3;
+  word-break: break-all;
+  margin: 0 3px;
+}
+
+.emoji-sidebar-btn.active {
+  background: rgba(153,200,237,0.18);
+  color: var(--text-dark, #2c3448);
+  font-weight: 600;
+}
+
+.emoji-sidebar-btn:active {
+  background: rgba(153,200,237,0.14);
+}
+
+.emoji-panel-grid {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 8px;
+  align-content: start;
+  scrollbar-width: none;
+}
+
+.emoji-panel-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.emoji-grid-item {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: border-color .13s, transform .13s;
+  display: block;
+}
+
+.emoji-grid-item:active {
+  transform: scale(0.92);
+  border-color: var(--primary, #99C8ED);
+}
+
+/* ---- 表情包管理网格 ---- */
+.emoji-manage-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.emoji-manage-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color .13s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 4px;
+  background: var(--bg2, #F8F9FA);
+}
+
+.emoji-manage-item.selected { border-color: var(--primary, #99C8ED); }
+
+.emoji-manage-item img {
+  width: 100%;
+  height: 60px;
+  object-fit: cover;
+  display: block;
+}
+
+.emoji-manage-name {
+  font-size: 10px;
+  color: var(--text-light, #9aafc4);
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 3px 0 0;
+  padding: 0 4px;
+  line-height: 1.3;
+}
+
+.emoji-manage-item .emoji-manage-check {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary, #99C8ED);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.emoji-manage-item.selected .emoji-manage-check { display: flex; }
+
+/* ---- 分类标签 ---- */
+.emoji-cat-tag {
+  background: var(--bg2, #F8F9FA);
+  border: 1.5px solid rgba(153,200,237,0.28);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 11.5px;
+  color: var(--text-mid, #5a6a80);
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  transition: background .13s, color .13s;
+}
+
+.emoji-cat-tag.active {
+  background: var(--primary, #99C8ED);
+  color: #fff;
+  border-color: var(--primary, #99C8ED);
+}
+
+/* ================================================================
+   表情包输入联想推荐栏
+   ================================================================ */
+.emoji-suggest-bar {
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.97);
+  border-top: 1px solid rgba(153,200,237,0.18);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex-shrink: 0;
+  max-height: 72px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.emoji-suggest-bar::-webkit-scrollbar { display: none; }
+.emoji-suggest-bar.visible { display: flex; }
+
+.emoji-suggest-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  padding: 2px 4px;
+  border-radius: 8px;
+  transition: background .13s;
+}
+
+.emoji-suggest-item:active { background: rgba(153,200,237,0.18); }
+
+.emoji-suggest-item img {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
+}
+
+.emoji-suggest-item-name {
+  font-size: 9.5px;
+  color: var(--text-light, #9aafc4);
+  white-space: nowrap;
+  max-width: 48px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ---- 开关控件 ---- */
+.cs-row-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.cs-row-label {
+  font-size: 13px;
+  color: var(--text-dark, #2c3448);
+}
+
+.cs-toggle {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.cs-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.cs-toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: rgba(153,200,237,0.28);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .22s;
+}
+
+.cs-toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  top: 3px;
+  left: 3px;
+  transition: transform .22s;
+  box-shadow: 0 1px 4px rgba(100,140,190,0.18);
+}
+
+.cs-toggle input:checked + .cs-toggle-slider {
+  background: var(--primary, #99C8ED);
+}
+
+.cs-toggle input:checked + .cs-toggle-slider::before {
+  transform: translateX(18px);
+}
+
+/* ---- 人设库卡片 ---- */
+.persona-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1.5px solid rgba(153,200,237,0.18);
+  box-shadow: 0 2px 10px rgba(100,140,190,0.07);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.persona-card:active { background: rgba(153,200,237,0.08); }
+
+.persona-card-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(153,200,237,0.28);
+  background: var(--light-blue, #B3D8F4);
+  flex-shrink: 0;
+}
+
+.persona-card-info { flex: 1; min-width: 0; }
+
+.persona-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark, #2c3448);
+  margin-bottom: 3px;
+}
+
+.persona-card-setting {
+  font-size: 11.5px;
+  color: var(--text-light, #9aafc4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.persona-card-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.persona-card-btn {
+  background: var(--bg2, #F8F9FA);
+  border: 1.5px solid rgba(153,200,237,0.28);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  color: var(--text-mid, #5a6a80);
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  transition: background .13s;
+}
+
+.persona-card-btn:active { background: rgba(153,200,237,0.18); }
+.persona-card-btn.danger { color: #e07a7a; border-color: rgba(224,122,122,0.28); }
+
+/* ---- 收藏夹卡片 ---- */
+.favorite-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1.5px solid rgba(153,200,237,0.18);
+  box-shadow: 0 2px 10px rgba(100,140,190,0.07);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.favorite-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.favorite-card-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(153,200,237,0.28);
+  background: var(--light-blue, #B3D8F4);
+  flex-shrink: 0;
+}
+
+.favorite-card-meta { flex: 1; min-width: 0; }
+
+.favorite-card-role {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--primary, #99C8ED);
+}
+
+.favorite-card-time {
+  font-size: 10px;
+  color: var(--text-light, #9aafc4);
+}
+
+.favorite-card-content {
+  font-size: 13px;
+  color: var(--text-dark, #2c3448);
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+.favorite-card-del {
+  background: none;
+  border: none;
+  font-size: 11.5px;
+  color: #e07a7a;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  -webkit-appearance: none;
+  text-align: right;
+  align-self: flex-end;
+}
+
+/* ---- 收藏分组标题 ---- */
+.favorites-group-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-light, #9aafc4);
+  letter-spacing: .06em;
+  padding-left: 4px;
+  margin-top: 18px;
+  margin-bottom: 8px;
+}
+
+.favorites-group-title:first-child { margin-top: 4px; }
+
+/* ---- 角色库进入聊天设置入口 ---- */
+.role-card-settings-btn {
+  font-size: 10px;
+  color: var(--primary, #99C8ED);
+  background: rgba(153,200,237,0.12);
+  border: none;
+  border-radius: 8px;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  margin-top: 2px;
+  transition: background .13s;
+}
+
+.role-card-settings-btn:active { background: rgba(153,200,237,0.26); }
+
+/* ---- 暗色模式适配 ---- */
+body.dark-mode .emoji-panel {
+  background: #1e2028;
+  border-top-color: rgba(80,120,160,0.18);
+}
+
+body.dark-mode .emoji-panel-sidebar {
+  border-right-color: rgba(80,120,160,0.14);
+}
+
+body.dark-mode .emoji-sidebar-btn { color: #5a6a80; }
+body.dark-mode .emoji-sidebar-btn.active {
+  background: rgba(80,120,160,0.22);
+  color: #e8eaf0;
+}
+
+body.dark-mode .emoji-manage-name { color: #5a6a80; }
+body.dark-mode .emoji-manage-item { background: #22242c; }
+
+body.dark-mode .emoji-cat-tag {
+  background: #22242c;
+  border-color: rgba(80,120,160,0.28);
+  color: #9aa4b8;
+}
+
+body.dark-mode .emoji-cat-tag.active {
+  background: var(--primary, #8bbfdf);
+  color: #fff;
+  border-color: var(--primary, #8bbfdf);
+}
+
+body.dark-mode .emoji-suggest-bar {
+  background: rgba(28,30,40,0.97);
+  border-top-color: rgba(80,120,160,0.18);
+}
+
+body.dark-mode .emoji-suggest-item:active { background: rgba(80,120,160,0.22); }
+body.dark-mode .emoji-suggest-item-name { color: #5a6a80; }
+
+body.dark-mode .cs-toggle-slider { background: rgba(80,120,160,0.28); }
+body.dark-mode .cs-toggle input:checked + .cs-toggle-slider {
+  background: var(--primary, #8bbfdf);
+}
+
+body.dark-mode .persona-card {
+  background: #22242c;
+  border-color: rgba(80,120,160,0.15);
+}
+body.dark-mode .persona-card:active { background: #2a2e3e; }
+body.dark-mode .persona-card-name { color: #e8eaf0; }
+body.dark-mode .persona-card-setting { color: #5a6a80; }
+
+body.dark-mode .favorite-card {
+  background: #22242c;
+  border-color: rgba(80,120,160,0.15);
+}
+body.dark-mode .favorite-card-content { color: #e8eaf0; }

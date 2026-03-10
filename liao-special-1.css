@@ -1,0 +1,562 @@
+/* ============================================================
+   liao-special-1.css — 特殊功能状态栏 / 气泡弹窗 / 时间戳 /
+                        消息操作菜单 / 语音 / 转账 / 图片 /
+                        引用条 / 撤回 / 气泡翻转
+   ============================================================ */
+
+/* ---- 特殊功能状态栏 ---- */
+.chat-special-bar {
+  background: rgba(255,255,255,0.96);
+  border-top: 1px solid rgba(153,200,237,0.18);
+  padding: 0 4px 0;
+  flex-shrink: 0;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.chat-special-bar-inner {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 3px 4px 4px;
+}
+
+.chat-special-bar-inner::-webkit-scrollbar { display: none; }
+
+.csb-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 48px;
+  height: 36px;
+  background: none;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0 6px;
+  transition: background .15s;
+  flex-shrink: 0;
+  -webkit-appearance: none;
+}
+
+.csb-btn:active { background: rgba(153,200,237,0.18); }
+.csb-btn.active { background: rgba(153,200,237,0.18); }
+
+.csb-icon {
+  font-size: 15px;
+  line-height: 1;
+  color: var(--text-mid, #5a6a80);
+}
+
+.csb-label {
+  font-size: 9.5px;
+  color: var(--text-light, #9aafc4);
+  white-space: nowrap;
+}
+
+/* ---- 引用预览条 ---- */
+.chat-quote-bar {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: rgba(153,200,237,0.10);
+  border-left: 3px solid var(--primary, #99C8ED);
+  margin: 0 12px 2px;
+  border-radius: 0 8px 8px 0;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.chat-quote-bar-inner {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--text-mid, #5a6a80);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-quote-bar-label {
+  font-weight: 600;
+  color: var(--primary, #99C8ED);
+  margin-right: 4px;
+}
+
+.chat-quote-bar-text {
+  color: var(--text-mid, #5a6a80);
+}
+
+.chat-quote-bar-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text-light, #9aafc4);
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  flex-shrink: 0;
+  -webkit-appearance: none;
+}
+
+/* ---- 气泡小弹窗通用 ---- */
+.liao-bubble-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  background: rgba(26,31,46,0.38);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.liao-bubble-modal-box {
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 22px 18px 40px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---- 时间戳 ---- */
+.chat-msg-timestamp {
+  font-size: 9.5px;
+  color: var(--text-light, #9aafc4);
+  opacity: 0.45;
+  white-space: nowrap;
+  align-self: flex-end;
+  margin-bottom: 2px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  line-height: 1.2;
+  flex-shrink: 0;
+  transition: opacity .15s;
+}
+
+.chat-msg-timestamp:hover { opacity: 0.75; }
+.chat-msg-row.user-row .chat-msg-timestamp { order: -1; }
+
+body.timestamp-hidden .chat-msg-timestamp {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+/* ---- 消息操作菜单 ---- */
+#liao-msg-action-menu {
+  position: fixed;
+  z-index: 610;
+  inset: 0;
+  background: transparent;
+}
+
+.msg-action-menu-box {
+  position: absolute;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(100,140,190,0.18);
+  border: 1.5px solid rgba(153,200,237,0.22);
+  padding: 4px 0;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  z-index: 611;
+  overflow: hidden;
+}
+
+.msg-action-item {
+  padding: 10px 18px;
+  font-size: 13px;
+  color: var(--text-dark, #2c3448);
+  cursor: pointer;
+  transition: background .13s;
+  white-space: nowrap;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: inherit;
+  -webkit-appearance: none;
+}
+
+.msg-action-item:active { background: rgba(153,200,237,0.14); }
+.msg-action-item.danger { color: #e07a7a; }
+
+/* ---- 语音气泡 ---- */
+.voice-bubble {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  min-width: 80px;
+}
+
+.voice-bubble-icon {
+  font-size: 16px;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.voice-bubble-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+
+.voice-bubble-wave {
+  width: 3px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+.voice-bubble-duration {
+  font-size: 11px;
+  color: inherit;
+  opacity: 0.8;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+/* ---- 转账内联卡片 ---- */
+.transfer-inline-card {
+  border-radius: 12px;
+  padding: 12px 16px;
+  min-width: 160px;
+  max-width: 220px;
+  border: 1.5px solid rgba(153,200,237,0.28);
+  background: rgba(255,255,255,0.9);
+}
+
+.transfer-inline-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.transfer-bubble-icon {
+  font-size: 22px;
+  color: var(--primary, #99C8ED);
+  flex-shrink: 0;
+}
+
+.transfer-bubble-amount {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-dark, #2c3448);
+}
+
+.transfer-bubble-note {
+  font-size: 11px;
+  color: var(--text-light, #9aafc4);
+  margin-bottom: 8px;
+  word-break: break-all;
+}
+
+.transfer-inline-status {
+  font-size: 11px;
+  color: var(--primary, #99C8ED);
+  border-top: 1px solid rgba(153,200,237,0.18);
+  padding-top: 7px;
+  font-weight: 600;
+}
+
+.transfer-inline-status.accepted { color: #7ab87a; }
+.transfer-inline-status.declined { color: #c0a0a0; }
+
+.transfer-inline-actions {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid rgba(153,200,237,0.18);
+  padding-top: 8px;
+}
+
+.transfer-inline-accept,
+.transfer-inline-decline {
+  flex: 1;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 0;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-appearance: none;
+  transition: opacity .15s;
+}
+
+.transfer-inline-accept {
+  background: var(--primary, #99C8ED);
+  color: #fff;
+}
+
+.transfer-inline-decline {
+  background: rgba(153,200,237,0.12);
+  color: var(--text-mid, #5a6a80);
+}
+
+.transfer-inline-accept:active,
+.transfer-inline-decline:active { opacity: 0.72; }
+
+/* ---- 假图片气泡 ---- */
+.fake-photo-bubble {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--light-blue, #B3D8F4) 0%, rgba(153,200,237,0.35) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.fake-photo-bubble-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.fake-photo-icon {
+  font-size: 28px;
+  color: var(--primary, #99C8ED);
+  opacity: 0.8;
+}
+
+.fake-photo-label {
+  font-size: 10px;
+  color: var(--text-mid, #5a6a80);
+  text-align: center;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 6px;
+}
+
+/* ---- 真实图片气泡 ---- */
+.real-image-bubble {
+  max-width: 180px;
+  max-height: 180px;
+  border-radius: 12px;
+  object-fit: cover;
+  cursor: pointer;
+  display: block;
+  border: 1.5px solid rgba(153,200,237,0.22);
+}
+
+/* ---- 表情包气泡 ---- */
+.emoji-msg-bubble {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+}
+
+/* 表情包/转账气泡透明 */
+.bubble-emoji-only,
+.bubble-transfer-only {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+/* ---- 引用块 ---- */
+.msg-quote-block {
+  border-left: 3px solid var(--primary, #99C8ED);
+  background: rgba(153,200,237,0.10);
+  border-radius: 0 8px 8px 0;
+  padding: 5px 9px;
+  margin-bottom: 6px;
+  font-size: 11.5px;
+  color: var(--text-mid, #5a6a80);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ---- 撤回通知条 ---- */
+.recall-notice {
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--text-light, #9aafc4);
+  padding: 4px 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.recall-notice:hover { text-decoration: underline; }
+
+/* ================================================================
+   气泡翻转 — 内心独白
+   ================================================================ */
+.bubble-flip-container {
+  perspective: 900px;
+  cursor: pointer;
+  max-width: 80vw;
+  position: relative;
+}
+
+.bubble-flip-card {
+  position: relative;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.42s cubic-bezier(.4,0,.2,1);
+}
+
+.bubble-flip-container.flipped .bubble-flip-card {
+  transform: rotateY(180deg);
+}
+
+.bubble-flip-front {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 4px 16px 16px 16px;
+  padding: 9px 13px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  word-break: break-word;
+  box-shadow: 0 2px 8px rgba(100,140,190,0.09);
+  background: #fff;
+  color: var(--text-dark, #2c3448);
+  position: relative;
+}
+
+.bubble-flip-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+  border-radius: 4px 16px 16px 16px;
+  padding: 9px 13px;
+  font-size: 13px;
+  line-height: 1.6;
+  word-break: break-word;
+  box-shadow: 0 2px 12px rgba(200,120,40,0.13);
+  background: linear-gradient(135deg, #fff8f0 0%, #fff3e8 100%);
+  border: 1.5px solid rgba(240,160,80,0.35);
+  color: #6a3a10;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  align-items: flex-start;
+}
+
+.bubble-flip-back-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #6a3a10;
+  word-break: break-word;
+  width: 100%;
+}
+
+.bubble-flip-hint {
+  position: absolute;
+  bottom: 5px;
+  right: 8px;
+  font-size: 8.5px;
+  color: rgba(153,200,237,0.55);
+  pointer-events: none;
+  letter-spacing: .04em;
+  transition: opacity .2s;
+}
+
+.bubble-flip-container.flipped .bubble-flip-hint { opacity: 0; }
+
+/* ---- 编辑模式选中消息高亮 ---- */
+.chat-msg-row.edit-mode-selected .chat-msg-bubble {
+  outline: 2px solid var(--primary, #99C8ED);
+  outline-offset: 2px;
+  opacity: 0.85;
+}
+
+.chat-msg-row.edit-mode-selected {
+  background: rgba(153,200,237,0.08);
+  border-radius: 12px;
+}
+
+body.edit-mode-on .chat-msg-row:hover .chat-msg-bubble {
+  outline: 1.5px dashed rgba(153,200,237,0.5);
+  outline-offset: 2px;
+}
+
+/* ---- 暗色模式适配 ---- */
+body.dark-mode .chat-special-bar {
+  background: rgba(28,30,40,0.96);
+  border-top-color: rgba(80,120,160,0.18);
+}
+
+body.dark-mode .csb-icon { color: var(--text-mid, #9aa4b8); }
+body.dark-mode .csb-label { color: var(--text-light, #5a6a80); }
+body.dark-mode .csb-btn.active,
+body.dark-mode .csb-btn:active { background: rgba(80,120,160,0.22); }
+
+body.dark-mode .chat-quote-bar {
+  background: rgba(80,120,160,0.12);
+  border-left-color: var(--primary, #8bbfdf);
+}
+
+body.dark-mode .liao-bubble-modal { background: rgba(0,0,0,0.72); }
+body.dark-mode .liao-bubble-modal-box {
+  background: #22242c;
+  color: #e8eaf0;
+}
+
+body.dark-mode .msg-action-menu-box {
+  background: #22242c;
+  border-color: rgba(80,120,160,0.2);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+body.dark-mode .msg-action-item { color: #e8eaf0; }
+body.dark-mode .msg-action-item:active { background: rgba(80,120,160,0.2); }
+
+body.dark-mode .transfer-inline-card {
+  background: rgba(34,36,44,0.95);
+  border-color: rgba(80,120,160,0.25);
+}
+
+body.dark-mode .transfer-bubble-amount { color: #e8eaf0; }
+body.dark-mode .transfer-inline-decline {
+  background: rgba(80,120,160,0.15);
+  color: #9aa4b8;
+}
+
+body.dark-mode .recall-notice { color: #5a6a80; }
+
+body.dark-mode .bubble-flip-front {
+  background: #22242c;
+  color: #e8eaf0;
+}
+
+body.dark-mode .bubble-flip-back {
+  background: linear-gradient(135deg, #2a1f10 0%, #332210 100%);
+  border-color: rgba(200,130,50,0.3);
+}
+
+body.dark-mode .bubble-flip-back-text { color: #d4a860; }
+body.dark-mode .bubble-flip-hint { color: rgba(139,191,223,0.45); }
+
+body.dark-mode .chat-msg-row.edit-mode-selected {
+  background: rgba(80,120,160,0.12);
+}

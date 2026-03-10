@@ -1,0 +1,283 @@
+/* ============================================================
+   liao-base.css — 基本布局 / 顶栏 / 面板容器 / 弹窗通用
+   ============================================================ */
+
+#liao-app {
+  position: fixed;
+  inset: 0;
+  z-index: 450;
+  background: var(--bg, #F5F5F0);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#liao-app.show {
+  display: flex;
+}
+
+/* ---- 顶部标签栏 ---- */
+.liao-topbar {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  background: rgba(255,255,255,0.94);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(153,200,237,0.22);
+  flex-shrink: 0;
+  padding: 0 4px;
+  gap: 2px;
+}
+
+.liao-tab-btn {
+  flex: 1;
+  height: 40px;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-light, #9aafc4);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .18s, color .18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+  -webkit-appearance: none;
+  letter-spacing: .01em;
+}
+
+.liao-tab-btn.active {
+  background: rgba(153,200,237,0.18);
+  color: var(--text-dark, #2c3448);
+  font-weight: 700;
+}
+
+.liao-tab-btn .tab-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* ---- 主内容区 ---- */
+.liao-main {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.liao-panel {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: none;
+  flex-direction: column;
+}
+
+.liao-panel.active {
+  display: flex;
+}
+
+/* ---- 弹窗通用 ---- */
+#liao-new-role-modal,
+#liao-new-group-modal,
+#liao-import-modal,
+#liao-post-modal,
+#liao-comment-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 520;
+  background: rgba(26,31,46,0.38);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+#liao-new-role-modal.show,
+#liao-new-group-modal.show,
+#liao-import-modal.show,
+#liao-post-modal.show,
+#liao-comment-modal.show {
+  display: flex;
+}
+
+.liao-modal-box {
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 22px 18px 40px;
+  max-height: 88dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.liao-modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark, #2c3448);
+  margin-bottom: 16px;
+}
+
+.liao-modal-label {
+  display: block;
+  font-size: 11.5px;
+  color: var(--text-mid, #5a6a80);
+  margin-bottom: 5px;
+  margin-top: 12px;
+}
+
+.liao-modal-label:first-of-type {
+  margin-top: 0;
+}
+
+.liao-modal-input {
+  width: 100%;
+  border: 1.5px solid var(--light-blue, #B3D8F4);
+  border-radius: 11px;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: var(--text-dark, #2c3448);
+  background: var(--bg2, #F8F9FA);
+  outline: none;
+  font-family: inherit;
+  -webkit-appearance: none;
+  transition: border-color .2s;
+  box-sizing: border-box;
+}
+
+.liao-modal-input:focus {
+  border-color: var(--primary, #99C8ED);
+}
+
+.liao-modal-textarea {
+  width: 100%;
+  border: 1.5px solid var(--light-blue, #B3D8F4);
+  border-radius: 11px;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: var(--text-dark, #2c3448);
+  background: var(--bg2, #F8F9FA);
+  outline: none;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+  -webkit-appearance: none;
+  transition: border-color .2s;
+  box-sizing: border-box;
+}
+
+.liao-modal-textarea:focus {
+  border-color: var(--primary, #99C8ED);
+}
+
+.liao-avatar-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+.liao-avatar-preview {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--light-blue, #B3D8F4);
+  border: 2px solid rgba(153,200,237,0.35);
+  flex-shrink: 0;
+  display: block;
+}
+
+.liao-avatar-upload-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.liao-avatar-btn {
+  background: var(--bg2, #F8F9FA);
+  border: 1.5px solid var(--light-blue, #B3D8F4);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 11.5px;
+  color: var(--text-mid, #5a6a80);
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  text-align: center;
+}
+
+.liao-avatar-btn:active {
+  background: rgba(153,200,237,0.18);
+}
+
+.liao-modal-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.liao-btn-primary {
+  flex: 1;
+  background: var(--primary, #99C8ED);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 11px 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  transition: opacity .18s;
+}
+
+.liao-btn-primary:active {
+  opacity: 0.76;
+}
+
+.liao-btn-ghost {
+  flex: 1;
+  background: var(--bg2, #F8F9FA);
+  color: var(--text-mid, #5a6a80);
+  border: 1.5px solid var(--light-blue, #B3D8F4);
+  border-radius: 999px;
+  padding: 10px 0;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+}
+
+.liao-comment-list {
+  max-height: 180px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.liao-comment-row {
+  font-size: 12.5px;
+  color: var(--text-dark, #2c3448);
+  background: var(--bg2, #F8F9FA);
+  border-radius: 9px;
+  padding: 7px 10px;
+  line-height: 1.5;
+}
+
+.liao-comment-row .comment-name {
+  font-weight: 600;
+  color: var(--primary, #99C8ED);
+  margin-right: 5px;
+}

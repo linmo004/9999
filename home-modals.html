@@ -1,0 +1,110 @@
+<!-- 弹窗：倒计时编辑 -->
+<div class="modal-mask" id="cd-modal">
+  <div class="modal-box">
+    <div class="modal-title">纪念日 &amp; 倒计时</div>
+    <div id="cd-list"></div>
+    <div class="add-cd-section">
+      <div class="add-cd-title">添加新条目</div>
+      <label>标题</label>
+      <input class="modal-input" id="cd-new-title" placeholder="如：在一起第X天" style="height:38px;resize:none;">
+      <label>目标日期</label>
+      <input class="modal-input" id="cd-new-date" type="date" style="height:38px;">
+      <label>类型</label>
+      <select class="modal-input" id="cd-new-type" style="height:38px;">
+        <option value="anniversary">纪念日（已过天数）</option>
+        <option value="countdown">倒计时（剩余天数）</option>
+      </select>
+      <div class="btn-row">
+        <button class="modal-btn" id="cd-add-btn">添加</button>
+        <button class="modal-btn-ghost" id="cd-close-btn">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：图片轮播 -->
+<div class="modal-mask" id="carousel-modal">
+  <div class="modal-box">
+    <div class="modal-title">图片轮播</div>
+    <div class="modal-hint">每行一个图片URL，换行添加下一张</div>
+    <textarea class="modal-input" id="carousel-urls" rows="6"
+      placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.jpg"></textarea>
+    <div class="btn-row">
+      <button class="modal-btn" id="carousel-save-btn">确认</button>
+      <button class="modal-btn-ghost" id="carousel-cancel-btn">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：用户头像 -->
+<div class="modal-mask" id="avatar-modal">
+  <div class="modal-box">
+    <div class="modal-title">更换头像</div>
+    <div class="edit-tab-row">
+      <button class="edit-tab active" data-avatar-tab="url">输入URL</button>
+      <button class="edit-tab" data-avatar-tab="local">本地上传</button>
+    </div>
+    <div id="avatar-url-panel">
+      <input class="modal-input" id="avatar-url-input" placeholder="输入图片URL…" style="height:40px;resize:none;">
+    </div>
+    <div id="avatar-local-panel" style="display:none;">
+      <input type="file" id="avatar-file-input" accept="image/*"
+        style="margin-bottom:10px;font-size:12px;color:var(--text-mid);width:100%;">
+    </div>
+    <div class="btn-row">
+      <button class="modal-btn" id="avatar-confirm-btn">确认</button>
+      <button class="modal-btn-ghost" id="avatar-cancel-btn">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：签名 -->
+<div class="modal-mask" id="sig-modal">
+  <div class="modal-box">
+    <div class="modal-title">编辑签名</div>
+    <textarea class="modal-input" id="sig-input" rows="3" placeholder="输入你的签名…"></textarea>
+    <div class="btn-row">
+      <button class="modal-btn" id="sig-confirm-btn">确认</button>
+      <button class="modal-btn-ghost" id="sig-cancel-btn">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：消息观赏编辑 -->
+<div class="modal-mask" id="msg-modal">
+  <div class="modal-box">
+    <div class="modal-title">编辑消息气泡</div>
+    <div class="edit-tab-row">
+      <button class="edit-tab active" data-msg-tab="url">头像URL</button>
+      <button class="edit-tab" data-msg-tab="local">本地上传</button>
+    </div>
+    <div id="msg-url-panel">
+      <input class="modal-input" id="msg-avatar-url-input"
+        placeholder="头像图片URL（留空不更改）…" style="height:40px;resize:none;">
+    </div>
+    <div id="msg-local-panel" style="display:none;">
+      <input type="file" id="msg-file-input" accept="image/*"
+        style="margin-bottom:10px;font-size:12px;color:var(--text-mid);width:100%;">
+    </div>
+    <div class="modal-hint" style="margin:10px 0 5px;">消息内容（每行一条气泡）</div>
+    <textarea class="modal-input" id="msg-content-input" rows="4"
+      placeholder="第一条消息&#10;第二条消息"></textarea>
+    <div class="btn-row">
+      <button class="modal-btn" id="msg-confirm-btn">确认</button>
+      <button class="modal-btn-ghost" id="msg-cancel-btn">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：文字条编辑 -->
+<div class="modal-mask" id="textbar-modal">
+  <div class="modal-box">
+    <div class="modal-title">编辑文字条</div>
+    <textarea class="modal-input" id="textbar-input" rows="2"
+      placeholder="输入文字内容…" style="resize:none;"></textarea>
+    <div class="btn-row">
+      <button class="modal-btn" id="textbar-confirm-btn">确认</button>
+      <button class="modal-btn-ghost" id="textbar-cancel-btn">取消</button>
+    </div>
+  </div>
+</div>

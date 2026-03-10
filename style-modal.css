@@ -1,0 +1,213 @@
+/* ============================================================
+   弹窗遮罩
+   ============================================================ */
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,31,46,0.36);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  z-index: 300;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal-mask.show {
+  display: flex;
+}
+
+/* 在设置层（z-index:400）内使用的弹窗，需高于设置层 */
+#wallpaper-url-modal,
+#wallpaper2-url-modal,
+#icon-replace-modal {
+  z-index: 500;
+}
+
+/* ============================================================
+   弹窗主体
+   ============================================================ */
+.modal-box {
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 24px 20px 48px;
+  max-height: 82dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--dark-bg);
+  margin-bottom: 16px;
+}
+
+.modal-hint {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-bottom: 9px;
+}
+
+/* ============================================================
+   弹窗表单元素
+   ============================================================ */
+.modal-input {
+  width: 100%;
+  border: 1.5px solid var(--light-blue);
+  border-radius: 11px;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: var(--text-dark);
+  background: var(--bg2);
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  margin-bottom: 10px;
+  transition: border-color .2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.modal-input:focus {
+  border-color: var(--primary);
+}
+
+/* ============================================================
+   弹窗按钮
+   ============================================================ */
+.modal-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-cap);
+  padding: 10px 26px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  transition: opacity .18s;
+  -webkit-appearance: none;
+}
+
+.modal-btn:active {
+  opacity: 0.76;
+}
+
+.modal-btn-ghost {
+  background: var(--bg2);
+  color: var(--text-mid);
+  border: 1.5px solid var(--light-blue);
+  border-radius: var(--radius-cap);
+  padding: 9px 18px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+}
+
+.btn-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* ============================================================
+   倒计时条目
+   ============================================================ */
+.cd-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg2);
+  border-radius: 11px;
+  padding: 11px 13px;
+  margin-bottom: 9px;
+}
+
+.cd-item-info {
+  flex: 1;
+}
+
+.cd-item-title {
+  font-weight: 600;
+  font-size: 12.5px;
+  color: var(--text-dark);
+}
+
+.cd-item-sub {
+  color: var(--text-light);
+  font-size: 10.5px;
+  margin-top: 2px;
+}
+
+.cd-del-btn {
+  background: #ffe0e0;
+  color: #e05c5c;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 10.5px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.add-cd-section {
+  background: var(--bg2);
+  border-radius: 13px;
+  padding: 14px 13px 12px;
+  margin-top: 8px;
+}
+
+.add-cd-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.add-cd-section label {
+  font-size: 11px;
+  color: var(--text-mid);
+  display: block;
+  margin-bottom: 4px;
+  margin-top: 9px;
+}
+
+.add-cd-section label:first-of-type {
+  margin-top: 0;
+}
+
+/* ============================================================
+   编辑 Tab
+   ============================================================ */
+.edit-tab-row {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+.edit-tab {
+  flex: 1;
+  background: var(--bg2);
+  border-radius: 9px;
+  padding: 7px 0;
+  font-size: 12px;
+  color: var(--text-mid);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .18s;
+  text-align: center;
+  -webkit-appearance: none;
+}
+
+.edit-tab.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}

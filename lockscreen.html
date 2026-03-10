@@ -1,0 +1,91 @@
+<!-- ===================== 锁屏界面 ===================== -->
+<div id="lockscreen">
+  <!-- 背景装饰 -->
+  <div class="ls-bg-circle c1"></div>
+  <div class="ls-bg-circle c2"></div>
+  <div class="ls-bg-circle c3"></div>
+
+  <!-- 顶部时间区 -->
+  <div class="ls-top">
+    <div class="ls-time" id="ls-time">00:00</div>
+    <div class="ls-date" id="ls-date"></div>
+    <div class="ls-hint">向上滑动解锁</div>
+  </div>
+
+  <!-- 上滑箭头 -->
+  <div class="ls-swipe-arrow">
+    <span></span>
+    <span></span>
+    <div class="ls-swipe-label">SLIDE UP</div>
+  </div>
+</div>
+
+<!-- ===================== 密码输入界面 ===================== -->
+<div id="pinscreen">
+  <!-- 顶部头像+提示 -->
+  <div class="pin-top">
+    <img class="pin-avatar" id="pin-avatar-img"
+      src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=halo9" alt="">
+    <div class="pin-username">HALO·九</div>
+    <div class="pin-label">请输入密码</div>
+  </div>
+
+  <!-- 密码点 -->
+  <div class="pin-dots">
+    <div class="pin-dot"></div>
+    <div class="pin-dot"></div>
+    <div class="pin-dot"></div>
+    <div class="pin-dot"></div>
+    <div class="pin-dot"></div>
+    <div class="pin-dot"></div>
+  </div>
+
+  <!-- 错误提示 -->
+  <div class="pin-error-msg" id="pin-error-msg"></div>
+
+  <!-- 数字键盘（10键：1-9 + 空 + 0 + 退格）-->
+  <div class="pin-keyboard">
+    <div class="pin-key" data-key="1">
+      <span class="key-num">1</span>
+      <span class="key-alpha"></span>
+    </div>
+    <div class="pin-key" data-key="2">
+      <span class="key-num">2</span>
+      <span class="key-alpha">ABC</span>
+    </div>
+    <div class="pin-key" data-key="3">
+      <span class="key-num">3</span>
+      <span class="key-alpha">DEF</span>
+    </div>
+    <div class="pin-key" data-key="4">
+      <span class="key-num">4</span>
+      <span class="key-alpha">GHI</span>
+    </div>
+    <div class="pin-key" data-key="5">
+      <span class="key-num">5</span>
+      <span class="key-alpha">JKL</span>
+    </div>
+    <div class="pin-key" data-key="6">
+      <span class="key-num">6</span>
+      <span class="key-alpha">MNO</span>
+    </div>
+    <div class="pin-key" data-key="7">
+      <span class="key-num">7</span>
+      <span class="key-alpha">PQRS</span>
+    </div>
+    <div class="pin-key" data-key="8">
+      <span class="key-num">8</span>
+      <span class="key-alpha">TUV</span>
+    </div>
+    <div class="pin-key" data-key="9">
+      <span class="key-num">9</span>
+      <span class="key-alpha">WXYZ</span>
+    </div>
+    <div class="pin-key empty"></div>
+    <div class="pin-key zero" data-key="0">
+      <span class="key-num">0</span>
+      <span class="key-alpha"></span>
+    </div>
+    <div class="pin-key backspace" data-key="del">&#9003;</div>
+  </div>
+</div>

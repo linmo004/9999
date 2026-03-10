@@ -1,0 +1,95 @@
+<!-- 世界书全屏界面 -->
+<div id="worldbook-app" style="display:none;">
+
+  <!-- 顶部导航栏 -->
+  <div class="wb-header">
+    <button class="wb-back-btn" id="wb-back-btn">&#8592; 返回</button>
+    <span class="wb-title">世界书</span>
+    <div class="wb-header-actions">
+      <button class="wb-header-btn" id="wb-new-cat-btn">新建分类</button>
+      <button class="wb-header-btn" id="wb-new-entry-btn">新建条目</button>
+      <button class="wb-header-btn" id="wb-manage-btn">管理</button>
+    </div>
+  </div>
+
+  <!-- 主体列表 -->
+  <div class="wb-body" id="wb-body">
+    <!-- 由JS动态渲染 -->
+  </div>
+
+  <!-- 新建/编辑条目弹窗 -->
+  <div class="wb-modal-mask" id="wb-entry-modal" style="display:none;">
+    <div class="wb-modal">
+      <div class="wb-modal-title" id="wb-entry-modal-title">新建世界书条目</div>
+
+      <div class="wb-form-row">
+        <label class="wb-form-label">条目名称 <span class="wb-required">*</span></label>
+        <input class="wb-form-input" id="wb-entry-name" placeholder="请输入条目名称" />
+      </div>
+
+      <div class="wb-form-row">
+        <label class="wb-form-label">所在分类 <span class="wb-required">*</span></label>
+        <select class="wb-form-input" id="wb-entry-cat"></select>
+      </div>
+
+      <div class="wb-form-row">
+        <label class="wb-form-label">条目内容 <span class="wb-required">*</span></label>
+        <textarea class="wb-form-textarea" id="wb-entry-content" placeholder="请输入背景设定内容…" rows="4"></textarea>
+      </div>
+
+      <div class="wb-form-row">
+        <label class="wb-form-label">触发关键词</label>
+        <input class="wb-form-input" id="wb-entry-keywords" placeholder="多个关键词用逗号分隔，留空则默认注入" />
+        <div class="wb-form-hint">留空时，每次AI调用均自动注入此条目</div>
+      </div>
+
+      <div class="wb-form-row">
+        <label class="wb-form-label">绑定角色</label>
+        <div class="wb-form-hint" style="margin-bottom:6px;">只勾选的角色才会注入此条目，不勾选任何角色则对所有角色生效</div>
+        <div class="wb-role-check-list" id="wb-entry-role-list">
+          <!-- 由JS渲染 -->
+        </div>
+      </div>
+
+      <div class="wb-form-row wb-form-row-inline">
+        <label class="wb-form-label">启用</label>
+        <label class="wb-toggle-wrap">
+          <input type="checkbox" id="wb-entry-enabled" checked>
+          <span class="wb-toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="wb-modal-actions">
+        <button class="wb-btn-secondary" id="wb-entry-cancel">取消</button>
+        <button class="wb-btn-primary" id="wb-entry-confirm">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 新建分类弹窗 -->
+  <div class="wb-modal-mask" id="wb-cat-modal" style="display:none;">
+    <div class="wb-modal wb-modal-sm">
+      <div class="wb-modal-title">新建分类</div>
+      <div class="wb-form-row">
+        <label class="wb-form-label">分类名称</label>
+        <input class="wb-form-input" id="wb-cat-name" placeholder="请输入分类名称" />
+      </div>
+      <div class="wb-modal-actions">
+        <button class="wb-btn-secondary" id="wb-cat-cancel">取消</button>
+        <button class="wb-btn-primary" id="wb-cat-confirm">创建</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 管理弹窗（删除分类） -->
+  <div class="wb-modal-mask" id="wb-manage-modal" style="display:none;">
+    <div class="wb-modal">
+      <div class="wb-modal-title">管理分类</div>
+      <div id="wb-manage-cat-list" class="wb-manage-cat-list"></div>
+      <div class="wb-modal-actions">
+        <button class="wb-btn-secondary" id="wb-manage-close">关闭</button>
+      </div>
+    </div>
+  </div>
+
+</div>

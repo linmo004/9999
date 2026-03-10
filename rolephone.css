@@ -1,0 +1,1348 @@
+/* ============================================================
+   rolephone.css — 角色手机 App 完整样式
+   ============================================================ */
+
+/* ---- 根容器 ---- */
+#rolephone-app {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  background: #0a0f1a;
+  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- 通用视图层 ---- */
+.rp-view {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #0a0f1a;
+  overflow: hidden;
+}
+
+/* ================================================================
+   锁屏界面
+   ================================================================ */
+#rp-lockscreen-view {
+  background: linear-gradient(160deg, #0a0f1a 0%, #0e1828 50%, #111e35 100%);
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.rp-ls-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(74,158,255,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(74,158,255,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.rp-ls-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+  gap: 8px;
+  z-index: 1;
+}
+
+.rp-ls-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(74,158,255,0.4);
+  background: #141c2e;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.rp-ls-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #e8edf5;
+  letter-spacing: 0.04em;
+}
+
+.rp-ls-time {
+  font-size: 60px;
+  font-weight: 200;
+  color: #f0f4ff;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-top: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.rp-ls-date {
+  font-size: 13px;
+  color: #7a8fa8;
+  letter-spacing: 0.04em;
+}
+
+/* 4位密码点 */
+.rp-pin-dots {
+  display: flex;
+  gap: 20px;
+  margin-top: 36px;
+  z-index: 1;
+}
+
+.rp-pin-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(74,158,255,0.5);
+  background: transparent;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+}
+
+.rp-pin-dot.filled {
+  background: #4a9eff;
+  border-color: #4a9eff;
+  transform: scale(1.15);
+}
+
+.rp-pin-dot.error {
+  border-color: #e05c5c;
+  background: rgba(224,92,92,0.35);
+  animation: rpPinShake 0.38s ease;
+}
+
+@keyframes rpPinShake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-5px); }
+  40%       { transform: translateX(5px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+.rp-pin-error {
+  font-size: 12px;
+  color: #e05c5c;
+  height: 18px;
+  margin-top: 8px;
+  letter-spacing: 0.04em;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 1;
+}
+
+.rp-pin-error.show { opacity: 1; }
+
+.rp-pin-forget {
+  font-size: 11px;
+  color: rgba(74,158,255,0.6);
+  margin-top: 10px;
+  cursor: pointer;
+  z-index: 1;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.rp-pin-forget:active { opacity: 0.7; }
+
+/* 数字键盘 */
+.rp-pin-keyboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 28px 36px 20px;
+  width: 100%;
+  max-width: 340px;
+  box-sizing: border-box;
+  margin-top: auto;
+  margin-bottom: 28px;
+  z-index: 1;
+}
+
+.rp-pin-key {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(74,158,255,0.08);
+  border: 1.5px solid rgba(74,158,255,0.18);
+  color: #f0f4ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background 0.12s, transform 0.1s;
+  gap: 1px;
+}
+
+.rp-pin-key:active,
+.rp-pin-key.pressed {
+  background: rgba(74,158,255,0.25);
+  transform: scale(0.93);
+}
+
+.rp-key-num {
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1;
+  color: #f0f4ff;
+}
+
+.rp-key-alpha {
+  font-size: 8px;
+  color: #7a8fa8;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+.rp-key-empty {
+  background: transparent !important;
+  border-color: transparent !important;
+  pointer-events: none;
+}
+
+.rp-key-del {
+  font-size: 18px;
+  color: #7a8fa8;
+}
+
+.rp-key-del:active {
+  background: rgba(120,143,168,0.15) !important;
+}
+
+/* ================================================================
+   主页
+   ================================================================ */
+#rp-home-view {
+  background: #0a0f1a;
+}
+
+/* 状态栏 */
+.rp-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px 6px;
+  flex-shrink: 0;
+}
+
+.rp-status-time {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e8edf5;
+  font-variant-numeric: tabular-nums;
+}
+
+.rp-status-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #7a8fa8;
+}
+
+/* 主体 */
+.rp-home-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rp-home-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+/* 2x2 App 网格 */
+.rp-app-grid-2x2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rp-app-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 10px 4px;
+  border-radius: 16px;
+  background: #141c2e;
+  border: 1px solid rgba(74,158,255,0.1);
+  transition: background 0.15s, transform 0.12s;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.rp-app-item:active {
+  background: #1c2840;
+  transform: scale(0.95);
+}
+
+.rp-app-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.rp-icon-liao    { background: linear-gradient(135deg, #1a4a8a, #2d6abf); }
+.rp-icon-notes   { background: linear-gradient(135deg, #1a5c3a, #2a8a5a); }
+.rp-icon-health  { background: linear-gradient(135deg, #5a1a6a, #8a2aaf); }
+.rp-icon-forum   { background: linear-gradient(135deg, #6a3a1a, #a85a2a); }
+.rp-icon-placeholder {
+  background: #1c2840;
+  border: 1.5px dashed rgba(74,158,255,0.2);
+}
+
+.rp-app-placeholder { opacity: 0.4; pointer-events: none; }
+
+.rp-app-name {
+  font-size: 10px;
+  color: #8a9ab8;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* 备忘录小组件 */
+.rp-widget {
+  flex: 1;
+  min-width: 0;
+  background: #141c2e;
+  border-radius: 16px;
+  border: 1px solid rgba(74,158,255,0.12);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.rp-widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 6px;
+  flex-shrink: 0;
+}
+
+.rp-widget-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4a9eff;
+  letter-spacing: 0.04em;
+}
+
+.rp-widget-add-btn {
+  background: rgba(74,158,255,0.15);
+  border: none;
+  color: #4a9eff;
+  font-size: 16px;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  line-height: 1;
+  font-family: inherit;
+}
+
+.rp-widget-add-btn:active { opacity: 0.7; }
+
+.rp-memo-list {
+  flex: 1;
+  overflow: hidden;
+  padding: 0 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rp-memo-empty {
+  font-size: 11px;
+  color: #3a4a60;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.rp-memo-item {
+  font-size: 11px;
+  color: #c8d4e8;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(74,158,255,0.06);
+}
+
+.rp-memo-item:last-child { border-bottom: none; }
+
+/* 拍立得小组件 */
+.rp-widget-photo {
+  padding: 8px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  min-height: 130px;
+}
+
+.rp-widget-photo:active { opacity: 0.85; }
+
+.rp-photo-frame {
+  width: 100%;
+  flex: 1;
+  min-height: 90px;
+  background: #0e1828;
+  border-radius: 10px;
+  border: 3px solid #e8e0d0;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rp-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.rp-photo-empty {
+  font-size: 11px;
+  color: #3a4a60;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.rp-photo-caption {
+  font-size: 10px;
+  color: #5a6a80;
+  text-align: center;
+}
+
+/* Dock */
+.rp-dock {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px 20px 22px;
+  background: rgba(14,24,40,0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(74,158,255,0.1);
+  flex-shrink: 0;
+}
+
+.rp-dock-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.15s, transform 0.12s;
+  -webkit-user-select: none;
+}
+
+.rp-dock-item:active {
+  background: rgba(74,158,255,0.15);
+  transform: scale(0.92);
+}
+
+.rp-dock-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.rp-dock-home-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(74,158,255,0.15);
+  border: 2px solid rgba(74,158,255,0.4);
+  box-shadow: 0 0 12px rgba(74,158,255,0.2);
+}
+
+.rp-dock-back .rp-dock-icon {
+  font-size: 18px;
+  color: #7a8fa8;
+}
+
+/* ================================================================
+   通用顶部栏
+   ================================================================ */
+.rp-app-topbar {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  padding: 0 12px;
+  background: #0e1828;
+  border-bottom: 1px solid rgba(74,158,255,0.1);
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.rp-back-btn {
+  background: none;
+  border: none;
+  color: #4a9eff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+  font-family: inherit;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.rp-back-btn:active { background: rgba(74,158,255,0.15); }
+
+.rp-app-topbar-title {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: #e8edf5;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rp-topbar-right-btn {
+  background: none;
+  border: none;
+  color: #4a9eff;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+  font-family: inherit;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: background 0.15s;
+  min-width: 36px;
+  text-align: center;
+}
+
+.rp-topbar-right-btn:active { background: rgba(74,158,255,0.15); }
+
+.rp-danger-btn { color: #e05c5c !important; }
+
+.rp-topbar-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ================================================================
+   通用列表样式
+   ================================================================ */
+.rp-list-empty {
+  text-align: center;
+  font-size: 13px;
+  color: #3a4a60;
+  padding: 40px 20px;
+}
+
+/* ================================================================
+   了了 App 聊天列表
+   ================================================================ */
+.rp-chat-list {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rp-chat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(74,158,255,0.06);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.rp-chat-item:active { background: rgba(74,158,255,0.06); }
+
+.rp-chat-item-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #141c2e;
+  border: 1.5px solid rgba(74,158,255,0.2);
+  flex-shrink: 0;
+}
+
+.rp-chat-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.rp-chat-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #d8e4f8;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rp-chat-item-preview {
+  font-size: 11px;
+  color: #5a6a80;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rp-chat-item-time {
+  font-size: 10px;
+  color: #3a4a60;
+  flex-shrink: 0;
+}
+
+/* ================================================================
+   了了聊天详情
+   ================================================================ */
+.rp-liao-chat-topbar-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.rp-liao-chat-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #141c2e;
+  border: 1.5px solid rgba(74,158,255,0.25);
+  flex-shrink: 0;
+}
+
+.rp-liao-messages {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 12px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rp-msg-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.rp-msg-row.rp-user-row {
+  flex-direction: row-reverse;
+}
+
+.rp-msg-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #141c2e;
+  border: 1.5px solid rgba(74,158,255,0.2);
+  flex-shrink: 0;
+}
+
+.rp-msg-bubble {
+  max-width: 68%;
+  padding: 8px 12px;
+  border-radius: 4px 14px 14px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #d8e4f8;
+  background: #141c2e;
+  border: 1px solid rgba(74,158,255,0.12);
+  word-break: break-word;
+}
+
+.rp-msg-row.rp-user-row .rp-msg-bubble {
+  border-radius: 14px 4px 14px 14px;
+  background: #1a3a6e;
+  border-color: rgba(74,158,255,0.25);
+  color: #e8f0ff;
+}
+
+/* ================================================================
+   便签 App
+   ================================================================ */
+.rp-tabs {
+  display: flex;
+  background: #0e1828;
+  border-bottom: 1px solid rgba(74,158,255,0.1);
+  flex-shrink: 0;
+}
+
+.rp-tab-btn {
+  flex: 1;
+  height: 40px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #5a6a80;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.rp-tab-btn.active {
+  color: #4a9eff;
+  border-bottom-color: #4a9eff;
+  font-weight: 600;
+}
+
+.rp-tab-panel {
+  display: none;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rp-tab-panel.active { display: flex; flex-direction: column; }
+
+.rp-notes-list {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 待办条目 */
+.rp-todo-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #141c2e;
+  border-radius: 12px;
+  padding: 11px 13px;
+  border: 1px solid rgba(74,158,255,0.08);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.rp-todo-item:active { background: #1c2840; }
+
+.rp-todo-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(74,158,255,0.4);
+  background: transparent;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.rp-todo-check.checked {
+  background: #4a9eff;
+  border-color: #4a9eff;
+}
+
+.rp-todo-check.checked::after {
+  content: '✓';
+  font-size: 10px;
+  color: #fff;
+  line-height: 1;
+}
+
+.rp-todo-body { flex: 1; min-width: 0; }
+
+.rp-todo-text {
+  font-size: 13px;
+  color: #d8e4f8;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.rp-todo-text.done {
+  text-decoration: line-through;
+  color: #3a4a60;
+}
+
+.rp-todo-time {
+  font-size: 10px;
+  color: #3a4a60;
+  margin-top: 3px;
+}
+
+/* 日记/随记条目 */
+.rp-diary-item {
+  background: #141c2e;
+  border-radius: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(74,158,255,0.08);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.rp-diary-item:active { background: #1c2840; }
+
+.rp-diary-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.rp-diary-item-date {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4a9eff;
+}
+
+.rp-diary-item-weather {
+  font-size: 14px;
+}
+
+.rp-diary-item-preview {
+  font-size: 12px;
+  color: #7a8fa8;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ================================================================
+   日记详情
+   ================================================================ */
+.rp-diary-detail-meta {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #7a8fa8;
+}
+
+.rp-diary-detail-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 18px;
+}
+
+.rp-diary-detail-content {
+  font-size: 15px;
+  color: #d8e4f8;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ================================================================
+   屏幕健康
+   ================================================================ */
+.rp-health-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 14px;
+}
+
+.rp-health-summary {
+  background: #141c2e;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+  border: 1px solid rgba(74,158,255,0.12);
+}
+
+.rp-health-label {
+  font-size: 12px;
+  color: #5a6a80;
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+
+.rp-health-total {
+  font-size: 36px;
+  font-weight: 200;
+  color: #4a9eff;
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+}
+
+.rp-health-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rp-health-item {
+  background: #141c2e;
+  border-radius: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(74,158,255,0.08);
+}
+
+.rp-health-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.rp-health-item-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rp-health-item-icon {
+  font-size: 18px;
+  width: 30px;
+  text-align: center;
+}
+
+.rp-health-item-name {
+  font-size: 13px;
+  color: #d8e4f8;
+  font-weight: 500;
+}
+
+.rp-health-item-time {
+  font-size: 12px;
+  color: #4a9eff;
+  font-variant-numeric: tabular-nums;
+}
+
+.rp-health-bar-wrap {
+  height: 4px;
+  background: rgba(74,158,255,0.12);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.rp-health-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4a9eff, #7ab8ff);
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+/* ================================================================
+   趣问 App
+   ================================================================ */
+.rp-forum-list {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rp-forum-item {
+  background: #141c2e;
+  border-radius: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(74,158,255,0.08);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.rp-forum-item:active { background: #1c2840; }
+
+.rp-forum-item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+.rp-forum-item-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #1c2840;
+  border: 1.5px solid rgba(74,158,255,0.2);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.rp-forum-item-name {
+  font-size: 11px;
+  color: #5a6a80;
+}
+
+.rp-forum-item-title {
+  font-size: 13px;
+  color: #d8e4f8;
+  font-weight: 500;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.rp-forum-item-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rp-forum-item-replies {
+  font-size: 11px;
+  color: #5a6a80;
+}
+
+.rp-forum-item-time {
+  font-size: 10px;
+  color: #3a4a60;
+}
+
+/* ================================================================
+   趣问帖子详情
+   ================================================================ */
+.rp-forum-detail-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px 14px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rp-forum-post-content {
+  background: #141c2e;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid rgba(74,158,255,0.12);
+}
+
+.rp-forum-post-title {
+  font-size: 15px;
+    font-weight: 600;
+  color: #e8edf5;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.rp-forum-post-body {
+  font-size: 13px;
+  color: #c8d4e8;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.rp-forum-replies-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a9eff;
+  letter-spacing: 0.04em;
+  padding: 0 2px;
+}
+
+.rp-forum-replies {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rp-forum-reply-item {
+  background: #141c2e;
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(74,158,255,0.08);
+}
+
+.rp-forum-reply-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.rp-forum-reply-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #1c2840;
+  border: 1.5px solid rgba(74,158,255,0.18);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #4a9eff;
+}
+
+.rp-forum-reply-name {
+  font-size: 11px;
+  color: #4a9eff;
+  font-weight: 500;
+}
+
+.rp-forum-reply-time {
+  font-size: 10px;
+  color: #3a4a60;
+  margin-left: auto;
+}
+
+.rp-forum-reply-content {
+  font-size: 13px;
+  color: #c8d4e8;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.rp-forum-reply-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 20px;
+  background: #0e1828;
+  border-top: 1px solid rgba(74,158,255,0.1);
+}
+
+.rp-forum-reply-input {
+  flex: 1;
+  background: #141c2e;
+  border: 1px solid rgba(74,158,255,0.2);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: #d8e4f8;
+  outline: none;
+  font-family: inherit;
+}
+
+.rp-forum-reply-input::placeholder { color: #3a4a60; }
+
+.rp-forum-reply-send {
+  background: #4a9eff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.rp-forum-reply-send:active { opacity: 0.75; }
+
+/* ================================================================
+   加载弹窗
+   ================================================================ */
+.rp-loading-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.rp-loading-box {
+  background: #141c2e;
+  border-radius: 16px;
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(74,158,255,0.18);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.rp-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(74,158,255,0.2);
+  border-top-color: #4a9eff;
+  border-radius: 50%;
+  animation: rpSpin 0.8s linear infinite;
+}
+
+@keyframes rpSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.rp-loading-text {
+  font-size: 13px;
+  color: #7a8fa8;
+  letter-spacing: 0.04em;
+}
+
+/* ================================================================
+   内部弹窗（备忘录 / 便签 / 趣问新建）
+   ================================================================ */
+.rp-inner-modal-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.60);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.rp-inner-modal-box {
+  background: #141c2e;
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  padding: 20px 16px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid rgba(74,158,255,0.18);
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.4);
+}
+
+.rp-inner-modal-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #e8edf5;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.rp-inner-modal-input {
+  width: 100%;
+  background: #0e1828;
+  border: 1px solid rgba(74,158,255,0.2);
+  border-radius: 12px;
+  padding: 10px 13px;
+  font-size: 13px;
+  color: #d8e4f8;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.rp-inner-modal-input:focus {
+  border-color: rgba(74,158,255,0.5);
+}
+
+.rp-inner-modal-input::placeholder { color: #3a4a60; }
+
+.rp-inner-modal-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.rp-inner-btn-primary {
+  flex: 1;
+  background: #4a9eff;
+  border: none;
+  border-radius: 999px;
+  padding: 11px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+
+.rp-inner-btn-primary:active { opacity: 0.78; }
+
+.rp-inner-btn-ghost {
+  flex: 1;
+  background: rgba(74,158,255,0.08);
+  border: 1px solid rgba(74,158,255,0.2);
+  border-radius: 999px;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #7a8fa8;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.rp-inner-btn-ghost:active { background: rgba(74,158,255,0.15); }
+
+/* ================================================================
+   趣问帖子详情 — 相对定位（确保回复栏绝对定位正确）
+   ================================================================ */
+#rp-forum-detail-view {
+  position: relative;
+}
+
+/* ================================================================
+   滚动条隐藏
+   ================================================================ */
+.rp-chat-list::-webkit-scrollbar,
+.rp-liao-messages::-webkit-scrollbar,
+.rp-home-body::-webkit-scrollbar,
+.rp-health-body::-webkit-scrollbar,
+.rp-forum-list::-webkit-scrollbar,
+.rp-forum-detail-body::-webkit-scrollbar,
+.rp-notes-list::-webkit-scrollbar,
+.rp-tab-panel::-webkit-scrollbar,
+.rp-diary-detail-body::-webkit-scrollbar {
+  display: none;
+}
+
+.rp-chat-list,
+.rp-liao-messages,
+.rp-home-body,
+.rp-health-body,
+.rp-forum-list,
+.rp-forum-detail-body,
+.rp-notes-list,
+.rp-tab-panel,
+.rp-diary-detail-body {
+  scrollbar-width: none;
+}

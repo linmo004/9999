@@ -1,0 +1,62 @@
+/* ============================================================
+   liao-myhome.css — 我的主页样式
+   ============================================================ */
+
+.my-home-wrap {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 16px 40px;
+}
+
+.my-home-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.my-menu-item {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 12px rgba(100,140,190,0.08);
+  border: 1.5px solid rgba(153,200,237,0.15);
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.my-menu-item:active {
+  background: #eaf4fc;
+}
+
+.my-menu-icon {
+  font-size: 22px;
+  width: 38px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.my-menu-info {
+  flex: 1;
+}
+
+.my-menu-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark, #2c3448);
+  margin-bottom: 2px;
+}
+
+.my-menu-sub {
+  font-size: 11px;
+  color: var(--text-light, #9aafc4);
+}
+
+.my-menu-arrow {
+  font-size: 17px;
+  color: var(--text-light, #9aafc4);
+}

@@ -1,0 +1,314 @@
+/* ============================================================
+   lockscreen.css — 锁屏 & 密码界面
+   ============================================================ */
+
+/* ---- 锁屏根层 ---- */
+#lockscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  background: linear-gradient(170deg, #1a1f2e 0%, #2c3448 55%, #3a4a65 100%);
+  overflow: hidden;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+#lockscreen.hide-up {
+  opacity: 0;
+  transform: translateY(-60px);
+  pointer-events: none;
+}
+
+/* ---- 背景装饰圆 ---- */
+.ls-bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(153,200,237,0.07);
+  pointer-events: none;
+}
+
+.ls-bg-circle.c1 {
+  width: 340px;
+  height: 340px;
+  top: -80px;
+  left: -80px;
+}
+
+.ls-bg-circle.c2 {
+  width: 220px;
+  height: 220px;
+  top: 120px;
+  right: -60px;
+  background: rgba(179,216,244,0.05);
+}
+
+.ls-bg-circle.c3 {
+  width: 160px;
+  height: 160px;
+  bottom: 280px;
+  left: 30px;
+  background: rgba(122,154,191,0.06);
+}
+
+/* ---- 顶部时间区 ---- */
+.ls-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 72px;
+  gap: 6px;
+  z-index: 1;
+}
+
+.ls-time {
+  font-size: 72px;
+  font-weight: 200;
+  color: #F8F9FA;
+  letter-spacing: -2px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.ls-date {
+  font-size: 15px;
+  color: #9aafc4;
+  letter-spacing: 0.04em;
+  font-weight: 400;
+}
+
+.ls-hint {
+  margin-top: 28px;
+  font-size: 12px;
+  color: rgba(154,175,196,0.65);
+  letter-spacing: 0.08em;
+}
+
+/* ---- 上滑箭头 ---- */
+.ls-swipe-arrow {
+  position: absolute;
+  bottom: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 2;
+  animation: lsArrowPulse 2s infinite ease-in-out;
+}
+
+.ls-swipe-arrow span {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-left: 2px solid rgba(179,216,244,0.55);
+  border-top: 2px solid rgba(179,216,244,0.55);
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+.ls-swipe-arrow span:nth-child(2) {
+  opacity: 0.45;
+  margin-top: -14px;
+}
+
+.ls-swipe-label {
+  font-size: 11px;
+  color: rgba(154,175,196,0.6);
+  letter-spacing: 0.1em;
+  margin-top: 6px;
+}
+
+@keyframes lsArrowPulse {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.8; }
+  50%       { transform: translateX(-50%) translateY(-8px); opacity: 1; }
+}
+
+/* ============================================================
+   密码输入界面
+   ============================================================ */
+#pinscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: linear-gradient(170deg, #1a1f2e 0%, #2c3448 60%, #3a4a65 100%);
+  overflow: hidden;
+}
+
+#pinscreen.show {
+  display: flex;
+}
+
+/* ---- 顶部头像+提示 ---- */
+.pin-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 68px;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.pin-avatar {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2.5px solid rgba(179,216,244,0.4);
+  background: #2c3448;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+}
+
+.pin-username {
+  font-size: 16px;
+  font-weight: 500;
+  color: #F8F9FA;
+  letter-spacing: 0.03em;
+}
+
+.pin-label {
+  font-size: 12px;
+  color: #9aafc4;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
+/* ---- 密码点 ---- */
+.pin-dots {
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.pin-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2px solid rgba(179,216,244,0.5);
+  background: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+
+.pin-dot.filled {
+  background: #B3D8F4;
+  border-color: #B3D8F4;
+  transform: scale(1.15);
+}
+
+.pin-dot.error {
+  border-color: #e07a7a;
+  background: rgba(224,122,122,0.35);
+  animation: pinShake 0.38s ease;
+}
+
+@keyframes pinShake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-5px); }
+  40%       { transform: translateX(5px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+/* ---- 错误提示 ---- */
+.pin-error-msg {
+  font-size: 12px;
+  color: #e07a7a;
+  height: 18px;
+  letter-spacing: 0.04em;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.pin-error-msg.show {
+  opacity: 1;
+}
+
+/* ---- 数字键盘 ---- */
+.pin-keyboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  padding: 24px 32px 20px;
+  width: 100%;
+  max-width: 360px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  margin-top: auto;
+  margin-bottom: 32px;
+}
+
+.pin-key {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(179,216,244,0.10);
+  border: 1.5px solid rgba(179,216,244,0.18);
+  color: #F8F9FA;
+  font-size: 22px;
+  font-weight: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background 0.12s, transform 0.1s;
+  position: relative;
+  gap: 1px;
+}
+
+.pin-key:active,
+.pin-key.pressed {
+  background: rgba(179,216,244,0.28);
+  transform: scale(0.93);
+}
+
+.pin-key .key-num {
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1;
+  color: #F8F9FA;
+}
+
+.pin-key .key-alpha {
+  font-size: 9px;
+  color: #9aafc4;
+  letter-spacing: 0.12em;
+  line-height: 1;
+}
+
+/* 空位（0键左右）*/
+.pin-key.empty {
+  background: transparent;
+  border-color: transparent;
+  pointer-events: none;
+}
+
+/* 退格键 */
+.pin-key.backspace {
+  font-size: 18px;
+  color: #9aafc4;
+}
+
+.pin-key.backspace:active {
+  background: rgba(154,175,196,0.18);
+}
+
+/* 0键 */
+.pin-key.zero .key-num {
+  font-size: 24px;
+}

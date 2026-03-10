@@ -1,0 +1,628 @@
+<!-- ===================== 聊天界面（独立全屏） ===================== -->
+<div id="liao-chat-view">
+  <div class="chat-view-topbar">
+    <button class="chat-view-back" id="chat-view-back">←</button>
+    <div class="chat-view-title" id="chat-view-title">聊天</div>
+    <button class="chat-settings-open-btn" id="chat-settings-open-btn" title="聊天设置">···</button>
+  </div>
+  <div class="chat-typing-indicator" id="chat-typing">
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+  </div>
+  <div class="chat-messages-area" id="liao-chat-messages"></div>
+
+  <!-- 引用预览条 -->
+  <div class="chat-quote-bar" id="chat-quote-bar" style="display:none;">
+    <div class="chat-quote-bar-inner">
+      <span class="chat-quote-bar-label">回复：</span>
+      <span class="chat-quote-bar-text" id="chat-quote-bar-text"></span>
+    </div>
+    <button class="chat-quote-bar-close" id="chat-quote-bar-close">×</button>
+  </div>
+
+  <!-- 表情包输入联想推荐栏 -->
+  <div class="emoji-suggest-bar" id="emoji-suggest-bar"></div>
+
+  <!-- 输入栏 -->
+  <div class="chat-view-inputbar" id="chat-view-inputbar">
+    <input class="chat-view-input" id="chat-view-input"
+      type="text" placeholder="说点什么…" autocomplete="off">
+    <button class="chat-view-placeholder-btn" id="chat-send-btn" title="发送">↑</button>
+  </div>
+
+  <!-- 特殊功能状态栏 -->
+  <div class="chat-special-bar" id="chat-special-bar">
+    <div class="chat-special-bar-inner" id="chat-special-bar-inner">
+      <button class="csb-btn" id="csb-ai" title="AI回复">
+        <span class="csb-icon">◈</span>
+        <span class="csb-label">AI</span>
+      </button>
+      <button class="csb-btn" id="csb-emoji" title="表情包">
+        <span class="csb-icon">◉</span>
+        <span class="csb-label">表情</span>
+      </button>
+      <button class="csb-btn" id="csb-voice" title="语音">
+        <span class="csb-icon">◎</span>
+        <span class="csb-label">语音</span>
+      </button>
+      <button class="csb-btn" id="csb-transfer" title="转账">
+        <span class="csb-icon">◇</span>
+        <span class="csb-label">转账</span>
+      </button>
+      <button class="csb-btn" id="csb-camera" title="拍摄">
+        <span class="csb-icon">▣</span>
+        <span class="csb-label">拍摄</span>
+      </button>
+      <button class="csb-btn" id="csb-image" title="图片">
+        <span class="csb-icon">▤</span>
+        <span class="csb-label">图片</span>
+      </button>
+      <button class="csb-btn" id="csb-rolephone" title="角色手机">
+        <span class="csb-icon">▦</span>
+        <span class="csb-label">手机</span>
+      </button>
+      <button class="csb-btn" id="csb-edit" title="编辑">
+        <span class="csb-icon">▧</span>
+        <span class="csb-label">编辑</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 表情包面板 -->
+  <div class="emoji-panel" id="emoji-panel" style="display:none;">
+    <div class="emoji-panel-sidebar" id="emoji-panel-sidebar">
+      <button class="emoji-sidebar-btn active" data-cat="all">全部</button>
+      <div id="emoji-cat-list"></div>
+      <button class="emoji-sidebar-btn" id="emoji-import-btn">导入</button>
+      <button class="emoji-sidebar-btn" id="emoji-manage-btn">管理</button>
+    </div>
+    <div class="emoji-panel-grid" id="emoji-panel-grid"></div>
+  </div>
+</div>
+
+<!-- ===================== 聊天设置界面（全屏） ===================== -->
+<div id="liao-chat-settings">
+  <div class="cs-topbar">
+    <button class="cs-close-btn" id="cs-close-btn">←</button>
+    <div class="cs-topbar-title">聊天设置</div>
+  </div>
+  <div class="cs-tabs">
+    <button class="cs-tab-btn active" data-cstab="cs-tab-role">角色设置</button>
+    <button class="cs-tab-btn" data-cstab="cs-tab-schedule">角色日程</button>
+    <button class="cs-tab-btn" data-cstab="cs-tab-memory">角色记忆</button>
+    <button class="cs-tab-btn" data-cstab="cs-tab-rolephone">角色手机</button>
+  </div>
+
+  <div class="cs-pages-wrap">
+
+    <!-- 第一页：角色设置 -->
+    <div class="cs-page active" id="cs-tab-role-page">
+      <div class="cs-page-scroll">
+
+        <div class="cs-section-title">角色信息</div>
+        <div class="cs-section-card">
+          <div class="liao-avatar-preview-row">
+            <img class="liao-avatar-preview" id="cs-role-avatar-preview"
+              src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=default" alt="">
+            <div class="liao-avatar-upload-btns">
+              <input class="liao-modal-input" id="cs-role-avatar-url" placeholder="头像 URL…">
+              <button class="liao-avatar-btn" id="cs-role-avatar-local-btn">本地上传</button>
+              <input type="file" id="cs-role-avatar-file" accept="image/*" style="display:none;">
+            </div>
+          </div>
+          <label class="liao-modal-label">角色备注名</label>
+          <input class="liao-modal-input" id="cs-role-nickname" placeholder="备注名…">
+          <label class="liao-modal-label">角色真名</label>
+          <input class="liao-modal-input" id="cs-role-realname" placeholder="真实名字…">
+          <label class="liao-modal-label">角色设定</label>
+          <textarea class="liao-modal-textarea" id="cs-role-setting"
+            placeholder="角色性格、背景、说话方式…" style="min-height:100px;"></textarea>
+          <div style="margin-top:12px;">
+            <button class="liao-btn-primary" id="cs-role-save-btn" style="width:100%;">保存角色设置</button>
+          </div>
+        </div>
+
+        <div class="cs-section-title">此聊天用户设置</div>
+        <div class="cs-section-card">
+          <div class="liao-avatar-preview-row">
+            <img class="liao-avatar-preview" id="cs-user-avatar-preview"
+              src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=user" alt="">
+            <div class="liao-avatar-upload-btns">
+              <input class="liao-modal-input" id="cs-user-avatar-url" placeholder="头像 URL…">
+              <button class="liao-avatar-btn" id="cs-user-avatar-local-btn">本地上传</button>
+              <input type="file" id="cs-user-avatar-file" accept="image/*" style="display:none;">
+            </div>
+          </div>
+          <label class="liao-modal-label">用户名字</label>
+          <input class="liao-modal-input" id="cs-user-name" placeholder="用户名…">
+          <label class="liao-modal-label">用户设定</label>
+          <textarea class="liao-modal-textarea" id="cs-user-setting"
+            placeholder="用户的身份、性格、与角色的关系…" style="min-height:80px;"></textarea>
+          <div style="margin-top:10px;">
+            <button class="liao-btn-ghost" id="cs-import-persona-btn" style="width:100%;">从我的人设库导入</button>
+          </div>
+          <div style="margin-top:12px;">
+            <button class="liao-btn-primary" id="cs-user-save-btn" style="width:100%;">保存用户设置</button>
+          </div>
+        </div>
+
+        <div class="cs-section-title">时间戳</div>
+        <div class="cs-section-card">
+          <div class="cs-row-item">
+            <span class="cs-row-label">隐藏时间戳</span>
+            <label class="cs-toggle">
+              <input type="checkbox" id="cs-hide-timestamp">
+              <span class="cs-toggle-slider"></span>
+            </label>
+          </div>
+          <div style="font-size:11px;color:var(--text-light);margin-top:6px;line-height:1.6;">
+            开启后时间戳变为完全透明，关闭后微透明显示。
+          </div>
+          <div style="margin-top:12px;">
+            <button class="liao-btn-primary" id="cs-timestamp-save-btn" style="width:100%;">保存</button>
+          </div>
+        </div>
+
+        <div class="cs-section-title">聊天美化</div>
+        <div class="cs-section-card">
+          <div class="cs-row-item" style="margin-bottom:12px;">
+            <div>
+              <div class="cs-row-label">使用预设气泡样式</div>
+              <div style="font-size:11px;color:var(--text-light);margin-top:3px;line-height:1.5;">
+                关闭后仅使用下方自定义 CSS，可完全控制聊天界面所有样式
+              </div>
+            </div>
+            <label class="cs-toggle" style="flex-shrink:0;margin-left:12px;">
+              <input type="checkbox" id="cs-use-preset-bubble" checked>
+              <span class="cs-toggle-slider"></span>
+            </label>
+          </div>
+          <div id="cs-preset-bubble-fields">
+            <label class="liao-modal-label">角色气泡颜色</label>
+            <div class="cs-color-row">
+              <input type="color" id="cs-role-bubble-color" value="#ffffff" class="cs-color-input">
+              <span class="cs-color-label">角色消息背景色</span>
+            </div>
+            <label class="liao-modal-label">用户气泡颜色</label>
+            <div class="cs-color-row">
+              <input type="color" id="cs-user-bubble-color" value="#99C8ED" class="cs-color-input">
+              <span class="cs-color-label">用户消息背景色</span>
+            </div>
+            <label class="liao-modal-label">角色气泡圆角（px）</label>
+            <input class="liao-modal-input" id="cs-role-bubble-radius" type="number" min="0" max="999" value="16">
+            <label class="liao-modal-label">用户气泡圆角（px）</label>
+            <input class="liao-modal-input" id="cs-user-bubble-radius" type="number" min="0" max="999" value="16">
+            <label class="liao-modal-label">字体大小（px）</label>
+            <input class="liao-modal-input" id="cs-font-size" type="number" min="10" max="22" value="13.5">
+          </div>
+          <label class="liao-modal-label" style="margin-top:14px;">自定义 CSS（可控制整个聊天界面）</label>
+          <div style="font-size:11px;color:var(--text-light);margin-bottom:6px;line-height:1.6;">
+            关闭预设气泡样式后，此处 CSS 完全接管聊天界面美化，选择器不受限制。
+          </div>
+          <textarea class="liao-modal-textarea" id="cs-custom-css"
+            placeholder=".chat-view-topbar { background: rgba(180,215,248,0.72); }&#10;.chat-messages-area { background: #f0f6ff; }"
+            style="min-height:120px;font-family:monospace;font-size:12px;"></textarea>
+          <div style="margin-top:12px;display:flex;gap:10px;">
+            <button class="liao-btn-primary" id="cs-beauty-save-btn" style="flex:1;">确定</button>
+            <button class="liao-btn-ghost" id="cs-beauty-reset-btn" style="flex:1;">重置</button>
+          </div>
+        </div>
+
+        <div class="cs-section-title">消息数量设置</div>
+        <div class="cs-section-card">
+          <label class="liao-modal-label">AI 可读取的消息数量（0 为无限）</label>
+          <input class="liao-modal-input" id="cs-max-api-msgs" type="number" min="0" value="0" placeholder="0">
+          <label class="liao-modal-label" style="margin-top:14px;">界面加载的消息数量</label>
+          <input class="liao-modal-input" id="cs-max-load-msgs" type="number" min="10" value="50" placeholder="50">
+          <label class="liao-modal-label" style="margin-top:14px;">每隔多少条消息自动触发 AI 总结记忆（0 为关闭）</label>
+          <input class="liao-modal-input" id="cs-auto-memory-interval" type="number" min="0" value="0" placeholder="0">
+          <div style="margin-top:12px;">
+            <button class="liao-btn-primary" id="cs-msgs-save-btn" style="width:100%;">保存</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 第二页：角色日程 -->
+    <div class="cs-page" id="cs-tab-schedule-page">
+      <div class="cs-page-scroll cs-coming-soon">
+        <div class="cs-coming-soon-icon">◷</div>
+        <div class="cs-coming-soon-text">角色日程</div>
+        <div class="cs-coming-soon-sub">功能建设中，敬请期待</div>
+      </div>
+    </div>
+
+    <!-- 第三页：角色记忆 -->
+    <div class="cs-page" id="cs-tab-memory-page">
+      <div class="memory-sub-tabs" id="memory-sub-tabs">
+        <button class="memory-sub-tab-btn active" data-memorytab="chat-memory">聊天记忆</button>
+        <button class="memory-sub-tab-btn" data-memorytab="other-memory">其他记忆</button>
+      </div>
+
+      <div class="memory-sub-page active" id="chat-memory-page">
+        <div class="cs-page-scroll">
+          <div class="memory-action-bar">
+            <button class="liao-btn-primary" id="memory-ai-summarize-btn" style="flex:1;">AI 总结记忆</button>
+            <button class="liao-btn-ghost" id="memory-manual-add-btn" style="flex:1;">手动添加记忆</button>
+          </div>
+          <div class="memory-add-form" id="memory-add-form" style="display:none;">
+            <div class="cs-section-card">
+              <label class="liao-modal-label">记忆内容</label>
+              <textarea class="liao-modal-textarea" id="memory-add-content"
+                placeholder="输入记忆内容…" style="min-height:70px;"></textarea>
+              <label class="liao-modal-label" style="margin-top:10px;">记忆类型</label>
+              <select class="liao-modal-input" id="memory-add-type">
+                <option value="long">长期记忆</option>
+                <option value="short">短期记忆</option>
+                <option value="important">重要记忆</option>
+              </select>
+              <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="liao-btn-primary" id="memory-add-confirm" style="flex:1;">确认</button>
+                <button class="liao-btn-ghost" id="memory-add-cancel" style="flex:1;">取消</button>
+              </div>
+            </div>
+          </div>
+          <div class="cs-section-title">长期记忆</div>
+          <div class="cs-section-card memory-list-card" id="memory-long-list">
+            <div class="memory-empty">暂无长期记忆</div>
+          </div>
+          <div class="cs-section-title">短期记忆</div>
+          <div class="cs-section-card memory-list-card" id="memory-short-list">
+            <div class="memory-empty">暂无短期记忆</div>
+          </div>
+          <div class="cs-section-title">重要记忆</div>
+          <div class="cs-section-card memory-list-card" id="memory-important-list">
+            <div class="memory-empty">暂无重要记忆</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="memory-sub-page" id="other-memory-page">
+        <div class="cs-page-scroll">
+          <div class="cs-section-title">其他 App 产生的记忆</div>
+          <div id="other-memory-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 第四页：角色手机设置 -->
+    <div class="cs-page" id="cs-tab-rolephone-page">
+      <div class="cs-page-scroll">
+
+        <!-- 密码设置 -->
+        <div class="cs-section-title">手机密码</div>
+        <div class="cs-section-card">
+          <div style="font-size:12px;color:var(--text-mid);margin-bottom:10px;line-height:1.6;">
+            当前密码状态：<span id="rp-pin-status" style="font-weight:600;color:var(--primary);">未设置</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="liao-btn-primary" id="rp-ai-gen-pin-btn" style="flex:1;">✦ AI 生成密码</button>
+            <button class="liao-btn-ghost" id="rp-manual-pin-btn" style="flex:1;">手动设置密码</button>
+            <button class="liao-btn-ghost" id="rp-clear-pin-btn"
+              style="flex:1;color:#e07a7a;border-color:rgba(224,122,122,0.35);">清除密码</button>
+          </div>
+          <div id="rp-pin-msg" style="font-size:11px;margin-top:8px;min-height:16px;color:#4caf84;"></div>
+        </div>
+
+        <!-- 手机美化 -->
+        <div class="cs-section-title">手机美化</div>
+        <div class="cs-section-card">
+
+          <label class="liao-modal-label">主页壁纸</label>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+            <input class="liao-modal-input" id="rp-wallpaper-url" placeholder="输入壁纸图片 URL…"
+              style="flex:1;margin-bottom:0;">
+            <button class="liao-avatar-btn" id="rp-wallpaper-local-btn" style="white-space:nowrap;">本地上传</button>
+            <input type="file" id="rp-wallpaper-file" accept="image/*" style="display:none;">
+          </div>
+
+          <label class="liao-modal-label">拍立得图片</label>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+            <input class="liao-modal-input" id="rp-polaroid-url" placeholder="输入拍立得图片 URL…"
+              style="flex:1;margin-bottom:0;">
+            <button class="liao-avatar-btn" id="rp-polaroid-local-btn" style="white-space:nowrap;">本地上传</button>
+            <input type="file" id="rp-polaroid-file" accept="image/*" style="display:none;">
+          </div>
+        </div>
+
+        <!-- 各 App 限制词 -->
+        <div class="cs-section-title">各 App AI 限制词</div>
+        <div class="cs-section-card">
+          <div style="font-size:11px;color:var(--text-light);margin-bottom:10px;line-height:1.6;">
+            为各 App 设置额外的提示词限制，会追加到 AI 生成指令中。
+          </div>
+          <label class="liao-modal-label">了了 App</label>
+          <textarea class="liao-modal-textarea" id="rp-limit-liao"
+            placeholder="例如：生成的聊天内容不得涉及…" style="min-height:60px;"></textarea>
+          <label class="liao-modal-label">便签 App</label>
+          <textarea class="liao-modal-textarea" id="rp-limit-notes"
+            placeholder="例如：日记内容风格要…" style="min-height:60px;"></textarea>
+          <label class="liao-modal-label">屏幕健康 App</label>
+          <textarea class="liao-modal-textarea" id="rp-limit-health"
+            placeholder="例如：某 App 使用时长不超过…" style="min-height:60px;"></textarea>
+          <label class="liao-modal-label">趣问 App</label>
+          <textarea class="liao-modal-textarea" id="rp-limit-forum"
+            placeholder="例如：帖子话题倾向于…" style="min-height:60px;"></textarea>
+        </div>
+
+        <!-- 自定义 App 图标 -->
+        <div class="cs-section-title">自定义 App 图标</div>
+        <div class="cs-section-card">
+          <div style="font-size:11px;color:var(--text-light);margin-bottom:10px;line-height:1.6;">
+            输入图标图片 URL，留空则使用默认 emoji 图标。
+          </div>
+          <label class="liao-modal-label">了了图标 URL</label>
+          <input class="liao-modal-input" id="rp-icon-liao" placeholder="https://…">
+          <label class="liao-modal-label">便签图标 URL</label>
+          <input class="liao-modal-input" id="rp-icon-notes" placeholder="https://…">
+          <label class="liao-modal-label">屏幕健康图标 URL</label>
+          <input class="liao-modal-input" id="rp-icon-health" placeholder="https://…">
+          <label class="liao-modal-label">趣问图标 URL</label>
+          <input class="liao-modal-input" id="rp-icon-forum" placeholder="https://…">
+        </div>
+
+        <!-- 保存按钮 -->
+        <div style="margin-top:16px;padding:0 0 20px;">
+          <button class="liao-btn-primary" id="rp-settings-save-btn" style="width:100%;">保存角色手机设置</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== 记忆条目编辑弹窗 ===================== -->
+<div id="liao-memory-edit-modal" class="liao-bubble-modal" style="display:none;">
+  <div class="liao-bubble-modal-box">
+    <div class="liao-modal-title">编辑记忆</div>
+    <label class="liao-modal-label">记忆内容</label>
+    <textarea class="liao-modal-textarea" id="memory-edit-content" style="min-height:80px;"></textarea>
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="memory-edit-confirm">保存</button>
+      <button class="liao-btn-ghost" id="memory-edit-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 语音输入气泡弹窗 ===================== -->
+<div id="liao-voice-modal" class="liao-bubble-modal" style="display:none;">
+  <div class="liao-bubble-modal-box">
+    <div class="liao-modal-title">发送语音</div>
+    <input class="liao-modal-input" id="liao-voice-input" placeholder="输入语音内容…">
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-voice-confirm">发送</button>
+      <button class="liao-btn-ghost" id="liao-voice-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 转账弹窗 ===================== -->
+<div id="liao-transfer-modal" class="liao-bubble-modal" style="display:none;">
+  <div class="liao-bubble-modal-box">
+    <div class="liao-modal-title">转账</div>
+    <label class="liao-modal-label">金额（元）</label>
+    <input class="liao-modal-input" id="liao-transfer-amount" type="number" min="0.01" step="0.01" placeholder="0.00">
+    <label class="liao-modal-label">转账备注</label>
+    <input class="liao-modal-input" id="liao-transfer-note" placeholder="备注（可选）">
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-transfer-confirm">确定</button>
+      <button class="liao-btn-ghost" id="liao-transfer-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 拍摄（假图片）弹窗 ===================== -->
+<div id="liao-camera-modal" class="liao-bubble-modal" style="display:none;">
+  <div class="liao-bubble-modal-box">
+    <div class="liao-modal-title">发送照片</div>
+    <label class="liao-modal-label">照片描述</label>
+    <textarea class="liao-modal-textarea" id="liao-camera-desc" placeholder="描述这张照片的内容…" style="min-height:70px;"></textarea>
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-camera-confirm">发送</button>
+      <button class="liao-btn-ghost" id="liao-camera-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 本地/URL图片发送弹窗 ===================== -->
+<div id="liao-image-modal" class="liao-bubble-modal" style="display:none;">
+  <div class="liao-bubble-modal-box">
+    <div class="liao-modal-title">发送图片</div>
+    <label class="liao-modal-label">图片 URL</label>
+    <input class="liao-modal-input" id="liao-image-url" placeholder="https://…">
+    <div style="margin:8px 0 4px;font-size:11.5px;color:var(--text-mid);">或</div>
+    <button class="liao-btn-ghost" id="liao-image-local-btn" style="width:100%;margin-bottom:8px;">本地选择图片</button>
+    <input type="file" id="liao-image-local-file" accept="image/*" style="display:none;">
+    <img id="liao-image-preview" style="display:none;width:100%;max-height:160px;object-fit:contain;border-radius:10px;margin-bottom:8px;" alt="">
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-image-confirm">发送</button>
+      <button class="liao-btn-ghost" id="liao-image-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 表情包导入弹窗 ===================== -->
+<div id="liao-emoji-import-modal" class="liao-bubble-modal" style="display:none;">
+  <div class="liao-bubble-modal-box" style="max-height:80dvh;overflow-y:auto;">
+    <div class="liao-modal-title">导入表情包</div>
+    <label class="liao-modal-label">批量 URL 导入（每行一条，格式：名称:URL）</label>
+    <textarea class="liao-modal-textarea" id="liao-emoji-batch-input"
+      placeholder="表情包名称:https://example.com/img.jpg"
+      style="min-height:100px;font-size:12px;"></textarea>
+    <label class="liao-modal-label" style="margin-top:10px;">导入到分类</label>
+    <div id="liao-emoji-import-cat-wrap" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>
+    <input class="liao-modal-input" id="liao-emoji-import-new-cat" placeholder="或新建分类名…">
+    <div style="margin:8px 0 4px;font-size:11.5px;color:var(--text-mid);">或本地批量上传</div>
+    <button class="liao-btn-ghost" id="liao-emoji-local-btn" style="width:100%;margin-bottom:8px;">选择本地图片（可多选）</button>
+    <input type="file" id="liao-emoji-local-file" accept="image/*" multiple style="display:none;">
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-emoji-import-confirm">导入</button>
+      <button class="liao-btn-ghost" id="liao-emoji-import-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 表情包管理弹窗 ===================== -->
+<div id="liao-emoji-manage-modal" class="liao-bubble-modal" style="display:none;">
+  <div class="liao-bubble-modal-box" style="max-height:85dvh;overflow-y:auto;">
+    <div class="liao-modal-title">管理表情包</div>
+    <div id="liao-emoji-manage-cats" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
+    <div id="liao-emoji-manage-grid" class="emoji-manage-grid"></div>
+    <div class="liao-modal-btns" style="flex-wrap:wrap;gap:8px;">
+      <button class="liao-btn-ghost" id="liao-emoji-manage-delete" style="flex:1;">删除选中</button>
+      <button class="liao-btn-ghost" id="liao-emoji-manage-move" style="flex:1;">移动到分类</button>
+      <button class="liao-btn-ghost" id="liao-emoji-manage-export" style="flex:1;">批量导出</button>
+      <button class="liao-btn-primary" id="liao-emoji-manage-close" style="flex:1;">完成</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 假图片查看弹窗 ===================== -->
+<div id="liao-fake-photo-modal" class="liao-bubble-modal" style="display:none;">
+  <div class="liao-bubble-modal-box">
+    <div class="liao-modal-title">照片</div>
+    <div id="liao-fake-photo-content" style="font-size:13px;color:var(--text-dark);line-height:1.7;padding:8px 0;"></div>
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-fake-photo-close">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 消息操作菜单 ===================== -->
+<div id="liao-msg-action-menu" style="display:none;">
+  <div class="msg-action-menu-box" id="liao-msg-action-box"></div>
+</div>
+
+<!-- ===================== 消息编辑弹窗 ===================== -->
+<div id="liao-msg-edit-modal" class="liao-bubble-modal" style="display:none;">
+  <div class="liao-bubble-modal-box">
+    <div class="liao-modal-title">编辑消息</div>
+    <label class="liao-modal-label">消息内容</label>
+    <textarea class="liao-modal-textarea" id="liao-msg-edit-content" style="min-height:80px;"></textarea>
+    <label class="liao-modal-label">时间（年-月-日 时:分:秒）</label>
+    <input class="liao-modal-input" id="liao-msg-edit-time" placeholder="2024-01-01 12:00:00">
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-msg-edit-confirm">保存</button>
+      <button class="liao-btn-ghost" id="liao-msg-edit-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 从人设库导入弹窗 ===================== -->
+<div id="liao-persona-pick-modal" class="liao-bubble-modal" style="display:none;">
+  <div class="liao-bubble-modal-box" style="max-height:80dvh;overflow-y:auto;">
+    <div class="liao-modal-title">选择人设</div>
+    <div id="liao-persona-pick-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
+    <div class="liao-modal-btns">
+      <button class="liao-btn-ghost" id="liao-persona-pick-cancel" style="flex:1;">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 撤回消息查看弹窗 ===================== -->
+<div id="liao-recall-view-modal" class="liao-bubble-modal" style="display:none;">
+  <div class="liao-bubble-modal-box">
+    <div class="liao-modal-title">已撤回的消息</div>
+    <div id="liao-recall-view-content" style="font-size:13px;color:var(--text-dark);line-height:1.7;padding:8px 0;"></div>
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-recall-view-close">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 语音内容查看弹窗 ===================== -->
+<div id="liao-voice-view-modal" class="liao-bubble-modal" style="display:none;">
+  <div class="liao-bubble-modal-box">
+    <div class="liao-modal-title">语音内容</div>
+    <div id="liao-voice-view-content" style="font-size:13px;color:var(--text-dark);line-height:1.7;padding:8px 0;"></div>
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="liao-voice-view-close">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 编辑模式工具栏 ===================== -->
+<div id="edit-mode-toolbar" style="display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:550;
+  background:rgba(44,52,72,0.96);backdrop-filter:blur(14px);
+  padding:10px 14px 28px;flex-direction:row;
+  align-items:center;justify-content:space-between;gap:8px;">
+  <span id="edit-mode-select-count"
+    style="font-size:12px;color:rgba(255,255,255,0.7);flex-shrink:0;">
+    双击消息可多选
+  </span>
+  <button id="edit-mode-delete-selected"
+    style="background:#e05c5c;color:#fff;border:none;border-radius:999px;
+    padding:8px 16px;font-size:12px;font-family:inherit;cursor:pointer;
+    -webkit-appearance:none;flex-shrink:0;">
+    删除选中
+  </button>
+  <button id="edit-mode-exit"
+    style="background:rgba(255,255,255,0.15);color:#fff;border:none;
+    border-radius:999px;padding:8px 16px;font-size:12px;
+    font-family:inherit;cursor:pointer;-webkit-appearance:none;flex-shrink:0;">
+    退出编辑
+  </button>
+</div>
+
+<!-- ===================== 编辑模式单条消息编辑面板 ===================== -->
+<div id="edit-mode-panel" style="display:none;
+  position:fixed;inset:0;z-index:560;
+  background:rgba(26,31,46,0.45);backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  align-items:flex-end;justify-content:center;">
+  <div   style="background:#fff;border-radius:22px 22px 0 0;width:100%;
+    max-width:480px;padding:22px 18px 40px;
+    display:flex;flex-direction:column;gap:10px;">
+    <div style="font-size:15px;font-weight:700;color:var(--text-dark);
+      text-align:center;margin-bottom:4px;">编辑消息</div>
+
+    <label style="font-size:11.5px;color:var(--text-mid);">消息内容</label>
+    <textarea id="edit-mode-content"
+      style="width:100%;min-height:90px;border:1.5px solid var(--light-blue,#B3D8F4);
+      border-radius:10px;padding:10px 12px;font-size:13px;
+      color:var(--text-dark);background:var(--bg2,#F8F9FA);
+      outline:none;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+
+    <label style="font-size:11.5px;color:var(--text-mid);">时间（年-月-日 时:分:秒）</label>
+    <input id="edit-mode-time" type="text" placeholder="2024-01-01 12:00:00"
+      style="width:100%;border:1.5px solid var(--light-blue,#B3D8F4);
+      border-radius:10px;padding:10px 12px;font-size:13px;
+      color:var(--text-dark);background:var(--bg2,#F8F9FA);
+      outline:none;font-family:inherit;box-sizing:border-box;">
+
+    <button id="edit-mode-fix-ts"
+      style="width:100%;background:rgba(153,200,237,0.18);
+      color:var(--primary,#99C8ED);border:1.5px solid var(--light-blue,#B3D8F4);
+      border-radius:10px;padding:10px;font-size:13px;font-weight:600;
+      font-family:inherit;cursor:pointer;-webkit-appearance:none;">
+      🔧 一键清除 [ts:] 并自动拆分多条消息
+    </button>
+
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <button id="edit-mode-save"
+        style="flex:1;background:var(--primary,#99C8ED);color:#fff;border:none;
+        border-radius:999px;padding:11px;font-size:13px;font-weight:600;
+        font-family:inherit;cursor:pointer;-webkit-appearance:none;">
+        保存
+      </button>
+      <button id="edit-mode-delete"
+        style="flex:1;background:#fff0f0;color:#e05c5c;
+        border:1.5px solid #f5c0c0;border-radius:999px;padding:11px;
+        font-size:13px;font-family:inherit;cursor:pointer;-webkit-appearance:none;">
+        删除本条
+      </button>
+      <button id="edit-mode-cancel"
+        style="flex:1;background:var(--bg2,#F8F9FA);color:var(--text-mid);
+        border:1.5px solid var(--light-blue,#B3D8F4);border-radius:999px;
+        padding:11px;font-size:13px;font-family:inherit;cursor:pointer;
+        -webkit-appearance:none;">
+        取消
+      </button>
+    </div>
+  </div>
+</div>
+

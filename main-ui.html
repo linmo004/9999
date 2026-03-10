@@ -1,0 +1,258 @@
+<!-- 全屏竖向容器：状态栏 + 页面内容，随 body 壁纸显示 -->
+<div id="screen-wrap">
+
+  <!-- 顶部状态栏 -->
+  <div id="status-bar">
+    <div id="status-time">00:00</div>
+    <div id="status-watermark">MX_4</div>
+  </div>
+
+  <!-- 页面横滑容器 -->
+  <div id="pages-wrap">
+
+    <!-- 第一页（不修改） -->
+    <div class="page" id="page1">
+      <div id="page1-inner">
+        <div id="date-capsule">
+          <div id="date-left">
+            <div id="date-year-month"></div>
+            <div id="date-day"></div>
+            <div id="date-lunar"></div>
+          </div>
+          <div class="cd-divider"></div>
+          <div id="countdown-right">
+            <div id="cd-label">加载中…</div>
+            <div id="cd-number">—</div>
+            <div id="cd-unit">天</div>
+          </div>
+        </div>
+
+        <div id="msg-widget">
+          <div class="msg-row">
+            <img class="msg-avatar" id="msg-avatar-0" src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=luna" alt="">
+            <div class="msg-bubbles" id="msg-bubbles-0">
+              <div class="msg-bubble">你好呀，今天过得怎么样？</div>
+            </div>
+          </div>
+          <div class="msg-row">
+            <img class="msg-avatar" id="msg-avatar-1" src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=nova" alt="">
+            <div class="msg-bubbles" id="msg-bubbles-1">
+              <div class="msg-bubble">HALO·九 已上线</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="mid-row">
+          <div id="left-col">
+            <div id="user-card">
+              <img id="user-avatar" src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=halo9" alt="头像">
+              <div id="user-sig"></div>
+            </div>
+            <div id="four-apps">
+              <div class="app-item" data-app="0">
+                <img class="app-icon" src="https://img.icons8.com/fluency/96/music.png" alt="">
+                <div class="app-name">音乐</div>
+              </div>
+              <div class="app-item" data-app="worldbook">
+                <img class="app-icon" src="https://img.icons8.com/fluency/96/book-reading.png" alt="">
+                <div class="app-name">世界书</div>
+              </div>
+              <div class="app-item" data-app="2">
+                <img class="app-icon" src="https://img.icons8.com/fluency/96/calendar--v1.png" alt="">
+                <div class="app-name">日历</div>
+              </div>
+              <div class="app-item" data-app="3">
+                <img class="app-icon" src="https://img.icons8.com/fluency/96/gallery.png" alt="">
+                <div class="app-name">相册</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="right-col">
+            <div id="two-apps">
+              <div class="app-item" data-app="chat">
+                <img class="app-icon" src="https://img.icons8.com/fluency/96/chat.png" alt="">
+                <div class="app-name">了了</div>
+              </div>
+              <div class="app-item" data-app="settings">
+                <img class="app-icon" src="https://img.icons8.com/fluency/96/settings.png" alt="">
+                <div class="app-name">设置</div>
+              </div>
+            </div>
+            <div id="carousel-widget">
+              <img id="carousel-img" src="" alt="" style="opacity:0;">
+              <div id="carousel-placeholder">
+                <div class="plus-icon">+</div>
+                <div>点击添加图片</div>
+              </div>
+            </div>
+            <div id="text-bars">
+              <div class="text-bar" id="text-bar-0">
+                <span class="text-bar-content" id="text-bar-content-0" data-bar="0"></span>
+                <span class="text-bar-placeholder" id="text-bar-placeholder-0">点击写点什么…</span>
+              </div>
+              <div class="text-bar text-bar-offset" id="text-bar-1">
+                <span class="text-bar-content" id="text-bar-content-1" data-bar="1"></span>
+                <span class="text-bar-placeholder" id="text-bar-placeholder-1">再写一行…</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 第二页 -->
+    <div class="page" id="page2">
+      <div id="page2-inner">
+
+        <!-- 模块一：用户主页卡 -->
+<div class="p2-section p2-section-uc">
+  <div class="p2-user-card" id="p2-user-card">
+    <!-- 背景图层（最底层，点击换背景） -->
+    <div class="p2-uc-bg" id="p2-uc-bg"></div>
+    <!-- 白色渐变蒙版（压在背景上，在头像和信息下层） -->
+    <div class="p2-uc-gradient"></div>
+    <!-- 头像（点击换头像，在渐变上层） -->
+    <div class="p2-uc-avatar-wrap" id="p2-uc-avatar-wrap">
+      <img class="p2-uc-avatar" id="p2-uc-avatar"
+        src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=halo9" alt="">
+    </div>
+    <!-- 用户信息区（在渐变上层） -->
+    <div class="p2-uc-info">
+      <div class="p2-uc-name" id="p2-uc-name">点击填写用户名</div>
+      <div class="p2-uc-uid" id="p2-uc-uid"># 点击填写账户码</div>
+      <div class="p2-uc-stats">
+        <div class="p2-uc-stat" id="p2-uc-fans">
+          <span class="p2-uc-stat-num" id="p2-uc-fans-num">0</span>
+          <span class="p2-uc-stat-label">粉丝</span>
+        </div>
+        <div class="p2-uc-stat-divider"></div>
+        <div class="p2-uc-stat" id="p2-uc-likes">
+          <span class="p2-uc-stat-num" id="p2-uc-likes-num">0</span>
+          <span class="p2-uc-stat-label">获赞</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+        <!-- 模块二：小卡图片横排（点击换图，无加号） -->
+        <div class="p2-section p2-section-cards">
+          <div class="p2-cards-scroll">
+            <div class="p2-cards-widget" id="p2-cards-widget">
+              <div class="p2-card-item" data-card="0">
+                <img class="p2-card-img" id="p2-card-img-0" src="" alt="">
+                <div class="p2-card-empty"></div>
+              </div>
+              <div class="p2-card-item" data-card="1">
+                <img class="p2-card-img" id="p2-card-img-1" src="" alt="">
+                <div class="p2-card-empty"></div>
+              </div>
+              <div class="p2-card-item" data-card="2">
+                <img class="p2-card-img" id="p2-card-img-2" src="" alt="">
+                <div class="p2-card-empty"></div>
+              </div>
+              <div class="p2-card-item" data-card="3">
+                <img class="p2-card-img" id="p2-card-img-3" src="" alt="">
+                <div class="p2-card-empty"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 模块三：专辑 + App（点击专辑换封面，点击CD非金属区换CD图，无加号） -->
+        <div class="p2-section">
+          <div class="p2-bottom-row">
+            <!-- 左：专辑 + CD -->
+            <div class="p2-album-outer">
+              <!-- 专辑主体（点击换封面） -->
+              <div class="p2-album-widget" id="p2-album-widget">
+                <div class="p2-album-bg" id="p2-album-bg"></div>
+                <div class="p2-album-border"></div>
+              </div>
+              <!-- CD（左2/3压专辑，右1/3伸出，点击CD中心区换图） -->
+              <div class="p2-cd-wrap" id="p2-cd-wrap">
+                <div class="p2-cd" id="p2-cd">
+                  <!-- 金属光泽外环（不可点击换图） -->
+                  <div class="p2-cd-ring p2-cd-r1"></div>
+                  <!-- 深色内环 -->
+                  <div class="p2-cd-ring p2-cd-r2"></div>
+                  <!-- 彩虹环（可点击，换CD图） -->
+                  <div class="p2-cd-ring p2-cd-r3" id="p2-cd-clickable"></div>
+                  <!-- 中心深色 -->
+                  <div class="p2-cd-ring p2-cd-r4"></div>
+                  <!-- 中心孔 -->
+                  <div class="p2-cd-hole"></div>
+                </div>
+              </div>
+            </div>
+            <!-- 右：4个App -->
+            <div class="p2-apps-grid">
+              <div class="app-item" data-app="p2-app-0">
+                <img class="app-icon" src="https://img.icons8.com/fluency/96/note.png" alt="">
+                <div class="app-name">备忘录</div>
+              </div>
+              <div class="app-item" data-app="p2-app-1">
+                <img class="app-icon" src="https://img.icons8.com/fluency/96/alarm.png" alt="">
+                <div class="app-name">闹钟</div>
+              </div>
+              <div class="app-item" data-app="p2-app-2">
+                <img class="app-icon" src="https://img.icons8.com/fluency/96/map.png" alt="">
+                <div class="app-name">地图</div>
+              </div>
+              <div class="app-item" data-app="p2-app-3">
+                <img class="app-icon" src="https://img.icons8.com/fluency/96/star.png" alt="">
+                <div class="app-name">收藏</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 第三页（空白） -->
+    <div class="page" id="page3"></div>
+
+  </div><!-- /pages-wrap -->
+
+</div><!-- /screen-wrap -->
+
+<!-- 共用图片更换弹窗 -->
+<div class="p2-img-modal-mask" id="p2-img-modal" style="display:none;">
+  <div class="p2-img-modal-box">
+    <div class="p2-img-modal-title" id="p2-img-modal-title">更换图片</div>
+    <input class="p2-img-modal-input" id="p2-img-modal-url" placeholder="粘贴图片 URL…" />
+    <div class="p2-img-modal-or">或</div>
+    <label class="p2-img-modal-file-btn">
+      从本地上传
+      <input type="file" accept="image/*" id="p2-img-modal-file" style="display:none;">
+    </label>
+    <div class="p2-img-modal-actions">
+      <button class="p2-img-modal-cancel" id="p2-img-modal-cancel">取消</button>
+      <button class="p2-img-modal-confirm" id="p2-img-modal-confirm">确认</button>
+    </div>
+  </div>
+</div>
+
+<div id="page-dots">
+  <div class="dot active" data-page="0"></div>
+  <div class="dot" data-page="1"></div>
+  <div class="dot" data-page="2"></div>
+</div>
+
+<div id="dock">
+  <div class="app-item" id="dock-chat">
+    <img class="app-icon" src="https://img.icons8.com/fluency/96/chat.png" alt="">
+    <div class="app-name">了了</div>
+  </div>
+  <div class="app-item" id="dock-home">
+    <img class="app-icon" src="https://img.icons8.com/fluency/96/cottage.png" alt="">
+    <div class="app-name">家园</div>
+  </div>
+  <div class="app-item" id="dock-settings">
+    <img class="app-icon" src="https://img.icons8.com/fluency/96/settings.png" alt="">
+    <div class="app-name">设置</div>
+  </div>
+</div>

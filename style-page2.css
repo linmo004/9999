@@ -1,0 +1,589 @@
+/* ============================================================
+   第二页 — 韩系偶像风 v3
+   只影响 #page2-inner 及其子元素
+   ============================================================ */
+
+#page2-inner {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 14px 0;
+  gap: 0;
+  min-height: 100%;
+}
+
+/* ---- section 通用间距（紧凑一点） ---- */
+.p2-section {
+  margin-bottom: 16px;
+}
+
+/* ============================================================
+   模块一：用户主页卡
+   ============================================================ */
+.p2-section-uc {
+  display: flex;
+  justify-content: center;
+}
+
+.p2-user-card {
+  position: relative;
+  width: 72%;
+  aspect-ratio: 5 / 4;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(145deg, #c8e4f8 0%, #dbeeff 55%, #eef6ff 100%);
+  box-shadow: 0 8px 32px rgba(80,140,200,0.22), 0 2px 8px rgba(80,140,200,0.10);
+  border: 1.5px solid rgba(153,200,237,0.30);
+  cursor: pointer;
+}
+
+/* 背景图层 z-index:0 */
+.p2-uc-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: opacity 0.4s;
+}
+
+/* 白色渐变蒙版 z-index:1，只压背景 */
+.p2-uc-gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 65%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(240,248,255,0.97) 0%,
+    rgba(235,245,255,0.88) 30%,
+    rgba(230,242,255,0.55) 60%,
+    rgba(255,255,255,0.00) 100%
+  );
+}
+
+/* 头像容器 z-index:3，在渐变上层，点击换头像 */
+.p2-uc-avatar-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -80%);
+  z-index: 3;
+  cursor: pointer;
+}
+
+.p2-uc-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 3px 14px rgba(80,130,190,0.28);
+  display: block;
+  background: #d6e8f7;
+}
+
+/* 用户信息区 z-index:3 */
+.p2-uc-info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  padding: 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  pointer-events: none;
+}
+
+/* 信息区内元素恢复可点击 */
+.p2-uc-info * {
+  pointer-events: auto;
+}
+
+/* 用户名 */
+.p2-uc-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2c3448;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  line-height: 1.3;
+  text-align: center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.p2-uc-name:active {
+  background: rgba(153,200,237,0.18);
+}
+/* 未填写时占位色 */
+.p2-uc-name.p2-placeholder {
+  color: #9aafc4;
+  font-weight: 400;
+  font-size: 11px;
+}
+
+/* 账户码 */
+.p2-uc-uid {
+  font-size: 10px;
+  color: #8aa0b8;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-align: center;
+  padding: 1px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+  font-weight: 400;
+}
+.p2-uc-uid:active {
+  background: rgba(153,200,237,0.18);
+}
+.p2-uc-uid.p2-placeholder {
+  color: #b0c4d8;
+}
+
+/* 粉丝/获赞行 */
+.p2-uc-stats {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 2px;
+}
+
+.p2-uc-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 3px 14px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.p2-uc-stat:active {
+  background: rgba(153,200,237,0.18);
+}
+
+.p2-uc-stat-num {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2c3448;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.p2-uc-stat-num.p2-placeholder {
+  color: #9aafc4;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.p2-uc-stat-label {
+  font-size: 9px;
+  color: #8aa0b8;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+
+/* 分隔线 */
+.p2-uc-stat-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(153,200,237,0.35);
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   模块二：小卡横排（整体放大，与上下模块不相碰）
+   ============================================================ */
+.p2-section-cards {
+  margin-bottom: 18px;
+  margin-top: 2px;
+}
+
+.p2-cards-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px 6px 18px;
+  scrollbar-width: none;
+}
+.p2-cards-scroll::-webkit-scrollbar { display: none; }
+
+.p2-cards-widget {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  min-width: 100%;
+  padding: 6px 14px;
+  gap: 0;
+}
+
+/* 小卡尺寸放大：宽约23vw，最大88px */
+.p2-card-item {
+  position: relative;
+  width: calc(23vw - 2px);
+  max-width: 88px;
+  aspect-ratio: 55 / 85;
+  border-radius: 9px;
+  overflow: hidden;
+  background: #ddeef8;
+  border: 1.5px solid rgba(153,200,237,0.32);
+  box-shadow: 0 5px 16px rgba(80,130,190,0.18);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+
+/* 四张小卡角度偏移，自然层叠 */
+.p2-card-item:nth-child(1) {
+  transform: rotate(-4deg) translateY(5px);
+  z-index: 1;
+  margin-right: -8px;
+}
+.p2-card-item:nth-child(2) {
+  transform: rotate(5deg) translateY(-4px);
+  z-index: 2;
+  margin-right: -8px;
+}
+.p2-card-item:nth-child(3) {
+  transform: rotate(-3.5deg) translateY(6px);
+  z-index: 3;
+  margin-right: -8px;
+}
+.p2-card-item:nth-child(4) {
+  transform: rotate(4.5deg) translateY(-3px);
+  z-index: 4;
+}
+
+.p2-card-item:active {
+  box-shadow: 0 8px 24px rgba(80,130,190,0.32);
+  z-index: 10;
+  transform: scale(1.06) rotate(0deg) !important;
+}
+
+.p2-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+/* src 空时隐藏 */
+.p2-card-img[src=""],
+.p2-card-img:not([src]) {
+  display: none;
+}
+
+/* 空白占位（无加号，淡色背景即可） */
+.p2-card-empty {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #ddeef8 0%, #c8e0f0 100%);
+  z-index: 0;
+}
+
+/* 有图时隐藏空白占位 */
+.p2-card-item:has(.p2-card-img[src]:not([src=""])) .p2-card-empty {
+  display: none;
+}
+
+/* ============================================================
+   模块三：专辑 + App
+   ============================================================ */
+.p2-bottom-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  /* 专辑左边框对齐第二模块最左边，整体不靠右不靠左 */
+  justify-content: flex-start;
+  padding-left: 6px;   /* 与 p2-cards-scroll padding-left 的 6px 对齐 */
+}
+
+/* 专辑外层（overflow visible 让CD溢出） */
+.p2-album-outer {
+  position: relative;
+  flex-shrink: 0;
+  /* 专辑100px宽，CD右1/3=26px溢出，总占126px */
+  width: 126px;
+  height: 100px;
+  /* 向右偏移，使专辑中心落在卡片1-2重叠区正下方
+     卡片1-2重叠区大约在距离左边 (卡片1宽 + 卡片2宽*0.5 - 重叠量) 处
+     实测约在页面左侧 23vw 附近，这里用 margin-left 微调 */
+  margin-left: calc(23vw - 56px);
+  /* 限制：专辑左边不超过第二模块左边框（padding-left=6px之后起算0） */
+  /* max 保证 margin-left 不为负 */
+}
+
+/* 专辑主体（100x100） */
+.p2-album-widget {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(145deg, #1a1f2e 0%, #2c3a54 100%);
+  box-shadow:
+    0 4px 16px rgba(40,60,100,0.30),
+    inset 0 0 0 1px rgba(153,200,237,0.14),
+    3px 0 0 0 rgba(153,200,237,0.28);
+  border: 1.5px solid rgba(153,200,237,0.18);
+  z-index: 1;
+  cursor: pointer;
+}
+
+.p2-album-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  opacity: 0.60;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.p2-album-border {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  right: 0;
+  width: 3px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(153,200,237,0.50) 28%,
+    rgba(153,200,237,0.85) 50%,
+    rgba(153,200,237,0.50) 72%,
+    transparent 100%
+  );
+  z-index: 2;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+/* CD 定位：左2/3压专辑，右1/3伸出 */
+.p2-cd-wrap {
+  position: absolute;
+  top: 11px;
+  left: 48px;
+  z-index: 3;
+  width: 78px;
+  height: 78px;
+}
+
+.p2-cd {
+  position: relative;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  animation: p2-cd-spin 9s linear infinite;
+  cursor: pointer;
+}
+
+@keyframes p2-cd-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.p2-cd-ring {
+  position: absolute;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.p2-cd-r1 {
+  width: 78px;
+  height: 78px;
+  background: conic-gradient(
+    #c8d8e8 0deg, #f0f6fc 35deg, #a8c0d8 75deg,
+    #e0eef8 115deg, #b8cce0 155deg, #f2f8fe 195deg,
+    #9ab4cc 235deg, #d8eaf8 275deg, #b0c8de 315deg,
+    #c8d8e8 360deg
+  );
+  box-shadow:
+    0 0 0 1px rgba(153,200,237,0.40),
+    0 2px 10px rgba(60,100,160,0.35),
+    inset 0 0 6px rgba(255,255,255,0.18);
+  pointer-events: none;
+}
+
+.p2-cd-r2 {
+  width: 58px;
+  height: 58px;
+  background: conic-gradient(
+    #1a2438 0deg, #2e4060 50deg, #182030 100deg,
+    #243248 150deg, #1c2840 200deg, #304462 250deg,
+    #1a2438 300deg, #263a52 350deg, #1a2438 360deg
+  );
+  box-shadow: inset 0 0 6px rgba(255,255,255,0.06);
+}
+
+.p2-cd-r3 {
+  width: 40px;
+  height: 40px;
+  background: conic-gradient(
+    #b8cce0 0deg, #d8eaf8 55deg, #99C8ED 110deg,
+    #c4d8ec 165deg, #b0c8e0 220deg, #daeaf8 275deg,
+    #b8cce0 360deg
+  );
+  box-shadow: 0 0 8px rgba(153,200,237,0.45);
+  cursor: pointer;
+}
+
+.p2-cd-r4 {
+  width: 24px;
+  height: 24px;
+  background: conic-gradient(
+    #1e2c42 0deg, #2e4060 80deg,
+    #1a2438 160deg, #263a52 240deg, #1e2c42 360deg
+  );
+  cursor: pointer;
+}
+
+.p2-cd-hole {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #f5f5f0 0%, #e0e0d8 100%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  box-shadow: 0 0 3px rgba(0,0,0,0.28), inset 0 1px 2px rgba(255,255,255,0.55);
+  pointer-events: none;
+}
+
+/* App 网格：学习主页 four-apps 间距风格，紧凑不松散 */
+.p2-apps-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 8px;
+  justify-items: center;
+  align-items: start;
+  padding: 0 4px;
+}
+
+
+/* ============================================================
+   共用图片更换弹窗
+   ============================================================ */
+.p2-img-modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 700;
+  background: rgba(0,0,0,0.42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.p2-img-modal-box {
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px 20px 18px;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 0 8px 36px rgba(80,120,180,0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.p2-img-modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2c3448;
+  margin-bottom: 2px;
+}
+
+.p2-img-modal-input {
+  border: 1.5px solid rgba(153,200,237,0.40);
+  border-radius: 10px;
+  padding: 8px 11px;
+  font-size: 13px;
+  color: #2c3448;
+  background: #f5f8fc;
+  outline: none;
+  font-family: inherit;
+  width: 100%;
+}
+.p2-img-modal-input:focus {
+  border-color: #99C8ED;
+  background: #fff;
+}
+
+.p2-img-modal-or {
+  text-align: center;
+  font-size: 11px;
+  color: #9aafc4;
+}
+
+.p2-img-modal-file-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px dashed rgba(153,200,237,0.50);
+  border-radius: 10px;
+  padding: 9px;
+  font-size: 13px;
+  color: #7a9abf;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.18s;
+}
+.p2-img-modal-file-btn:active { background: rgba(153,200,237,0.10); }
+
+.p2-img-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+  justify-content: flex-end;
+}
+
+.p2-img-modal-cancel {
+  background: none;
+  border: 1.5px solid rgba(153,200,237,0.40);
+  border-radius: 10px;
+  color: #5a6a80;
+  font-size: 13px;
+  padding: 7px 16px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.p2-img-modal-confirm {
+  background: #99C8ED;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 18px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.p2-img-modal-confirm:active { opacity: 0.82; }

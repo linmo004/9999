@@ -1,0 +1,153 @@
+<!-- ===================== 了了 App 覆盖层 ===================== -->
+<div id="liao-app">
+  <div class="liao-topbar">
+    <button class="liao-tab-btn" id="liao-close-btn" style="flex:none;width:36px;font-size:20px;color:var(--primary);">←</button>
+    <button class="liao-tab-btn active" data-tab="chatlist">
+      <span class="tab-icon">□</span>聊天
+    </button>
+    <button class="liao-tab-btn" data-tab="rolelib">
+      <span class="tab-icon">○</span>角色库
+    </button>
+    <button class="liao-tab-btn" data-tab="myhome">
+      <span class="tab-icon">△</span>我的
+    </button>
+    <button class="liao-tab-btn" data-tab="suiyan">
+      <span class="tab-icon">◇</span>随言
+    </button>
+  </div>
+
+  <div class="liao-main">
+    <!-- 聊天列表面板 -->
+    <div class="liao-panel active" data-panel="chatlist">
+      <div class="chat-list-wrap">
+        <div id="liao-chat-list"></div>
+      </div>
+      <div class="chat-bottom-bar">
+        <button class="chat-bar-btn" id="liao-btn-new-role">
+          <span class="bar-btn-icon">+</span>
+          新建角色
+        </button>
+        <button class="chat-bar-btn" id="liao-btn-new-group">
+          <span class="bar-btn-icon">▣</span>
+          新建群聊
+        </button>
+        <button class="chat-bar-btn" id="liao-btn-import">
+          <span class="bar-btn-icon">▲</span>
+          导入角色
+        </button>
+      </div>
+    </div>
+
+    <!-- 角色库面板 -->
+    <div class="liao-panel" data-panel="rolelib">
+      <div class="role-lib-wrap">
+        <div class="role-grid" id="liao-role-grid"></div>
+        <div class="role-lib-count" id="liao-role-count">共 0 个角色</div>
+      </div>
+    </div>
+
+    <!-- 我的主页面板 -->
+    <div class="liao-panel" data-panel="myhome">
+      <div class="my-home-wrap">
+        <div class="my-home-menu">
+          <div class="my-menu-item" id="menu-persona-lib">
+            <div class="my-menu-icon">◈</div>
+            <div class="my-menu-info">
+              <div class="my-menu-title">我的人设库</div>
+              <div class="my-menu-sub">管理你的角色设定与人物档案</div>
+            </div>
+            <div class="my-menu-arrow">›</div>
+          </div>
+          <div class="my-menu-item" id="menu-favorites">
+            <div class="my-menu-icon">★</div>
+            <div class="my-menu-info">
+              <div class="my-menu-title">收藏夹</div>
+              <div class="my-menu-sub">保存喜欢的对话片段</div>
+            </div>
+            <div class="my-menu-arrow">›</div>
+          </div>
+          <div class="my-menu-item">
+            <div class="my-menu-icon">◎</div>
+            <div class="my-menu-info">
+              <div class="my-menu-title">记忆宫殿</div>
+              <div class="my-menu-sub">角色的长期记忆与世界观设定</div>
+            </div>
+            <div class="my-menu-arrow">›</div>
+          </div>
+          <div class="my-menu-item">
+            <div class="my-menu-icon">◆</div>
+            <div class="my-menu-info">
+              <div class="my-menu-title">美化</div>
+              <div class="my-menu-sub">自定义聊天背景与气泡样式</div>
+            </div>
+            <div class="my-menu-arrow">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 随言面板 -->
+    <div class="liao-panel" data-panel="suiyan">
+      <div class="suiyan-wrap">
+        <div class="suiyan-header" id="suiyan-header">
+          <button class="suiyan-header-bg-btn" id="suiyan-bg-btn">更换背景</button>
+        </div>
+        <div class="suiyan-user-row">
+          <img class="suiyan-user-avatar" id="suiyan-user-avatar"
+            src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=user" alt="" style="cursor:pointer;">
+          <div class="suiyan-user-name" id="suiyan-user-name" style="cursor:pointer;">用户</div>
+          <button class="suiyan-post-btn" id="suiyan-post-btn" title="发随言">+</button>
+        </div>
+        <div class="suiyan-list" id="suiyan-list"></div>
+      </div>
+    </div>
+
+  </div><!-- /liao-main -->
+</div><!-- /liao-app -->
+
+<!-- ===================== 我的人设库全屏界面 ===================== -->
+<div id="liao-persona-lib-view" style="display:none;position:fixed;inset:0;z-index:480;background:var(--bg,#F5F5F0);flex-direction:column;">
+  <div class="cs-topbar">
+    <button class="cs-close-btn" id="persona-lib-back">←</button>
+    <div class="cs-topbar-title">我的人设库</div>
+    <button class="liao-btn-primary" id="persona-lib-add-btn" style="position:absolute;right:14px;padding:6px 14px;font-size:12px;border-radius:999px;">新建</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:14px 14px 40px;" id="persona-lib-list-wrap">
+    <div id="persona-lib-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+  </div>
+</div>
+
+<!-- ===================== 人设编辑弹窗 ===================== -->
+<div id="liao-persona-edit-modal" class="liao-bubble-modal" style="display:none;">
+  <div class="liao-bubble-modal-box" style="max-height:85dvh;overflow-y:auto;">
+    <div class="liao-modal-title" id="persona-edit-title">新建人设</div>
+    <div class="liao-avatar-preview-row">
+      <img class="liao-avatar-preview" id="persona-edit-avatar-preview"
+        src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=persona" alt="">
+      <div class="liao-avatar-upload-btns">
+        <input class="liao-modal-input" id="persona-edit-avatar-url" placeholder="头像 URL…">
+        <button class="liao-avatar-btn" id="persona-edit-avatar-local">本地上传</button>
+        <input type="file" id="persona-edit-avatar-file" accept="image/*" style="display:none;">
+      </div>
+    </div>
+    <label class="liao-modal-label">名字</label>
+    <input class="liao-modal-input" id="persona-edit-name" placeholder="你的名字…">
+    <label class="liao-modal-label">人设描述</label>
+    <textarea class="liao-modal-textarea" id="persona-edit-setting" placeholder="描述你的人设、性格、背景…" style="min-height:100px;"></textarea>
+    <div class="liao-modal-btns">
+      <button class="liao-btn-primary" id="persona-edit-confirm">保存</button>
+      <button class="liao-btn-ghost" id="persona-edit-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 收藏夹全屏界面 ===================== -->
+<div id="liao-favorites-view" style="display:none;position:fixed;inset:0;z-index:480;background:var(--bg,#F5F5F0);flex-direction:column;">
+  <div class="cs-topbar">
+    <button class="cs-close-btn" id="favorites-back">←</button>
+    <div class="cs-topbar-title">收藏夹</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:14px 14px 40px;">
+    <div id="favorites-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+  </div>
+</div>

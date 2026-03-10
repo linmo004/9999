@@ -1,0 +1,328 @@
+<!-- ===================== 角色手机 App ===================== -->
+<div id="rolephone-app" style="display:none;">
+
+  <!-- ========== 锁屏界面 ========== -->
+  <div id="rp-lockscreen-view" class="rp-view">
+    <div class="rp-ls-bg"></div>
+
+    <!-- 角色信息 -->
+    <div class="rp-ls-top">
+      <img class="rp-ls-avatar" id="rp-ls-avatar" src="" alt="">
+      <div class="rp-ls-name" id="rp-ls-name">角色名</div>
+      <div class="rp-ls-time" id="rp-ls-time">00:00</div>
+      <div class="rp-ls-date" id="rp-ls-date"></div>
+    </div>
+
+    <!-- 4位密码点 -->
+    <div class="rp-pin-dots">
+      <div class="rp-pin-dot" data-idx="0"></div>
+      <div class="rp-pin-dot" data-idx="1"></div>
+      <div class="rp-pin-dot" data-idx="2"></div>
+      <div class="rp-pin-dot" data-idx="3"></div>
+    </div>
+
+    <!-- 错误提示 -->
+    <div class="rp-pin-error" id="rp-pin-error"></div>
+
+    <!-- 忘记密码 -->
+    <div class="rp-pin-forget" id="rp-pin-forget">忘记密码</div>
+
+    <!-- 数字键盘 -->
+    <div class="rp-pin-keyboard">
+      <div class="rp-pin-key" data-key="1"><span class="rp-key-num">1</span><span class="rp-key-alpha"></span></div>
+      <div class="rp-pin-key" data-key="2"><span class="rp-key-num">2</span><span class="rp-key-alpha">ABC</span></div>
+      <div class="rp-pin-key" data-key="3"><span class="rp-key-num">3</span><span class="rp-key-alpha">DEF</span></div>
+      <div class="rp-pin-key" data-key="4"><span class="rp-key-num">4</span><span class="rp-key-alpha">GHI</span></div>
+      <div class="rp-pin-key" data-key="5"><span class="rp-key-num">5</span><span class="rp-key-alpha">JKL</span></div>
+      <div class="rp-pin-key" data-key="6"><span class="rp-key-num">6</span><span class="rp-key-alpha">MNO</span></div>
+      <div class="rp-pin-key" data-key="7"><span class="rp-key-num">7</span><span class="rp-key-alpha">PQRS</span></div>
+      <div class="rp-pin-key" data-key="8"><span class="rp-key-num">8</span><span class="rp-key-alpha">TUV</span></div>
+      <div class="rp-pin-key" data-key="9"><span class="rp-key-num">9</span><span class="rp-key-alpha">WXYZ</span></div>
+      <div class="rp-pin-key rp-key-empty"></div>
+      <div class="rp-pin-key rp-key-zero" data-key="0"><span class="rp-key-num">0</span></div>
+      <div class="rp-pin-key rp-key-del" data-key="del">⌫</div>
+    </div>
+  </div>
+
+  <!-- ========== 主页 ========== -->
+  <div id="rp-home-view" class="rp-view" style="display:none;">
+
+    <!-- 状态栏 -->
+    <div class="rp-status-bar">
+      <div class="rp-status-time" id="rp-home-time">00:00</div>
+      <div class="rp-status-right">
+        <span id="rp-home-weather">☀️ --°C</span>
+        <span id="rp-home-date"></span>
+      </div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="rp-home-body">
+
+      <!-- 第一行 -->
+      <div class="rp-home-row">
+        <!-- 左：2x2 App 网格 -->
+        <div class="rp-app-grid-2x2">
+          <div class="rp-app-item" data-rpapp="liao">
+            <div class="rp-app-icon rp-icon-liao">💬</div>
+            <div class="rp-app-name">了了</div>
+          </div>
+          <div class="rp-app-item" data-rpapp="notes">
+            <div class="rp-app-icon rp-icon-notes">📝</div>
+            <div class="rp-app-name">便签</div>
+          </div>
+          <div class="rp-app-item" data-rpapp="health">
+            <div class="rp-app-icon rp-icon-health">📱</div>
+            <div class="rp-app-name">屏幕健康</div>
+          </div>
+          <div class="rp-app-item" data-rpapp="forum">
+            <div class="rp-app-icon rp-icon-forum">🗨️</div>
+            <div class="rp-app-name">趣问</div>
+          </div>
+        </div>
+
+        <!-- 右：备忘录小组件 -->
+        <div class="rp-widget rp-widget-memo">
+          <div class="rp-widget-header">
+            <span class="rp-widget-title">备忘录</span>
+            <button class="rp-widget-add-btn" id="rp-memo-add-btn">+</button>
+          </div>
+          <div class="rp-memo-list" id="rp-memo-list">
+            <div class="rp-memo-empty">暂无备忘</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第二行 -->
+      <div class="rp-home-row">
+        <!-- 左：拍立得小组件 -->
+        <div class="rp-widget rp-widget-photo">
+          <div class="rp-photo-frame">
+            <img class="rp-photo-img" id="rp-photo-img" src="" alt="">
+            <div class="rp-photo-empty" id="rp-photo-empty">📷<br>点击添加照片</div>
+          </div>
+          <div class="rp-photo-caption" id="rp-photo-caption">拍立得</div>
+        </div>
+
+        <!-- 右：占位 App 网格 -->
+        <div class="rp-app-grid-2x2">
+          <div class="rp-app-item rp-app-placeholder">
+            <div class="rp-app-icon rp-icon-placeholder"></div>
+            <div class="rp-app-name">敬请期待</div>
+          </div>
+          <div class="rp-app-item rp-app-placeholder">
+            <div class="rp-app-icon rp-icon-placeholder"></div>
+            <div class="rp-app-name">敬请期待</div>
+          </div>
+          <div class="rp-app-item rp-app-placeholder">
+            <div class="rp-app-icon rp-icon-placeholder"></div>
+            <div class="rp-app-name">敬请期待</div>
+          </div>
+          <div class="rp-app-item rp-app-placeholder">
+            <div class="rp-app-icon rp-icon-placeholder"></div>
+            <div class="rp-app-name">敬请期待</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /rp-home-body -->
+
+    <!-- Dock -->
+    <div class="rp-dock">
+      <div class="rp-dock-item rp-dock-phone">
+        <div class="rp-dock-icon">📞</div>
+      </div>
+      <div class="rp-dock-item rp-dock-home-btn" id="rp-dock-home-btn">
+        <div class="rp-dock-home-circle"></div>
+      </div>
+      <div class="rp-dock-item rp-dock-back" id="rp-dock-back-btn">
+        <div class="rp-dock-icon">✕</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 了了 App ========== -->
+  <div id="rp-liao-view" class="rp-view" style="display:none;">
+    <div class="rp-app-topbar">
+      <button class="rp-back-btn" data-rpback="rp-home-view">←</button>
+      <div class="rp-app-topbar-title">了了</div>
+      <button class="rp-topbar-right-btn" id="rp-liao-compose-btn">＋</button>
+    </div>
+    <div class="rp-chat-list" id="rp-liao-chat-list">
+      <div class="rp-list-empty">暂无聊天记录</div>
+    </div>
+  </div>
+
+  <!-- ========== 了了聊天详情 ========== -->
+  <div id="rp-liao-chat-view" class="rp-view" style="display:none;">
+    <div class="rp-app-topbar">
+      <button class="rp-back-btn" data-rpback="rp-liao-view">←</button>
+      <div class="rp-liao-chat-topbar-info">
+        <img class="rp-liao-chat-avatar" id="rp-liao-chat-avatar" src="" alt="">
+        <div class="rp-app-topbar-title" id="rp-liao-chat-name">聊天</div>
+      </div>
+      <button class="rp-topbar-right-btn" id="rp-liao-gen-btn">✦</button>
+    </div>
+    <div class="rp-liao-messages" id="rp-liao-messages"></div>
+  </div>
+
+  <!-- ========== 便签 App ========== -->
+  <div id="rp-notes-view" class="rp-view" style="display:none;">
+    <div class="rp-app-topbar">
+      <button class="rp-back-btn" data-rpback="rp-home-view">←</button>
+      <div class="rp-app-topbar-title">便签</div>
+      <button class="rp-topbar-right-btn" id="rp-notes-add-btn">＋</button>
+    </div>
+    <!-- 三个 Tab -->
+    <div class="rp-tabs">
+      <button class="rp-tab-btn active" data-rptab="rp-todo-tab">待办</button>
+      <button class="rp-tab-btn" data-rptab="rp-diary-tab">日记</button>
+      <button class="rp-tab-btn" data-rptab="rp-memo-tab">随记</button>
+    </div>
+    <!-- 待办 -->
+    <div class="rp-tab-panel active" id="rp-todo-tab">
+      <div class="rp-notes-list" id="rp-todo-list">
+        <div class="rp-list-empty">暂无待办</div>
+      </div>
+    </div>
+    <!-- 日记 -->
+    <div class="rp-tab-panel" id="rp-diary-tab">
+      <div class="rp-notes-list" id="rp-diary-list">
+        <div class="rp-list-empty">暂无日记</div>
+      </div>
+    </div>
+    <!-- 随记 -->
+    <div class="rp-tab-panel" id="rp-memo-tab">
+      <div class="rp-notes-list" id="rp-random-list">
+        <div class="rp-list-empty">暂无随记</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 日记/随记详情 ========== -->
+  <div id="rp-diary-detail-view" class="rp-view" style="display:none;">
+    <div class="rp-app-topbar">
+      <button class="rp-back-btn" data-rpback="rp-notes-view">←</button>
+      <div class="rp-diary-detail-meta">
+        <span id="rp-detail-date"></span>
+        <span id="rp-detail-weather"></span>
+      </div>
+      <div class="rp-topbar-actions">
+        <button class="rp-topbar-right-btn" id="rp-detail-fav-btn">☆</button>
+        <button class="rp-topbar-right-btn rp-danger-btn" id="rp-detail-del-btn">🗑</button>
+      </div>
+    </div>
+    <div class="rp-diary-detail-body">
+      <div class="rp-diary-detail-content" id="rp-detail-content"></div>
+    </div>
+  </div>
+
+  <!-- ========== 屏幕健康 App ========== -->
+  <div id="rp-health-view" class="rp-view" style="display:none;">
+    <div class="rp-app-topbar">
+      <button class="rp-back-btn" data-rpback="rp-home-view">←</button>
+      <div class="rp-app-topbar-title">屏幕健康</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="rp-health-body">
+      <div class="rp-health-summary">
+        <div class="rp-health-label">今日使用时长</div>
+        <div class="rp-health-total" id="rp-health-total">0h 0m</div>
+      </div>
+      <div class="rp-health-list" id="rp-health-list"></div>
+    </div>
+  </div>
+
+  <!-- ========== 趣问 App ========== -->
+  <div id="rp-forum-view" class="rp-view" style="display:none;">
+    <div class="rp-app-topbar">
+      <button class="rp-back-btn" data-rpback="rp-home-view">←</button>
+      <div class="rp-app-topbar-title">趣问</div>
+      <button class="rp-topbar-right-btn" id="rp-forum-add-btn">＋</button>
+    </div>
+    <div class="rp-forum-list" id="rp-forum-list">
+      <div class="rp-list-empty">暂无帖子</div>
+    </div>
+  </div>
+
+  <!-- ========== 趣问帖子详情 ========== -->
+  <div id="rp-forum-detail-view" class="rp-view" style="display:none;">
+    <div class="rp-app-topbar">
+      <button class="rp-back-btn" data-rpback="rp-forum-view">←</button>
+      <div class="rp-app-topbar-title">帖子详情</div>
+      <div style="width:36px;"></div>
+    </div>
+    <div class="rp-forum-detail-body">
+      <div class="rp-forum-post-content" id="rp-forum-post-content"></div>
+      <div class="rp-forum-replies-title">回复</div>
+      <div class="rp-forum-replies" id="rp-forum-replies"></div>
+    </div>
+    <div class="rp-forum-reply-bar">
+      <input class="rp-forum-reply-input" id="rp-forum-reply-input" placeholder="发表回复…">
+      <button class="rp-forum-reply-send" id="rp-forum-reply-send">发送</button>
+    </div>
+  </div>
+
+  <!-- ========== 加载弹窗 ========== -->
+  <div id="rp-loading-modal" style="display:none;">
+    <div class="rp-loading-mask">
+      <div class="rp-loading-box">
+        <div class="rp-loading-spinner"></div>
+        <div class="rp-loading-text">AI 生成中…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 备忘录添加弹窗 ========== -->
+  <div id="rp-memo-modal" style="display:none;">
+    <div class="rp-inner-modal-mask">
+      <div class="rp-inner-modal-box">
+        <div class="rp-inner-modal-title">添加备忘</div>
+        <input class="rp-inner-modal-input" id="rp-memo-input" placeholder="输入备忘内容…">
+        <div class="rp-inner-modal-btns">
+          <button class="rp-inner-btn-ghost" id="rp-memo-cancel">取消</button>
+          <button class="rp-inner-btn-primary" id="rp-memo-confirm">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 便签新建弹窗 ========== -->
+  <div id="rp-notes-modal" style="display:none;">
+    <div class="rp-inner-modal-mask">
+      <div class="rp-inner-modal-box">
+        <div class="rp-inner-modal-title" id="rp-notes-modal-title">新建日记</div>
+        <select class="rp-inner-modal-input" id="rp-notes-weather-select" style="margin-bottom:10px;">
+          <option value="☀️">☀️ 晴天</option>
+          <option value="🌤️">🌤️ 多云</option>
+          <option value="🌧️">🌧️ 下雨</option>
+          <option value="⛅">⛅ 阴天</option>
+          <option value="❄️">❄️ 下雪</option>
+        </select>
+        <textarea class="rp-inner-modal-input" id="rp-notes-content-input"
+          placeholder="输入内容…" style="min-height:100px;resize:none;margin-top:8px;"></textarea>
+        <div class="rp-inner-modal-btns">
+          <button class="rp-inner-btn-ghost" id="rp-notes-modal-cancel">取消</button>
+          <button class="rp-inner-btn-primary" id="rp-notes-modal-confirm">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 趣问新建帖子弹窗 ========== -->
+  <div id="rp-forum-new-modal" style="display:none;">
+    <div class="rp-inner-modal-mask">
+      <div class="rp-inner-modal-box">
+        <div class="rp-inner-modal-title">发布帖子</div>
+        <input class="rp-inner-modal-input" id="rp-forum-title-input" placeholder="帖子标题…">
+        <textarea class="rp-inner-modal-input" id="rp-forum-content-input"
+          placeholder="帖子内容…" style="min-height:90px;resize:none;margin-top:8px;"></textarea>
+        <div class="rp-inner-modal-btns">
+          <button class="rp-inner-btn-ghost" id="rp-forum-new-cancel">取消</button>
+          <button class="rp-inner-btn-primary" id="rp-forum-new-confirm">发布</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /rolephone-app -->

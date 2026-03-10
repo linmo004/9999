@@ -1,0 +1,420 @@
+<!-- ===================== 设置App 覆盖层 ===================== -->
+<div id="settings-root" class="settings-layer" style="display:none;">
+  <div class="settings-topbar">
+    <button class="settings-back-btn" id="settings-root-close">&#8592;</button>
+    <div class="settings-topbar-title">设置</div>
+  </div>
+  <div class="settings-list">
+    <div class="settings-item" id="goto-api">
+      <div class="settings-item-left">
+        <div class="settings-item-icon">*</div>
+        <div class="settings-item-info">
+          <div class="settings-item-title">API 设置</div>
+          <div class="settings-item-sub">配置模型接口与密钥</div>
+        </div>
+      </div>
+      <div class="settings-item-arrow">›</div>
+    </div>
+    <div class="settings-item" id="goto-theme">
+      <div class="settings-item-left">
+        <div class="settings-item-icon">◈</div>
+        <div class="settings-item-info">
+          <div class="settings-item-title">美化 / 主题</div>
+          <div class="settings-item-sub">暗色模式、壁纸、图标、配色</div>
+        </div>
+      </div>
+      <div class="settings-item-arrow">›</div>
+    </div>
+    <div class="settings-item" id="goto-data">
+      <div class="settings-item-left">
+        <div class="settings-item-icon">▣</div>
+        <div class="settings-item-info">
+          <div class="settings-item-title">数据管理</div>
+          <div class="settings-item-sub">导入 / 导出 / 备份全部数据</div>
+        </div>
+      </div>
+      <div class="settings-item-arrow">›</div>
+    </div>
+    <div class="settings-item" id="goto-privacy">
+      <div class="settings-item-left">
+        <div class="settings-item-icon">◎</div>
+        <div class="settings-item-info">
+          <div class="settings-item-title">隐私设置</div>
+          <div class="settings-item-sub">修改密码与锁屏头像</div>
+        </div>
+      </div>
+      <div class="settings-item-arrow">›</div>
+    </div>
+    <div class="settings-item" id="goto-devtools">
+      <div class="settings-item-left">
+        <div class="settings-item-icon">🔧</div>
+        <div class="settings-item-info">
+          <div class="settings-item-title">开发者工具</div>
+          <div class="settings-item-sub">存储调试 / 日志 / 强制刷新</div>
+        </div>
+      </div>
+      <div class="settings-item-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- API 设置页 -->
+<div id="settings-api" class="settings-layer" style="display:none;">
+  <div class="settings-topbar">
+    <button class="settings-back-btn" data-back="settings-root">&#8592;</button>
+    <div class="settings-topbar-title">API 设置</div>
+  </div>
+  <div class="settings-scroll">
+    <div class="settings-section-title">当前配置</div>
+    <div class="settings-card">
+      <label class="settings-label">配置名称</label>
+      <input class="settings-input" id="api-config-name" placeholder="给这套配置起个名字…">
+      <label class="settings-label">API 地址</label>
+      <input class="settings-input" id="api-url" placeholder="https://api.example.com/v1">
+      <label class="settings-label">API 密钥</label>
+      <input class="settings-input" id="api-key" type="password" placeholder="sk-…">
+      <div class="settings-row-btns">
+        <button class="settings-btn-primary" id="api-fetch-models-btn">拉取模型</button>
+        <button class="settings-btn-ghost" id="api-save-btn">保存配置</button>
+      </div>
+      <div id="api-fetch-status" class="api-status-text"></div>
+      <label class="settings-label" id="api-model-label" style="display:none;">选择模型</label>
+      <select class="settings-input" id="api-model-select" style="display:none;"></select>
+      <button class="settings-btn-primary" id="api-model-confirm-btn" style="display:none;margin-top:6px;">确认选择模型</button>
+    </div>
+    <div class="settings-section-title">配置存档</div>
+    <div id="api-archive-list" class="settings-card"></div>
+  </div>
+</div>
+
+<!-- 美化/主题页 -->
+<div id="settings-theme" class="settings-layer" style="display:none;">
+  <div class="settings-topbar">
+    <button class="settings-back-btn" data-back="settings-root">&#8592;</button>
+    <div class="settings-topbar-title">美化 / 主题</div>
+  </div>
+  <div class="settings-scroll">
+
+    <!-- 暗色模式 -->
+    <div class="settings-section-title">显示模式</div>
+    <div class="settings-card">
+      <div class="dark-mode-toggle-wrap">
+        <div>
+          <div class="dark-mode-toggle-label">🌙 暗色模式</div>
+          <div class="dark-mode-toggle-sub">白色系→黑色系，彩色不受影响，全局生效</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="dark-mode-toggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- 主页壁纸 -->
+    <div class="settings-section-title">主页壁纸（第一页）</div>
+    <div class="settings-card">
+      <div class="theme-wallpaper-preview" id="wallpaper-preview"></div>
+      <div class="settings-row-btns" style="margin-top:10px;">
+        <button class="settings-btn-primary" id="wallpaper-url-btn">输入URL</button>
+        <button class="settings-btn-ghost" id="wallpaper-local-btn">本地上传</button>
+        <button class="settings-btn-danger" id="wallpaper-clear-btn">清除</button>
+      </div>
+      <input type="file" id="wallpaper-file-input" accept="image/*" style="display:none;">
+    </div>
+
+    <!-- 第二页壁纸 -->
+    <div class="settings-section-title">第二页独立壁纸</div>
+    <div class="settings-card">
+      <div class="settings-desc">单独为第二页设置壁纸，不影响第一页。清除后第二页跟随主页壁纸。</div>
+      <div class="theme-wallpaper-preview" id="wallpaper2-preview" style="margin-top:10px;"></div>
+      <div class="settings-row-btns" style="margin-top:10px;">
+        <button class="settings-btn-primary" id="wallpaper2-url-btn">输入URL</button>
+        <button class="settings-btn-ghost" id="wallpaper2-local-btn">本地上传</button>
+        <button class="settings-btn-danger" id="wallpaper2-clear-btn">清除（跟随主页）</button>
+      </div>
+      <input type="file" id="wallpaper2-file-input" accept="image/*" style="display:none;">
+    </div>
+
+    <!-- App名称修改 -->
+    <div class="settings-section-title">App 名称修改</div>
+    <div class="settings-card">
+      <div class="settings-desc">修改主屏幕上各 App 图标下方显示的名称。</div>
+      <div id="app-name-fields" style="margin-top:8px;"></div>
+      <div class="settings-row-btns" style="margin-top:12px;">
+        <button class="settings-btn-primary" id="app-name-save-btn">保存名称</button>
+        <button class="settings-btn-ghost" id="app-name-reset-btn">恢复默认</button>
+      </div>
+    </div>
+
+    <!-- App 图标替换 -->
+    <div class="settings-section-title">App 图标替换</div>
+    <div class="settings-card" id="icon-replace-list"></div>
+
+    <!-- 整体配色 -->
+    <div class="settings-section-title">整体配色</div>
+    <div class="settings-card">
+      <div id="color-fields"></div>
+      <div class="settings-row-btns" style="margin-top:10px;">
+        <button class="settings-btn-primary" id="color-apply-btn">应用配色</button>
+        <button class="settings-btn-ghost" id="color-reset-btn">恢复默认</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 数据管理页 -->
+<div id="settings-data" class="settings-layer" style="display:none;">
+  <div class="settings-topbar">
+    <button class="settings-back-btn" data-back="settings-root">&#8592;</button>
+    <div class="settings-topbar-title">数据管理</div>
+  </div>
+  <div class="settings-scroll">
+
+    <div class="settings-section-title">全局完整备份（推荐）</div>
+    <div class="settings-card">
+      <div class="settings-desc">导出当前浏览器中<b>全部</b> localStorage 数据（包含角色、聊天、家园、设置等所有数据），用于完整备份。导入时会全量覆盖还原。</div>
+      <div class="settings-row-btns" style="margin-top:10px;">
+        <button class="settings-btn-primary" id="export-global-btn">导出全部备份</button>
+        <button class="settings-btn-ghost" id="import-global-btn">导入全部备份</button>
+      </div>
+      <input type="file" id="import-global-file" accept=".json" style="display:none;">
+      <div id="global-backup-msg" style="font-size:12px;margin-top:8px;min-height:16px;color:#4caf84;"></div>
+    </div>
+
+    <div class="settings-section-title">主页数据</div>
+    <div class="settings-card">
+      <div class="settings-desc">导出 / 导入主页配置数据（倒计时、轮播图、签名等）</div>
+      <div class="settings-row-btns" style="margin-top:8px;">
+        <button class="settings-btn-primary" id="export-all-btn">导出主页数据</button>
+        <button class="settings-btn-ghost" id="import-all-btn">导入主页数据</button>
+      </div>
+      <input type="file" id="import-all-file" accept=".json" style="display:none;">
+    </div>
+
+    <div class="settings-section-title">美化数据</div>
+    <div class="settings-card">
+      <div class="settings-desc">仅导出 / 导入美化相关数据</div>
+      <div class="settings-row-btns" style="margin-top:8px;">
+        <button class="settings-btn-primary" id="export-theme-btn">导出美化</button>
+        <button class="settings-btn-ghost" id="import-theme-btn">导入美化</button>
+      </div>
+      <input type="file" id="import-theme-file" accept=".json" style="display:none;">
+    </div>
+
+    <div class="settings-section-title">危险操作</div>
+    <div class="settings-card">
+      <div class="settings-desc" style="color:#e05c5c;">清除全部本地数据，不可恢复</div>
+      <button class="settings-btn-danger" id="clear-all-data-btn" style="margin-top:8px;">清除全部数据</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- 隐私设置页 -->
+<div id="settings-privacy" class="settings-layer" style="display:none;">
+  <div class="settings-topbar">
+    <button class="settings-back-btn" data-back="settings-root">&#8592;</button>
+    <div class="settings-topbar-title">隐私设置</div>
+  </div>
+  <div class="settings-scroll">
+    <div class="settings-section-title">锁屏头像</div>
+    <div class="settings-card">
+      <div class="settings-desc">修改输入密码界面顶部显示的头像。</div>
+      <div style="display:flex;align-items:center;gap:14px;margin-top:14px;">
+        <img id="privacy-pin-avatar-preview"
+          src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=halo9"
+          alt="锁屏头像"
+          style="width:56px;height:56px;border-radius:50%;object-fit:cover;
+                 border:2.5px solid rgba(179,216,244,0.5);background:#2c3448;flex-shrink:0;">
+        <div style="flex:1;font-size:12px;color:var(--text-light);line-height:1.6;">
+          该头像将显示在密码输入界面顶部
+        </div>
+      </div>
+      <div class="edit-tab-row" style="margin-top:14px;">
+        <button class="edit-tab active" data-pin-avatar-tab="url">输入 URL</button>
+        <button class="edit-tab" data-pin-avatar-tab="local">本地上传</button>
+      </div>
+      <div id="pin-avatar-url-panel">
+        <input class="settings-input" id="privacy-pin-avatar-url" placeholder="输入图片 URL…" style="margin-top:0;">
+      </div>
+      <div id="pin-avatar-local-panel" style="display:none;">
+        <input type="file" id="privacy-pin-avatar-file" accept="image/*"
+          style="margin-top:6px;font-size:12px;color:var(--text-mid);width:100%;">
+      </div>
+      <div class="settings-row-btns" style="margin-top:12px;">
+        <button class="settings-btn-primary" id="privacy-pin-avatar-save-btn">保存头像</button>
+        <button class="settings-btn-ghost" id="privacy-pin-avatar-reset-btn">恢复默认</button>
+      </div>
+      <div id="privacy-pin-avatar-msg" style="font-size:12px;margin-top:8px;height:16px;color:#e07a7a;"></div>
+    </div>
+    <div class="settings-section-title">主屏幕密码</div>
+    <div class="settings-card">
+      <div class="settings-desc">修改解锁主屏幕所需的 6 位数字密码。</div>
+      <label class="settings-label" style="margin-top:12px;">当前密码</label>
+      <input class="settings-input" id="privacy-old-pin" type="password" inputmode="numeric" maxlength="6" placeholder="输入当前密码">
+      <label class="settings-label">新密码（6位数字）</label>
+      <input class="settings-input" id="privacy-new-pin" type="password" inputmode="numeric" maxlength="6" placeholder="输入新密码">
+      <label class="settings-label">确认新密码</label>
+      <input class="settings-input" id="privacy-confirm-pin" type="password" inputmode="numeric" maxlength="6" placeholder="再次输入新密码">
+      <div id="privacy-pin-msg" style="font-size:12px;margin-top:8px;height:16px;color:#e07a7a;"></div>
+      <div class="settings-row-btns" style="margin-top:10px;">
+        <button class="settings-btn-primary" id="privacy-pin-save-btn">保存新密码</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 开发者工具页 -->
+<div id="settings-devtools" class="settings-layer" style="display:none;">
+  <div class="settings-topbar">
+    <button class="settings-back-btn" data-back="settings-root">&#8592;</button>
+    <div class="settings-topbar-title">开发者工具</div>
+  </div>
+  <div class="settings-scroll">
+
+    <div class="settings-section-title">AI 日志窗口</div>
+    <div class="settings-card">
+      <div class="settings-desc">实时记录 AI API 的请求、返回和报错信息。</div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+        <button class="settings-btn-primary" id="devtools-log-toggle-btn">开启日志记录</button>
+        <button class="settings-btn-ghost" id="devtools-log-clear-btn">清空日志</button>
+        <button class="settings-btn-ghost" id="devtools-log-export-btn">导出日志</button>
+      </div>
+      <div id="devtools-log-status" style="font-size:11px;color:var(--text-light);margin-top:6px;">日志记录：关闭</div>
+      <div id="devtools-log-window" style="
+        margin-top:10px;
+        background:#1a1f2e;
+        border-radius:10px;
+        padding:10px;
+        height:260px;
+        overflow-y:auto;
+        font-family:'SF Mono','Menlo','Consolas',monospace;
+        font-size:10px;
+        line-height:1.6;
+        border:1px solid rgba(153,200,237,0.15);
+        color:#7ecb7e;
+        word-break:break-all;
+        white-space:pre-wrap;
+      "></div>
+    </div>
+
+    <div class="settings-section-title">存储键查看</div>
+    <div class="settings-card">
+      <div class="settings-desc">选择要查看的 localStorage 键，点击查看按钮显示内容。</div>
+      <select class="settings-input" id="devtools-key-select" style="margin-top:12px;">
+        <option value="">-- 选择键名 --</option>
+        <option value="liao_roles">liao_roles（了了角色库）</option>
+        <option value="liao_chats">liao_chats（了了聊天记录）</option>
+        <option value="halo9_garden">halo9_garden（家园数据）</option>
+        <option value="halo9_apiActiveConfig">halo9_apiActiveConfig（API配置）</option>
+        <option value="halo9_apiCurrentModel">halo9_apiCurrentModel（当前模型）</option>
+        <option value="halo9_userAvatar">halo9_userAvatar（用户头像）</option>
+        <option value="liao_userName">liao_userName（了了用户名）</option>
+        <option value="liao_userAvatar">liao_userAvatar（了了用户头像）</option>
+        <option value="halo9_roles">halo9_roles（备用角色键）</option>
+        <option value="__all__">全部键名列表</option>
+      </select>
+      <div class="settings-row-btns" style="margin-top:10px;">
+        <button class="settings-btn-primary" id="devtools-view-btn">查看内容</button>
+        <button class="settings-btn-ghost" id="devtools-refresh-keys-btn">刷新键列表</button>
+      </div>
+    </div>
+
+    <div class="settings-section-title">查看结果</div>
+    <div class="settings-card">
+      <div class="settings-desc" id="devtools-result-meta" style="margin-bottom:8px;"></div>
+      <pre id="devtools-result-content" style="
+        white-space:pre-wrap;word-break:break-all;font-size:11px;
+        font-family:'SF Mono','Menlo','Consolas',monospace;color:#2c3448;
+        background:#f0f4f8;border-radius:10px;padding:12px;max-height:280px;
+        overflow-y:auto;border:1px solid rgba(153,200,237,0.25);line-height:1.6;
+      ">点击「查看内容」后显示结果</pre>
+    </div>
+
+    <div class="settings-section-title">所有 localStorage 键</div>
+    <div class="settings-card">
+      <div class="settings-desc">当前浏览器存储中所有键名</div>
+      <button class="settings-btn-ghost" id="devtools-list-all-btn" style="margin-top:10px;">列出全部键名</button>
+      <div id="devtools-all-keys" style="
+        margin-top:12px;font-size:11px;
+        font-family:'SF Mono','Menlo','Consolas',monospace;
+        color:#5a6a80;line-height:1.8;word-break:break-all;
+      "></div>
+    </div>
+
+    <div class="settings-section-title">快速修复工具</div>
+    <div class="settings-card">
+      <div class="settings-desc">家园角色库修复：将 liao_roles 的内容同步到 halo9_roles，确保家园App能读取到角色。</div>
+      <button class="settings-btn-primary" id="devtools-fix-roles-btn" style="margin-top:10px;">执行角色库修复</button>
+      <div id="devtools-fix-msg" style="font-size:12px;margin-top:8px;min-height:18px;color:#4caf84;"></div>
+    </div>
+
+    <div class="settings-section-title">自定义查询</div>
+    <div class="settings-card">
+      <div class="settings-desc">直接输入任意键名查询或删除</div>
+      <input class="settings-input" id="devtools-custom-key" placeholder="输入键名，如 liao_roles" style="margin-top:10px;">
+      <div class="settings-row-btns" style="margin-top:8px;">
+        <button class="settings-btn-primary" id="devtools-custom-view-btn">查询</button>
+        <button class="settings-btn-danger" id="devtools-custom-delete-btn">删除该键</button>
+      </div>
+    </div>
+
+    <div class="settings-section-title">强制刷新</div>
+    <div class="settings-card">
+      <div class="settings-desc">强制清除浏览器缓存并重新加载页面。适用于 GitHub Pages 等部署后页面未更新的情况。</div>
+      <div class="settings-row-btns" style="margin-top:10px;">
+        <button class="settings-btn-primary" id="devtools-hard-refresh-btn">🔄 强制刷新页面</button>
+        <button class="settings-btn-ghost" id="devtools-sw-clear-btn">清除 ServiceWorker</button>
+      </div>
+      <div id="devtools-refresh-msg" style="font-size:12px;margin-top:8px;min-height:16px;color:#4caf84;"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 壁纸URL弹窗（主页） -->
+<div class="modal-mask" id="wallpaper-url-modal">
+  <div class="modal-box">
+    <div class="modal-title">输入壁纸图片URL（主页）</div>
+    <input class="modal-input" id="wallpaper-url-input" placeholder="https://…" style="height:40px;resize:none;">
+    <div class="btn-row">
+      <button class="modal-btn" id="wallpaper-url-confirm">确认</button>
+      <button class="modal-btn-ghost" id="wallpaper-url-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 壁纸URL弹窗（第二页） -->
+<div class="modal-mask" id="wallpaper2-url-modal">
+  <div class="modal-box">
+    <div class="modal-title">输入壁纸图片URL（第二页）</div>
+    <input class="modal-input" id="wallpaper2-url-input" placeholder="https://…" style="height:40px;resize:none;">
+    <div class="btn-row">
+      <button class="modal-btn" id="wallpaper2-url-confirm">确认</button>
+      <button class="modal-btn-ghost" id="wallpaper2-url-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- App图标替换弹窗 -->
+<div class="modal-mask" id="icon-replace-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="icon-replace-modal-title">替换图标</div>
+    <div class="edit-tab-row">
+      <button class="edit-tab active" data-icon-tab="url">输入URL</button>
+      <button class="edit-tab" data-icon-tab="local">本地上传</button>
+    </div>
+    <div id="icon-url-panel">
+      <input class="modal-input" id="icon-url-input" placeholder="图标图片URL…" style="height:40px;resize:none;">
+    </div>
+    <div id="icon-local-panel" style="display:none;">
+      <input type="file" id="icon-file-input" accept="image/*"
+        style="margin-bottom:10px;font-size:12px;color:var(--text-mid);width:100%;">
+    </div>
+    <div class="btn-row">
+      <button class="modal-btn" id="icon-replace-confirm">确认</button>
+      <button class="modal-btn-ghost" id="icon-replace-cancel">取消</button>
+    </div>
+  </div>
+</div>

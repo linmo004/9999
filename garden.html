@@ -1,0 +1,162 @@
+<div id="garden-app" style="display:none;">
+
+  <!-- 开场动画层 -->
+  <div id="garden-intro" style="display:none;">
+    <img id="garden-intro-img" src="" alt="">
+    <div id="garden-intro-overlay"></div>
+  </div>
+
+  <!-- 地图界面 -->
+  <div id="garden-map-view" style="display:none;">
+    <div class="garden-topbar">
+      <button class="gdn-back" id="gdn-map-close">✕ 退出</button>
+      <div class="gdn-topbar-title">家园地图</div>
+      <div style="width:60px;"></div>
+    </div>
+    <div class="garden-map-bg" id="garden-map-bg">
+      <div id="garden-map-spots"></div>
+    </div>
+  </div>
+
+  <!-- 住所界面 -->
+  <div id="garden-apt-view" style="display:none;">
+    <div class="garden-topbar">
+      <button class="gdn-back" id="gdn-apt-back">‹ 地图</button>
+      <div class="gdn-topbar-title">住所</div>
+      <button class="gdn-action-btn" id="gdn-apt-settings">⚙ 设置</button>
+    </div>
+    <div class="garden-apt-building" id="garden-apt-building">
+      <!-- 楼层由JS生成 -->
+    </div>
+  </div>
+
+  <!-- 房间内部界面 -->
+  <div id="garden-room-view" style="display:none;">
+    <div class="garden-topbar">
+      <button class="gdn-back" id="gdn-room-back">‹ 住所</button>
+      <div class="gdn-topbar-title" id="gdn-room-title">房间</div>
+      <div style="width:60px;"></div>
+    </div>
+    <div class="garden-room-inner" id="garden-room-inner">
+      <img class="garden-room-bg-img" id="garden-room-bg-img" src="" alt="">
+      <div id="garden-room-avatars"></div>
+    </div>
+  </div>
+
+  <!-- 广场界面 -->
+  <div id="garden-plaza-view" style="display:none;">
+    <div class="garden-topbar">
+      <button class="gdn-back" id="gdn-plaza-back">‹ 地图</button>
+      <div class="gdn-topbar-title">广场</div>
+      <button class="gdn-action-btn" id="gdn-plaza-vote-btn">发起投票</button>
+    </div>
+    <div class="garden-location-body">
+      <div class="garden-location-chars" id="garden-plaza-chars"></div>
+      <div class="garden-activity-section">
+        <div class="garden-section-title">📋 今日活动</div>
+        <div id="garden-activity-list"></div>
+      </div>
+      <div class="garden-vote-section" id="garden-vote-section" style="display:none;">
+        <div class="garden-section-title">🗳️ 投票结果</div>
+        <div id="garden-vote-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通用地点界面（游乐场/商场/咖啡厅/菜园） -->
+  <div id="garden-location-view" style="display:none;">
+    <div class="garden-topbar">
+      <button class="gdn-back" id="gdn-location-back">‹ 地图</button>
+      <div class="gdn-topbar-title" id="gdn-location-title">地点</div>
+      <div style="width:60px;"></div>
+    </div>
+    <div class="garden-location-body">
+      <div class="garden-location-desc" id="gdn-location-desc"></div>
+      <div class="garden-location-chars" id="garden-location-chars"></div>
+      <button class="gdn-greet-btn" id="gdn-location-greet">打个招呼</button>
+    </div>
+  </div>
+
+  <!-- 邀请角色入住弹窗 -->
+  <div class="gdn-modal-mask" id="gdn-invite-modal" style="display:none;">
+    <div class="gdn-modal-box">
+      <div class="gdn-modal-title">邀请角色入住</div>
+      <div class="gdn-invite-list" id="gdn-invite-list"></div>
+      <div class="gdn-modal-actions">
+        <button class="gdn-modal-cancel" id="gdn-invite-cancel">取消</button>
+        <button class="gdn-modal-confirm" id="gdn-invite-confirm">确认</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 头像气泡弹窗 -->
+  <div class="gdn-bubble-popup" id="gdn-bubble-popup" style="display:none;">
+    <button class="gdn-bubble-close" id="gdn-bubble-close">✕</button>
+    <div class="gdn-bubble-header">
+      <img class="gdn-bubble-avatar" id="gdn-bubble-avatar" src="" alt="">
+      <div class="gdn-bubble-info">
+        <div class="gdn-bubble-name" id="gdn-bubble-name"></div>
+        <div class="gdn-bubble-status" id="gdn-bubble-status"></div>
+        <div class="gdn-bubble-location" id="gdn-bubble-location"></div>
+      </div>
+    </div>
+    <div class="gdn-bubble-actions">
+      <button class="gdn-bubble-btn" id="gdn-bubble-chat">💬 对话</button>
+      <button class="gdn-bubble-btn" id="gdn-bubble-rps">✊ 石头剪刀布</button>
+    </div>
+  </div>
+
+  <!-- 临时对话弹窗（可拖拽） -->
+  <div class="gdn-chat-float" id="gdn-chat-float" style="display:none;">
+    <div class="gdn-chat-float-header" id="gdn-chat-float-header">
+      <img class="gdn-chat-float-avatar" id="gdn-chat-float-avatar" src="" alt="">
+      <div class="gdn-chat-float-name" id="gdn-chat-float-name"></div>
+      <div class="gdn-chat-float-scene" id="gdn-chat-float-scene"></div>
+      <button class="gdn-chat-float-sync" id="gdn-chat-float-sync">同步</button>
+      <button class="gdn-chat-float-close" id="gdn-chat-float-close">✕</button>
+    </div>
+    <div class="gdn-chat-float-messages" id="gdn-chat-float-messages"></div>
+    <div class="gdn-chat-float-input-row">
+      <input class="gdn-chat-float-input" id="gdn-chat-float-input" placeholder="在家园里说点什么… (回车发送)"/>
+      <button class="gdn-chat-float-ai-btn" id="gdn-chat-float-ai-btn">AI</button>
+    </div>
+  </div>
+
+  <!-- 石头剪刀布弹窗 -->
+  <div class="gdn-modal-mask" id="gdn-rps-modal" style="display:none;">
+    <div class="gdn-modal-box gdn-rps-box">
+      <div class="gdn-modal-title" id="gdn-rps-title">和 <span id="gdn-rps-role-name"></span> 猜拳！</div>
+      <div class="gdn-rps-btns">
+        <button class="gdn-rps-btn" data-choice="rock">✊ 石头</button>
+        <button class="gdn-rps-btn" data-choice="scissors">✌️ 剪刀</button>
+        <button class="gdn-rps-btn" data-choice="paper">🖐️ 布</button>
+      </div>
+      <div class="gdn-rps-result" id="gdn-rps-result" style="display:none;"></div>
+      <button class="gdn-modal-cancel" id="gdn-rps-close" style="margin-top:14px;">关闭</button>
+    </div>
+  </div>
+
+  <!-- AI叙事弹窗 -->
+  <div class="gdn-modal-mask" id="gdn-narrate-modal" style="display:none;">
+    <div class="gdn-modal-box gdn-narrate-box">
+      <div class="gdn-narrate-icon" id="gdn-narrate-icon">🎉</div>
+      <div class="gdn-modal-title" id="gdn-narrate-title"></div>
+      <div class="gdn-narrate-text" id="gdn-narrate-text"></div>
+      <button class="gdn-modal-confirm" id="gdn-narrate-close">好的</button>
+    </div>
+  </div>
+
+  <!-- 投票设置弹窗 -->
+  <div class="gdn-modal-mask" id="gdn-vote-setup-modal" style="display:none;">
+    <div class="gdn-modal-box">
+      <div class="gdn-modal-title">发起投票</div>
+      <input class="gdn-modal-input" id="gdn-vote-topic" placeholder="投票题目…"/>
+      <textarea class="gdn-modal-textarea" id="gdn-vote-options" placeholder="选项（每行一个）"></textarea>
+      <div class="gdn-modal-actions">
+        <button class="gdn-modal-cancel" id="gdn-vote-cancel">取消</button>
+        <button class="gdn-modal-confirm" id="gdn-vote-confirm">发起</button>
+      </div>
+    </div>
+  </div>
+
+</div>
