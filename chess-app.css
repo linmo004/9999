@@ -1,0 +1,767 @@
+/* ============================================================
+   chess-app.css — 棋圣 App 全局样式
+   中国风棋盘游戏风格，深色背景，金色/米白色文字
+   ============================================================ */
+
+/* ── 颜色变量 ── */
+#chess-app {
+  --chess-bg:        #1a120a;
+  --chess-bg2:       #231810;
+  --chess-panel:     #2c1f12;
+  --chess-border:    #7a5a2a;
+  --chess-gold:      #d4a843;
+  --chess-gold2:     #f0cc78;
+  --chess-cream:     #f5e8c8;
+  --chess-dim:       #9a7c52;
+  --chess-black:     #1a1a1a;
+  --chess-white:     #f0ead8;
+  --chess-radius:    16px;
+  --chess-line:      #5a3e1e;
+}
+
+/* ── App 容器 ── */
+#chess-app {
+  font-family: 'STSong', 'Songti SC', 'SimSun', 'PingFang SC', serif;
+  background: var(--chess-bg);
+  color: var(--chess-cream);
+  overflow: hidden;
+}
+
+/* ── 通用视图容器 ── */
+.chess-view {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ============================================================
+   顶栏
+   ============================================================ */
+.chess-topbar {
+  display: flex;
+  align-items: center;
+  height: 54px;
+  padding: 0 14px;
+  background: rgba(35, 22, 10, 0.96);
+  border-bottom: 1px solid var(--chess-border);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.chess-back-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: var(--chess-gold);
+  cursor: pointer;
+  padding: 6px 12px 6px 0;
+  line-height: 1;
+  font-family: inherit;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.chess-topbar-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--chess-gold2);
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  text-shadow: 0 1px 6px rgba(212, 168, 67, 0.45);
+}
+
+.chess-topbar-opponent {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--chess-dim);
+  letter-spacing: 0.04em;
+  max-width: 30vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 对手头像+名字（井字棋顶栏） */
+.chess-opponent-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.chess-opponent-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--chess-gold);
+  background: var(--chess-panel);
+  display: block;
+}
+
+.chess-opponent-name {
+  font-size: 14px;
+  color: var(--chess-gold2);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   ① 主界面
+   ============================================================ */
+.chess-home-bg-wrap {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.chess-home-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 深色渐变叠层，让按钮区域可读 */
+.chess-home-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 12, 4, 0.25) 0%,
+    rgba(20, 12, 4, 0.55) 50%,
+    rgba(20, 12, 4, 0.82) 100%
+  );
+  pointer-events: none;
+}
+
+.chess-home-btns {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  padding: 0 28px 56px;
+}
+
+/* 古典大气半透明毛玻璃按钮 */
+.chess-game-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(44, 28, 10, 0.62);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(212, 168, 67, 0.55);
+  border-radius: 14px;
+  padding: 16px 22px;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--chess-cream);
+  box-shadow:
+    0 4px 20px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(212,168,67,0.20);
+  transition: background 0.18s, border-color 0.18s;
+  width: 100%;
+  text-align: left;
+}
+
+.chess-game-btn:active {
+  background: rgba(80, 52, 14, 0.75);
+  border-color: var(--chess-gold2);
+}
+
+.chess-game-btn-icon {
+  font-size: 26px;
+  line-height: 1;
+  flex-shrink: 0;
+  color: var(--chess-gold);
+}
+
+.chess-game-btn-label {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--chess-cream);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+
+/* ============================================================
+   ② 五子棋选项界面
+   ============================================================ */
+.chess-gomoku-menu-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 32px 28px;
+}
+
+.chess-mode-card {
+  width: 100%;
+  background: var(--chess-panel);
+  border: 1.5px solid var(--chess-border);
+  border-radius: 16px;
+  padding: 24px 20px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+  transition: background 0.18s, border-color 0.18s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+}
+
+.chess-mode-card:active {
+  background: rgba(80, 52, 14, 0.65);
+  border-color: var(--chess-gold2);
+}
+
+.chess-mode-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.chess-mode-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--chess-gold2);
+  letter-spacing: 0.12em;
+  margin-bottom: 6px;
+}
+
+.chess-mode-desc {
+  font-size: 12px;
+  color: var(--chess-dim);
+  letter-spacing: 0.06em;
+}
+
+/* ============================================================
+   ③ 角色选择界面
+   ============================================================ */
+.chess-role-list {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chess-role-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--chess-panel);
+  border: 1.5px solid var(--chess-line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+}
+
+.chess-role-card.selected {
+  border-color: var(--chess-gold);
+  background: rgba(80, 52, 14, 0.55);
+  box-shadow: 0 0 0 2px rgba(212, 168, 67, 0.28);
+}
+
+.chess-role-card:active {
+  background: rgba(80, 52, 14, 0.45);
+}
+
+.chess-role-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--chess-border);
+  background: var(--chess-bg2);
+  display: block;
+  flex-shrink: 0;
+}
+
+.chess-role-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--chess-cream);
+  letter-spacing: 0.05em;
+}
+
+.chess-role-select-footer {
+  padding: 14px 22px 36px;
+  background: rgba(26, 18, 10, 0.96);
+  border-top: 1px solid var(--chess-border);
+  flex-shrink: 0;
+}
+
+.chess-start-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #d4a843, #b8860b);
+  border: none;
+  border-radius: 12px;
+  padding: 14px 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a120a;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 4px 18px rgba(212, 168, 67, 0.38);
+  transition: opacity 0.18s;
+}
+
+.chess-start-btn:active {
+  opacity: 0.78;
+}
+
+/* ============================================================
+   ④ 井字棋对战界面
+   ============================================================ */
+.chess-ttt-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 18px 20px;
+  gap: 14px;
+}
+
+.chess-turn-hint {
+  font-size: 13px;
+  color: var(--chess-gold);
+  letter-spacing: 0.08em;
+  text-align: center;
+  padding: 4px 18px;
+  border: 1px solid rgba(212, 168, 67, 0.30);
+  border-radius: 999px;
+  background: rgba(212, 168, 67, 0.08);
+}
+
+/* 3×3 棋盘 */
+.chess-ttt-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: min(72vw, 300px);
+  aspect-ratio: 1;
+  border: 2px solid var(--chess-border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--chess-bg2);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.45);
+  flex-shrink: 0;
+}
+
+.chess-ttt-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--chess-cream);
+  cursor: pointer;
+  border: 1px solid var(--chess-line);
+  aspect-ratio: 1;
+  transition: background 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.chess-ttt-cell:active {
+  background: rgba(212, 168, 67, 0.12);
+}
+
+.chess-ttt-cell[data-piece="X"] {
+  color: var(--chess-gold2);
+}
+
+.chess-ttt-cell[data-piece="O"] {
+  color: #88c0a0;
+}
+
+/* ============================================================
+   通用内嵌聊天框
+   ============================================================ */
+.chess-inline-chat {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  background: var(--chess-panel);
+  border: 1px solid var(--chess-line);
+  border-radius: 12px;
+  overflow: hidden;
+  height: 25vh;
+  min-height: 120px;
+  flex-shrink: 0;
+}
+
+.chess-gomoku-chat-hidden {
+  display: none;
+}
+
+.chess-chat-msgs {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 12px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chess-chat-msg {
+  font-size: 12px;
+  line-height: 1.55;
+  padding: 5px 10px;
+  border-radius: 8px;
+  max-width: 80%;
+  word-break: break-word;
+}
+
+.chess-chat-msg.user-msg {
+  align-self: flex-end;
+  background: rgba(212, 168, 67, 0.22);
+  color: var(--chess-cream);
+}
+
+.chess-chat-msg.role-msg {
+  align-self: flex-start;
+  background: rgba(255,255,255,0.07);
+  color: var(--chess-cream);
+}
+
+.chess-chat-inputbar {
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--chess-line);
+  background: rgba(26, 18, 10, 0.70);
+  flex-shrink: 0;
+}
+
+.chess-chat-input {
+  flex: 1;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(122, 90, 42, 0.55);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 12px;
+  color: var(--chess-cream);
+  outline: none;
+  font-family: inherit;
+  -webkit-appearance: none;
+}
+
+.chess-chat-input::placeholder {
+  color: var(--chess-dim);
+}
+
+.chess-chat-input:focus {
+  border-color: var(--chess-gold);
+}
+
+.chess-chat-send-btn {
+  background: var(--chess-gold);
+  border: none;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 12px;
+  color: #1a120a;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+  transition: opacity 0.18s;
+}
+
+.chess-chat-send-btn:active {
+  opacity: 0.72;
+}
+
+/* ============================================================
+   通用操作行（认输 / 再来一局）
+   ============================================================ */
+.chess-action-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+  flex-shrink: 0;
+}
+
+.chess-action-btn {
+  flex: 1;
+  border-radius: 10px;
+  padding: 11px 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.08em;
+  border: none;
+  transition: opacity 0.18s;
+}
+
+.chess-action-btn:active {
+  opacity: 0.72;
+}
+
+.chess-resign-btn {
+  background: rgba(180, 60, 40, 0.30);
+  color: #e07060;
+  border: 1px solid rgba(180, 60, 40, 0.45);
+}
+
+.chess-replay-btn {
+  background: linear-gradient(135deg, #d4a843, #b8860b);
+  color: #1a120a;
+  box-shadow: 0 3px 12px rgba(212, 168, 67, 0.30);
+}
+
+.chess-memory-btn {
+  background: rgba(80, 140, 100, 0.30);
+  color: #80c898;
+  border: 1px solid rgba(80, 140, 100, 0.45);
+}
+
+/* ============================================================
+   ⑤ 五子棋棋盘（15×15）
+   ============================================================ */
+.chess-gomoku-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 10px 20px;
+  gap: 12px;
+}
+
+.chess-gomoku-board-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chess-gomoku-board {
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  width: min(90vw, 420px);
+  aspect-ratio: 1;
+  background: #c8a060;
+  border: 2px solid #7a4e18;
+  border-radius: 6px;
+  box-shadow: 0 4px 22px rgba(0,0,0,0.50);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 围棋盘线纹理通过 repeating-linear-gradient 模拟 */
+.chess-gomoku-board::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      rgba(100, 60, 10, 0.35) 0px, rgba(100,60,10,0.35) 1px,
+      transparent 1px, transparent calc(100% / 15)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(100, 60, 10, 0.35) 0px, rgba(100,60,10,0.35) 1px,
+      transparent 1px, transparent calc(100% / 15)
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.chess-gomoku-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1;
+  aspect-ratio: 1;
+}
+
+.chess-gomoku-cell:active {
+  background: rgba(255,255,255,0.10);
+}
+
+/* 棋子（黑/白圆形 div） */
+.chess-piece {
+  width: 78%;
+  height: 78%;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.chess-piece.black {
+  background: radial-gradient(circle at 35% 32%, #6a6a6a, #111 60%);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+.chess-piece.white {
+  background: radial-gradient(circle at 38% 35%, #ffffff, #d8d0bc 65%);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.65);
+}
+
+/* ============================================================
+   ⑥ 围棋棋盘（19×19）
+   ============================================================ */
+.chess-go-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 10px 20px;
+  gap: 12px;
+}
+
+.chess-go-board-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chess-go-board {
+  display: grid;
+  grid-template-columns: repeat(19, 1fr);
+  width: min(92vw, 440px);
+  aspect-ratio: 1;
+  background: #c8a060;
+  border: 2px solid #7a4e18;
+  border-radius: 5px;
+  box-shadow: 0 4px 22px rgba(0,0,0,0.50);
+  position: relative;
+  overflow: hidden;
+}
+
+.chess-go-board::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      rgba(100, 60, 10, 0.35) 0px, rgba(100,60,10,0.35) 1px,
+      transparent 1px, transparent calc(100% / 19)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(100, 60, 10, 0.35) 0px, rgba(100,60,10,0.35) 1px,
+      transparent 1px, transparent calc(100% / 19)
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.chess-go-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1;
+  aspect-ratio: 1;
+}
+
+.chess-go-cell:active {
+  background: rgba(255,255,255,0.10);
+}
+
+/* ============================================================
+   ⑦ 结果弹窗
+   ============================================================ */
+.chess-result-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: rgba(10, 6, 2, 0.78);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chess-result-box {
+  background: var(--chess-panel);
+  border: 2px solid var(--chess-gold);
+  border-radius: 20px;
+  padding: 38px 32px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  min-width: 64vw;
+  max-width: 320px;
+  box-shadow:
+    0 8px 40px rgba(0,0,0,0.60),
+    0 0 0 1px rgba(212,168,67,0.15),
+    inset 0 1px 0 rgba(212,168,67,0.18);
+}
+
+.chess-result-text {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--chess-gold2);
+  letter-spacing: 0.10em;
+  text-align: center;
+  text-shadow: 0 2px 12px rgba(212, 168, 67, 0.55);
+}
+
+.chess-result-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+/* ============================================================
+   main-ui.html 中第二页 App 图标修改说明（直接在此注释）
+   将 data-app="p2-app-1" 的闹钟 app-item 替换为：
+   <div class="app-item" data-app="chess">
+     <img class="app-icon" src="https://img.icons8.com/fluency/96/chess.png" alt="">
+     <div class="app-name">棋圣</div>
+   </div>
+   ============================================================ */
+
+/* ============================================================
+   滚动条隐藏（全局，棋圣 App 内）
+   ============================================================ */
+#chess-app ::-webkit-scrollbar {
+  display: none;
+}
+
+#chess-app * {
+  scrollbar-width: none;
+}

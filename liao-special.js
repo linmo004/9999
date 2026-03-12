@@ -140,7 +140,9 @@ function appendMessageBubble(msg, role, chatUserAvatar, animate) {
   const tsEl         = document.createElement('span');
   tsEl.className     = 'chat-msg-timestamp';
   tsEl.dataset.msgId = msg.id;
-  tsEl.textContent   = formatFullTime(msg.ts);
+  tsEl.textContent   = (typeof getFormattedTimestamp === 'function')
+    ? getFormattedTimestamp(msg.ts)
+    : formatFullTime(msg.ts);
   tsEl.addEventListener('click', (e) => {
     e.stopPropagation();
     if (editModeActive) {
@@ -902,20 +904,7 @@ document.getElementById('liao-image-cancel').addEventListener('click', () => {
   pendingImageSrc = '';
 });
 
-/* ============================================================
-   时间戳隐藏设置
-   ============================================================ */
-document.getElementById('cs-timestamp-save-btn').addEventListener('click', () => {
-  if (currentChatIdx < 0) return;
-  const chat   = liaoChats[currentChatIdx];
-  const hidden = document.getElementById('cs-hide-timestamp').checked;
-  if (!chat.chatSettings) chat.chatSettings = {};
-  chat.chatSettings.hideTimestamp = hidden;
-  lSave('chats', liaoChats);
-  document.body.classList.toggle('timestamp-hidden', hidden);
-  alert('时间戳设置已保存');
-});
-
+ 
 /* ============================================================
    角色手机设置页逻辑
    ============================================================ */
@@ -1210,6 +1199,14 @@ function renderRoleLib() {
 
   if (count) count.textContent = '共 ' + liaoRoles.length + ' 个角色';
 }
+
+  /* 卡册入口绑定 */
+  const entryBtn = document.getElementById('lcb-entry-open');
+  if (entryBtn) {
+    entryBtn.onclick = () => {
+      if (typeof LiaoCardBook !== 'undefined') LiaoCardBook.open();
+    };
+  }
 
 /* ============================================================
    从人设库导入到用户设置

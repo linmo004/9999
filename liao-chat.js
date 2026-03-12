@@ -2,6 +2,36 @@
    liao-chat.js — 聊天列表 / 聊天界面基础 / 聊天设置
    ============================================================ */
 
+/* ---- 时间戳格式全局状态 ---- */
+let currentTimestampFormat = 'full';
+let currentTimestampCustom = '';
+
+function applyTimestampFormat(format, custom) {
+  currentTimestampFormat = format || 'full';
+  currentTimestampCustom = custom || '';
+}
+
+function getFormattedTimestamp(ts) {
+  if (!ts) return '';
+  if (currentTimestampFormat === 'full' || !currentTimestampFormat) {
+    return formatFullTime(ts);
+  }
+  if (currentTimestampFormat === 'hm') {
+    const d  = new Date(ts);
+    const H  = String(d.getHours()).padStart(2, '0');
+    const Mi = String(d.getMinutes()).padStart(2, '0');
+    return H + ':' + Mi;
+  }
+  if (currentTimestampFormat === 'custom') {
+    return currentTimestampCustom || formatFullTime(ts);
+  }
+  const mapped = {
+    read: '已读', check: '√', owo: '>ω<', caret: '^^',
+    face1: 'ㅂ_ㅂ', face2: 'ㅎ_ㅎ', heart: '♡'
+  };
+  return mapped[currentTimestampFormat] || formatFullTime(ts);
+}
+
 /* ============================================================
    聊天列表
    ============================================================ */
@@ -10,7 +40,7 @@ function renderChatList() {
   list.innerHTML = '';
 
   if (!liaoChats.length) {
-    list.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-light);font-size:13px;">还没有聊天，点击下方新建角色开始吧</div>`;
+    list.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-light);font-size:13px;">还没有聊天，点击下方新建角色开始吧</div>';
     return;
   }
 
@@ -29,15 +59,15 @@ function renderChatList() {
 
     const item = document.createElement('div');
     item.className = 'chat-list-item';
-    item.innerHTML = `
-      <img class="chat-item-avatar" src="${escHtml(role.avatar || defaultAvatar())}" alt="">
-      <div class="chat-item-body">
-        <div class="chat-item-name">${escHtml(role.nickname || role.realname)}</div>
-        <div class="chat-item-preview">${escHtml(preview.slice(0, 40))}</div>
-      </div>
-      <div class="chat-item-meta">
-        <div class="chat-item-time">${lastTime}</div>
-      </div>`;
+    item.innerHTML =
+      '<img class="chat-item-avatar" src="' + escHtml(role.avatar || defaultAvatar()) + '" alt="">' +
+      '<div class="chat-item-body">' +
+        '<div class="chat-item-name">' + escHtml(role.nickname || role.realname) + '</div>' +
+        '<div class="chat-item-preview">' + escHtml(preview.slice(0, 40)) + '</div>' +
+      '</div>' +
+      '<div class="chat-item-meta">' +
+        '<div class="chat-item-time">' + lastTime + '</div>' +
+      '</div>';
     item.addEventListener('click', () => openChatView(idx));
     list.appendChild(item);
   });
@@ -251,7 +281,7 @@ function closeChatView() {
 document.getElementById('chat-view-back').addEventListener('click', closeChatView);
 
 /* ============================================================
-   消息渲染
+   消息渲染 — 默认加载40条，超出显示"加载过往消息"
    ============================================================ */
 function renderChatMessages() {
   if (currentChatIdx < 0) return;
@@ -262,10 +292,26 @@ function renderChatMessages() {
 
   const chatUserAvatar = chat.chatUserAvatar || liaoUserAvatar;
   const settings       = chat.chatSettings || {};
-  const maxLoad        = settings.maxLoadMsgs > 0 ? settings.maxLoadMsgs : 0;
+  const maxLoad        = settings.maxLoadMsgs > 0 ? settings.maxLoadMsgs : 40;
   const msgs           = chat.messages.filter(m => !m.hidden);
-  const toRender       = maxLoad > 0 ? msgs.slice(-maxLoad) : msgs;
 
+  /* 超出条数时显示加载过往按钮 */
+  if (msgs.length > maxLoad) {
+    const loadBtn = document.createElement('div');
+    loadBtn.style.cssText =
+      'text-align:center;padding:10px 0 6px;cursor:pointer;' +
+      'font-size:11.5px;color:#4a7abf;user-select:none;-webkit-user-select:none;' +
+      'letter-spacing:.04em;';
+    loadBtn.textContent = '↑ 加载过往消息';
+    loadBtn.addEventListener('click', () => {
+      if (!chat.chatSettings) chat.chatSettings = {};
+      chat.chatSettings.maxLoadMsgs = msgs.length;
+      renderChatMessages();
+    });
+    area.appendChild(loadBtn);
+  }
+
+  const toRender = msgs.length > maxLoad ? msgs.slice(-maxLoad) : msgs;
   toRender.forEach(msg => {
     appendMessageBubble(msg, role, chatUserAvatar, false);
   });
@@ -299,64 +345,31 @@ document.getElementById('chat-view-input').addEventListener('input', function ()
 function updateEmojiSuggestBar(inputVal) {
   const bar = document.getElementById('emoji-suggest-bar');
   if (!bar) return;
-
   const keyword = (inputVal || '').trim();
-
-  if (!keyword) {
-    bar.innerHTML = '';
-    bar.classList.remove('visible');
-    return;
-  }
-
-  const emojiList = (typeof liaoEmojis !== 'undefined' && Array.isArray(liaoEmojis))
-    ? liaoEmojis : [];
-
-  if (!emojiList.length) {
-    bar.innerHTML = '';
-    bar.classList.remove('visible');
-    return;
-  }
-
+  if (!keyword) { bar.innerHTML = ''; bar.classList.remove('visible'); return; }
+  const emojiList = (typeof liaoEmojis !== 'undefined' && Array.isArray(liaoEmojis)) ? liaoEmojis : [];
+  if (!emojiList.length) { bar.innerHTML = ''; bar.classList.remove('visible'); return; }
   const lower   = keyword.toLowerCase();
   const matched = emojiList.filter(e => e.name && e.name.toLowerCase().includes(lower));
-
-  if (!matched.length) {
-    bar.innerHTML = '';
-    bar.classList.remove('visible');
-    return;
-  }
-
-  const toShow = matched.slice(0, 20);
+  if (!matched.length) { bar.innerHTML = ''; bar.classList.remove('visible'); return; }
   bar.innerHTML = '';
-
-  toShow.forEach(emoji => {
+  matched.slice(0, 20).forEach(emoji => {
     const item = document.createElement('div');
     item.className = 'emoji-suggest-item';
-
-    const img   = document.createElement('img');
-    img.src     = emoji.url;
-    img.alt     = emoji.name || '';
-    img.title   = emoji.name || '';
-    img.loading = 'lazy';
-
-    const nameEl       = document.createElement('span');
-    nameEl.className   = 'emoji-suggest-item-name';
+    const img = document.createElement('img');
+    img.src = emoji.url; img.alt = emoji.name || ''; img.title = emoji.name || ''; img.loading = 'lazy';
+    const nameEl = document.createElement('span');
+    nameEl.className = 'emoji-suggest-item-name';
     nameEl.textContent = emoji.name || '';
-
-    item.appendChild(img);
-    item.appendChild(nameEl);
-
+    item.appendChild(img); item.appendChild(nameEl);
     item.addEventListener('click', () => {
       if (typeof sendEmojiMsg === 'function') sendEmojiMsg(emoji);
       const inputEl = document.getElementById('chat-view-input');
       if (inputEl) inputEl.value = '';
-      bar.innerHTML = '';
-      bar.classList.remove('visible');
+      bar.innerHTML = ''; bar.classList.remove('visible');
     });
-
     bar.appendChild(item);
   });
-
   bar.classList.add('visible');
 }
 
@@ -365,36 +378,25 @@ function sendUserMessage() {
   const input   = document.getElementById('chat-view-input');
   const content = input.value.trim();
   if (!content) return;
-
   const chat = liaoChats[currentChatIdx];
   const role = liaoRoles.find(r => r.id === chat.roleId);
   const uAvt = chat.chatUserAvatar || liaoUserAvatar;
-
   const quoteContent = (currentQuoteMsgIdx >= 0 && chat.messages[currentQuoteMsgIdx])
     ? (chat.messages[currentQuoteMsgIdx].content || '') : '';
-
   const msgObj = {
-    role:         'user',
-    type:         'text',
-    content,
+    role: 'user', type: 'text', content,
     quoteContent: quoteContent || undefined,
-    ts:           Date.now(),
-    id:           'msg_' + Date.now() + '_' + Math.random().toString(36).slice(2)
+    ts: Date.now(),
+    id: 'msg_' + Date.now() + '_' + Math.random().toString(36).slice(2)
   };
   chat.messages.push(msgObj);
   lSave('chats', liaoChats);
   input.value = '';
-
   const suggestBar = document.getElementById('emoji-suggest-bar');
-  if (suggestBar) {
-    suggestBar.innerHTML = '';
-    suggestBar.classList.remove('visible');
-  }
-
+  if (suggestBar) { suggestBar.innerHTML = ''; suggestBar.classList.remove('visible'); }
   currentQuoteMsgIdx = -1;
   const quoteBar = document.getElementById('chat-quote-bar');
   if (quoteBar) quoteBar.style.display = 'none';
-
   appendMessageBubble(msgObj, role, uAvt, true);
 }
 
@@ -413,6 +415,12 @@ function openChatSettings() {
   document.getElementById('cs-role-realname').value     = role.realname || '';
   document.getElementById('cs-role-setting').value      = role.setting  || '';
 
+  csRoleCardImageSrc = '';
+  const cardImgPreview = document.getElementById('cs-role-cardimage-preview');
+  const cardImgUrl     = document.getElementById('cs-role-cardimage-url');
+  if (cardImgPreview) cardImgPreview.src = role.cardImage || '';
+  if (cardImgUrl)     cardImgUrl.value   = '';
+
   const chatUserAvatar3  = chat.chatUserAvatar  || liaoUserAvatar;
   const chatUserName3    = chat.chatUserName    || liaoUserName;
   const chatUserSetting3 = chat.chatUserSetting || '';
@@ -421,15 +429,31 @@ function openChatSettings() {
   document.getElementById('cs-user-name').value         = chatUserName3;
   document.getElementById('cs-user-setting').value      = chatUserSetting3;
 
-  const beauty     = (chat.chatSettings && chat.chatSettings.beauty) || {};
-  const usePreset  = beauty.usePresetBubble !== undefined ? beauty.usePresetBubble : true;
+  const beauty    = (chat.chatSettings && chat.chatSettings.beauty) || {};
+  const usePreset = beauty.usePresetBubble !== undefined ? beauty.usePresetBubble : true;
 
-  document.getElementById('cs-role-bubble-color').value  = beauty.roleBubbleColor  || '#ffffff';
-  document.getElementById('cs-user-bubble-color').value  = beauty.userBubbleColor  || '#99C8ED';
-  document.getElementById('cs-role-bubble-radius').value = beauty.roleBubbleRadius || '16';
-  document.getElementById('cs-user-bubble-radius').value = beauty.userBubbleRadius || '16';
-  document.getElementById('cs-font-size').value          = beauty.fontSize         || '13.5';
-  document.getElementById('cs-custom-css').value         = beauty.customCSS        || '';
+  const rcEl = document.getElementById('cs-role-bubble-color');
+  const ucEl = document.getElementById('cs-user-bubble-color');
+  const brEl = document.getElementById('cs-bubble-radius');
+  const bmEl = document.getElementById('cs-bubble-max-chars');
+  const fsEl = document.getElementById('cs-font-size');
+  const bgEl = document.getElementById('cs-chat-bg-url');
+  const ccEl = document.getElementById('cs-custom-css');
+  const tfEl = document.getElementById('cs-timestamp-format');
+  const tcEl = document.getElementById('cs-timestamp-custom');
+
+  if (rcEl) rcEl.value = beauty.roleBubbleColor || '#ffffff';
+  if (ucEl) ucEl.value = beauty.userBubbleColor || '#99C8ED';
+  if (brEl) brEl.value = beauty.bubbleRadius    !== undefined ? beauty.bubbleRadius : 999;
+  if (bmEl) bmEl.value = beauty.bubbleMaxChars  || 0;
+  if (fsEl) fsEl.value = beauty.fontSize        || '12';
+  if (bgEl) bgEl.value = beauty.chatBgUrl       || '';
+  if (ccEl) ccEl.value = beauty.customCSS       || '';
+
+  const tsFormat = beauty.timestampFormat || 'full';
+  const tsCustom = beauty.timestampCustom || '';
+  if (tfEl) tfEl.value = tsFormat;
+  if (tcEl) { tcEl.value = tsCustom; tcEl.style.display = tsFormat === 'custom' ? '' : 'none'; }
 
   const presetToggle = document.getElementById('cs-use-preset-bubble');
   if (presetToggle) presetToggle.checked = usePreset;
@@ -438,7 +462,7 @@ function openChatSettings() {
 
   const settings = chat.chatSettings || {};
   document.getElementById('cs-max-api-msgs').value         = settings.maxApiMsgs         !== undefined ? settings.maxApiMsgs         : 0;
-  document.getElementById('cs-max-load-msgs').value        = settings.maxLoadMsgs        !== undefined ? settings.maxLoadMsgs        : 50;
+  document.getElementById('cs-max-load-msgs').value        = settings.maxLoadMsgs        !== undefined ? settings.maxLoadMsgs        : 40;
   document.getElementById('cs-auto-memory-interval').value = settings.autoMemoryInterval !== undefined ? settings.autoMemoryInterval : 0;
 
   const tsCheck = document.getElementById('cs-hide-timestamp');
@@ -497,8 +521,27 @@ document.querySelectorAll('.memory-sub-tab-btn').forEach(btn => {
 });
 
 /* ---------- 角色设置 ---------- */
-let csRoleAvatarSrc = '';
-let csUserAvatarSrc = '';
+let csRoleAvatarSrc    = '';
+let csUserAvatarSrc    = '';
+let csRoleCardImageSrc = '';
+
+document.getElementById('cs-role-cardimage-url').addEventListener('input', function () {
+  const url = this.value.trim();
+  if (url) { csRoleCardImageSrc = url; document.getElementById('cs-role-cardimage-preview').src = url; }
+});
+document.getElementById('cs-role-cardimage-local-btn').addEventListener('click', () => {
+  document.getElementById('cs-role-cardimage-file').click();
+});
+document.getElementById('cs-role-cardimage-file').addEventListener('change', function () {
+  const file = this.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    csRoleCardImageSrc = e.target.result;
+    document.getElementById('cs-role-cardimage-preview').src = csRoleCardImageSrc;
+  };
+  reader.readAsDataURL(file);
+  this.value = '';
+});
 
 document.getElementById('cs-role-avatar-local-btn').addEventListener('click', () => {
   document.getElementById('cs-role-avatar-file').click();
@@ -506,19 +549,13 @@ document.getElementById('cs-role-avatar-local-btn').addEventListener('click', ()
 document.getElementById('cs-role-avatar-file').addEventListener('change', function () {
   const file = this.files[0]; if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
-    csRoleAvatarSrc = e.target.result;
-    document.getElementById('cs-role-avatar-preview').src = csRoleAvatarSrc;
-  };
+  reader.onload = e => { csRoleAvatarSrc = e.target.result; document.getElementById('cs-role-avatar-preview').src = csRoleAvatarSrc; };
   reader.readAsDataURL(file);
   this.value = '';
 });
 document.getElementById('cs-role-avatar-url').addEventListener('input', function () {
   const url = this.value.trim();
-  if (url) {
-    csRoleAvatarSrc = url;
-    document.getElementById('cs-role-avatar-preview').src = url;
-  }
+  if (url) { csRoleAvatarSrc = url; document.getElementById('cs-role-avatar-preview').src = url; }
 });
 
 document.getElementById('cs-role-save-btn').addEventListener('click', () => {
@@ -526,7 +563,6 @@ document.getElementById('cs-role-save-btn').addEventListener('click', () => {
   const chat = liaoChats[currentChatIdx];
   const role = liaoRoles.find(r => r.id === chat.roleId);
   if (!role) return;
-
   if (csRoleAvatarSrc) role.avatar = csRoleAvatarSrc;
   const nn = document.getElementById('cs-role-nickname').value.trim();
   const rn = document.getElementById('cs-role-realname').value.trim();
@@ -534,7 +570,7 @@ document.getElementById('cs-role-save-btn').addEventListener('click', () => {
   if (nn) role.nickname = nn;
   if (rn) role.realname = rn;
   role.setting = st;
-
+  if (csRoleCardImageSrc) role.cardImage = csRoleCardImageSrc;
   lSave('roles', liaoRoles);
   csRoleAvatarSrc = '';
   document.getElementById('chat-view-title').textContent = role.nickname || role.realname;
@@ -550,19 +586,13 @@ document.getElementById('cs-user-avatar-local-btn').addEventListener('click', ()
 document.getElementById('cs-user-avatar-file').addEventListener('change', function () {
   const file = this.files[0]; if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
-    csUserAvatarSrc = e.target.result;
-    document.getElementById('cs-user-avatar-preview').src = csUserAvatarSrc;
-  };
+  reader.onload = e => { csUserAvatarSrc = e.target.result; document.getElementById('cs-user-avatar-preview').src = csUserAvatarSrc; };
   reader.readAsDataURL(file);
   this.value = '';
 });
 document.getElementById('cs-user-avatar-url').addEventListener('input', function () {
   const url = this.value.trim();
-  if (url) {
-    csUserAvatarSrc = url;
-    document.getElementById('cs-user-avatar-preview').src = url;
-  }
+  if (url) { csUserAvatarSrc = url; document.getElementById('cs-user-avatar-preview').src = url; }
 });
 
 document.getElementById('cs-user-save-btn').addEventListener('click', () => {
@@ -578,43 +608,56 @@ document.getElementById('cs-user-save-btn').addEventListener('click', () => {
   alert('用户设置已保存');
 });
 
+/* ---------- 从人设库导入 ---------- */
+document.getElementById('cs-import-persona-btn').addEventListener('click', () => {
+  const personas = lLoad('personas', []);
+  const list     = document.getElementById('liao-persona-pick-list');
+  list.innerHTML = '';
+  if (!personas.length) {
+    const empty = document.createElement('div');
+    empty.style.cssText = 'font-size:13px;color:var(--text-light);padding:8px 0;';
+    empty.textContent   = '人设库为空，请先在我的人设库中新建';
+    list.appendChild(empty);
+  } else {
+    personas.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'persona-card';
+      const avatarImg = document.createElement('img');
+      avatarImg.className = 'persona-card-avatar';
+      avatarImg.src       = p.avatar || defaultAvatar();
+      avatarImg.alt       = '';
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'persona-card-info';
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'persona-card-name';
+      nameDiv.textContent = p.name;
+      const settingDiv = document.createElement('div');
+      settingDiv.className = 'persona-card-setting';
+      settingDiv.textContent = (p.setting || '').slice(0, 40);
+      infoDiv.appendChild(nameDiv);
+      infoDiv.appendChild(settingDiv);
+      card.appendChild(avatarImg);
+      card.appendChild(infoDiv);
+      card.addEventListener('click', () => {
+        document.getElementById('cs-user-name').value    = p.name    || '';
+        document.getElementById('cs-user-setting').value = p.setting || '';
+        if (p.avatar) {
+          document.getElementById('cs-user-avatar-preview').src = p.avatar;
+          csUserAvatarSrc = p.avatar;
+        }
+        document.getElementById('liao-persona-pick-modal').style.display = 'none';
+      });
+      list.appendChild(card);
+    });
+  }
+  document.getElementById('liao-persona-pick-modal').style.display = 'flex';
+});
+
+document.getElementById('liao-persona-pick-cancel').addEventListener('click', () => {
+  document.getElementById('liao-persona-pick-modal').style.display = 'none';
+});
+
 /* ---------- 聊天美化 ---------- */
-document.getElementById('cs-beauty-save-btn').addEventListener('click', () => {
-  if (currentChatIdx < 0) return;
-  const chat = liaoChats[currentChatIdx];
-  if (!chat.chatSettings) chat.chatSettings = {};
-  const beauty = {
-    usePresetBubble:  document.getElementById('cs-use-preset-bubble').checked,
-    roleBubbleColor:  document.getElementById('cs-role-bubble-color').value,
-    userBubbleColor:  document.getElementById('cs-user-bubble-color').value,
-    roleBubbleRadius: document.getElementById('cs-role-bubble-radius').value,
-    userBubbleRadius: document.getElementById('cs-user-bubble-radius').value,
-    fontSize:         document.getElementById('cs-font-size').value,
-    customCSS:        document.getElementById('cs-custom-css').value
-  };
-  chat.chatSettings.beauty = beauty;
-  lSave('chats', liaoChats);
-  applyBeautySettings(beauty);
-  alert('美化设置已保存');
-});
-
-document.getElementById('cs-beauty-reset-btn').addEventListener('click', () => {
-  if (currentChatIdx < 0) return;
-  const chat = liaoChats[currentChatIdx];
-  if (chat.chatSettings) chat.chatSettings.beauty = {};
-  lSave('chats', liaoChats);
-  applyBeautySettings({});
-  document.getElementById('cs-use-preset-bubble').checked  = true;
-  document.getElementById('cs-preset-bubble-fields').style.display = '';
-  document.getElementById('cs-role-bubble-color').value    = '#ffffff';
-  document.getElementById('cs-user-bubble-color').value    = '#99C8ED';
-  document.getElementById('cs-role-bubble-radius').value   = '16';
-  document.getElementById('cs-user-bubble-radius').value   = '16';
-  document.getElementById('cs-font-size').value            = '13.5';
-  document.getElementById('cs-custom-css').value           = '';
-  alert('美化已重置');
-});
-
 function applyBeautySettings(beauty) {
   const styleId = 'liao-beauty-style';
   let styleEl = document.getElementById(styleId);
@@ -629,26 +672,47 @@ function applyBeautySettings(beauty) {
 
   let presetStyles = '';
   if (usePreset) {
-    const rColor  = beauty.roleBubbleColor  || '#ffffff';
-    const uColor  = beauty.userBubbleColor  || '#99C8ED';
-    const rRadius = beauty.roleBubbleRadius || '16';
-    const uRadius = beauty.userBubbleRadius || '16';
-    const fSize   = beauty.fontSize         || '13.5';
-    presetStyles = `
-      #liao-chat-messages .chat-msg-row:not(.user-row) .chat-msg-bubble {
-        background: ${rColor} !important;
-        border-radius: 4px ${rRadius}px ${rRadius}px ${rRadius}px !important;
-        font-size: ${fSize}px !important;
-      }
-      #liao-chat-messages .chat-msg-row.user-row .chat-msg-bubble {
-        background: ${uColor} !important;
-        border-radius: ${uRadius}px 4px ${uRadius}px ${uRadius}px !important;
-        font-size: ${fSize}px !important;
-      }
-    `;
+    const rColor   = beauty.roleBubbleColor || 'rgba(210,230,255,0.55)';
+    const uColor   = beauty.userBubbleColor || 'rgba(70,130,220,0.68)';
+    const radius   = beauty.bubbleRadius    !== undefined ? beauty.bubbleRadius : 999;
+    const fSize    = beauty.fontSize        || '12';
+    const maxChars = parseInt(beauty.bubbleMaxChars) || 0;
+    const maxWidthStyle = maxChars > 0
+      ? 'max-width:' + maxChars + 'em !important;'
+      : 'max-width:80vw !important;';
+
+    presetStyles =
+      '#liao-chat-messages .chat-msg-row:not(.user-row) .chat-msg-bubble {' +
+        'background:' + rColor + ' !important;' +
+        'border-radius:' + radius + 'px !important;' +
+        'font-size:' + fSize + 'px !important;' +
+        maxWidthStyle +
+        'width:fit-content !important;' +
+        'word-break:break-word !important;' +
+        'overflow-wrap:break-word !important;' +
+        'white-space:pre-wrap !important;' +
+        'box-sizing:border-box !important;' +
+      '}' +
+      '#liao-chat-messages .chat-msg-row.user-row .chat-msg-bubble {' +
+        'background:' + uColor + ' !important;' +
+        'border-radius:' + radius + 'px !important;' +
+        'font-size:' + fSize + 'px !important;' +
+        maxWidthStyle +
+        'width:fit-content !important;' +
+        'word-break:break-word !important;' +
+        'overflow-wrap:break-word !important;' +
+        'white-space:pre-wrap !important;' +
+        'box-sizing:border-box !important;' +
+      '}';
   }
 
-  styleEl.textContent = presetStyles + '\n' + custom;
+  /* 聊天背景图 */
+  const bgUrl = beauty.chatBgUrl || '';
+  const bgStyle = bgUrl
+    ? '#liao-chat-messages{background-image:url("' + bgUrl + '") !important;background-size:cover !important;background-position:center !important;}'
+    : '';
+
+  styleEl.textContent = presetStyles + '\n' + bgStyle + '\n' + custom;
 }
 
 function applyCurrentChatBeauty() {
@@ -656,7 +720,94 @@ function applyCurrentChatBeauty() {
   const chat   = liaoChats[currentChatIdx];
   const beauty = (chat.chatSettings && chat.chatSettings.beauty) || {};
   applyBeautySettings(beauty);
+  applyTimestampFormat(beauty.timestampFormat, beauty.timestampCustom);
 }
+
+document.getElementById('cs-beauty-save-btn').addEventListener('click', () => {
+  if (currentChatIdx < 0) return;
+  const chat = liaoChats[currentChatIdx];
+  if (!chat.chatSettings) chat.chatSettings = {};
+
+  const tfEl = document.getElementById('cs-timestamp-format');
+  const tcEl = document.getElementById('cs-timestamp-custom');
+  const tsFormat = tfEl ? tfEl.value : 'full';
+  const tsCustom = tcEl ? tcEl.value.trim() : '';
+
+  const beauty = {
+    usePresetBubble:  document.getElementById('cs-use-preset-bubble').checked,
+    roleBubbleColor:  document.getElementById('cs-role-bubble-color').value,
+    userBubbleColor:  document.getElementById('cs-user-bubble-color').value,
+    bubbleRadius:     parseInt(document.getElementById('cs-bubble-radius').value)      || 999,
+    bubbleMaxChars:   parseInt(document.getElementById('cs-bubble-max-chars').value)   || 0,
+    fontSize:         document.getElementById('cs-font-size').value                    || '12',
+    chatBgUrl:        (document.getElementById('cs-chat-bg-url').value || '').trim(),
+    timestampFormat:  tsFormat,
+    timestampCustom:  tsCustom,
+    customCSS:        document.getElementById('cs-custom-css').value                   || ''
+  };
+  chat.chatSettings.beauty = beauty;
+  lSave('chats', liaoChats);
+  applyBeautySettings(beauty);
+  applyTimestampFormat(tsFormat, tsCustom);
+  alert('美化设置已保存');
+});
+
+document.getElementById('cs-beauty-reset-btn').addEventListener('click', () => {
+  if (currentChatIdx < 0) return;
+  const chat = liaoChats[currentChatIdx];
+  if (chat.chatSettings) chat.chatSettings.beauty = {};
+  lSave('chats', liaoChats);
+  applyBeautySettings({});
+  applyTimestampFormat('full', '');
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+  document.getElementById('cs-use-preset-bubble').checked = true;
+  const pf = document.getElementById('cs-preset-bubble-fields');
+  if (pf) pf.style.display = '';
+  set('cs-role-bubble-color',  '#ffffff');
+  set('cs-user-bubble-color',  '#99C8ED');
+  set('cs-bubble-radius',      '999');
+  set('cs-bubble-max-chars',   '0');
+  set('cs-font-size',          '12');
+  set('cs-chat-bg-url',        '');
+  set('cs-custom-css',         '');
+  const tfEl = document.getElementById('cs-timestamp-format');
+  const tcEl = document.getElementById('cs-timestamp-custom');
+  if (tfEl) tfEl.value = 'full';
+  if (tcEl) { tcEl.value = ''; tcEl.style.display = 'none'; }
+  alert('美化已重置');
+});
+
+/* ---- 时间戳格式选择器联动 ---- */
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.id === 'cs-timestamp-format') {
+    const tcEl = document.getElementById('cs-timestamp-custom');
+    if (tcEl) tcEl.style.display = e.target.value === 'custom' ? '' : 'none';
+  }
+});
+
+/* ---- 聊天背景图本地上传 ---- */
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.id === 'cs-chat-bg-local-btn') {
+    const fi = document.getElementById('cs-chat-bg-file');
+    if (fi) fi.click();
+  }
+  if (e.target && e.target.id === 'cs-chat-bg-clear-btn') {
+    const urlEl = document.getElementById('cs-chat-bg-url');
+    if (urlEl) urlEl.value = '';
+  }
+});
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.id === 'cs-chat-bg-file') {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const urlEl = document.getElementById('cs-chat-bg-url');
+      if (urlEl) urlEl.value = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  }
+});
 
 /* ---------- 消息数量设置 ---------- */
 document.getElementById('cs-msgs-save-btn').addEventListener('click', () => {
@@ -664,10 +815,22 @@ document.getElementById('cs-msgs-save-btn').addEventListener('click', () => {
   const chat = liaoChats[currentChatIdx];
   if (!chat.chatSettings) chat.chatSettings = {};
   chat.chatSettings.maxApiMsgs         = parseInt(document.getElementById('cs-max-api-msgs').value)         || 0;
-  chat.chatSettings.maxLoadMsgs        = parseInt(document.getElementById('cs-max-load-msgs').value)        || 50;
+  chat.chatSettings.maxLoadMsgs        = parseInt(document.getElementById('cs-max-load-msgs').value)        || 40;
   chat.chatSettings.autoMemoryInterval = parseInt(document.getElementById('cs-auto-memory-interval').value) || 0;
   lSave('chats', liaoChats);
   alert('消息数量设置已保存');
+});
+
+/* ---------- 时间戳隐藏（视觉隐藏，仍可点击） ---------- */
+document.getElementById('cs-timestamp-save-btn').addEventListener('click', () => {
+  if (currentChatIdx < 0) return;
+  const chat   = liaoChats[currentChatIdx];
+  const hidden = document.getElementById('cs-hide-timestamp').checked;
+  if (!chat.chatSettings) chat.chatSettings = {};
+  chat.chatSettings.hideTimestamp = hidden;
+  lSave('chats', liaoChats);
+  document.body.classList.toggle('timestamp-hidden', hidden);
+  alert('时间戳设置已保存');
 });
 
 /* ============================================================

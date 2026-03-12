@@ -6,7 +6,9 @@
   position: fixed;
   inset: 0;
   z-index: 450;
-  background: var(--bg, #F5F5F0);
+  background: rgba(220,238,252,0.55);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
   display: none;
   flex-direction: column;
   overflow: hidden;
@@ -16,20 +18,86 @@
   display: flex;
 }
 
-/* ---- 顶部标签栏 ---- */
+/* ---- 顶部标签栏：完全透明，无背景无边框无阴影 ---- */
 .liao-topbar {
   display: flex;
   align-items: center;
-  height: 50px;
-  background: rgba(255,255,255,0.94);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(153,200,237,0.22);
+  justify-content: center;
+  height: 58px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
   flex-shrink: 0;
-  padding: 0 4px;
-  gap: 2px;
+  padding: 10px 10px 8px;
+  gap: 7px;
 }
 
+/* ---- 椭圆按键通用 ---- */
+.liao-pill-btn {
+  flex: 1;
+  height: 34px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .18s;
+  -webkit-appearance: none;
+  padding: 0;
+  font-size: 0;
+}
+
+.liao-pill-btn:active {
+  filter: brightness(0.88);
+}
+
+.liao-pill-btn.active {
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.5),
+              0 2px 10px rgba(100,160,220,0.25);
+}
+
+/* ---- 返回键：最窄，灰蓝 ---- */
+.liao-pill-close {
+  flex: none;
+  width: 34px;
+  background: rgba(140,170,210,0.28);
+}
+
+.liao-pill-close.active {
+  background: rgba(140,170,210,0.28);
+  box-shadow: none;
+}
+
+/* ---- 四个标签：各自不同蓝色 ---- */
+.liao-pill-1 { background: rgba(100,180,240,0.30); }
+.liao-pill-1.active { background: rgba(100,180,240,0.55); }
+
+.liao-pill-2 { background: rgba(120,155,225,0.28); }
+.liao-pill-2.active { background: rgba(120,155,225,0.52); }
+
+.liao-pill-3 { background: rgba(90,195,230,0.26); }
+.liao-pill-3.active { background: rgba(90,195,230,0.50); }
+
+.liao-pill-4 { background: rgba(145,170,220,0.27); }
+.liao-pill-4.active { background: rgba(145,170,220,0.50); }
+
+/* ---- Lucide 图标通用大小 ---- */
+.liao-lucide-icon {
+  width: 17px;
+  height: 17px;
+  stroke: rgba(255,255,255,0.85);
+  stroke-width: 2;
+  flex-shrink: 0;
+  display: block;
+}
+
+.liao-pill-btn.active .liao-lucide-icon {
+  stroke: #fff;
+}
+
+/* ---- 旧的 liao-tab-btn 兼容 ---- */
 .liao-tab-btn {
   flex: 1;
   height: 40px;

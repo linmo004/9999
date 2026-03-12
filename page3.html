@@ -1,0 +1,105 @@
+<!-- page3.html -->
+<div id="page3-inner">
+
+  <!-- 相性卡片区：占页面上半部分 -->
+  <div id="affinity-stack-wrap">
+    <div id="affinity-card-stack">
+
+      <!-- 总排行榜卡片 -->
+      <div class="affinity-card" id="affinity-card-total" data-card-order="0">
+        <div class="affinity-card-header">
+          <span class="affinity-card-title">今日相性总榜</span>
+          <span class="affinity-card-date" id="affinity-total-date"></span>
+        </div>
+        <div class="affinity-total-list" id="affinity-total-list"></div>
+      </div>
+
+      <!-- 用户卡片 -->
+      <div class="affinity-card" id="affinity-card-user" data-card-order="1">
+        <div class="affinity-person-top">
+          <div class="affinity-person-fortune-header">
+            <img class="affinity-person-avatar" id="affinity-user-avatar" src="" alt="">
+            <span class="affinity-person-name" id="affinity-user-name">用户</span>
+            <span class="affinity-fortune-badge">今日运势</span>
+          </div>
+          <div class="affinity-fortune-content" id="affinity-user-fortune"></div>
+        </div>
+        <div class="affinity-person-bottom">
+          <div class="affinity-rank-list" id="affinity-user-rank-list"></div>
+          <div class="affinity-disclaimer">仅供娱乐参考 不要影响心情呀 &gt;_&lt;</div>
+        </div>
+      </div>
+
+      <!-- 角色卡片动态生成 -->
+      <div id="affinity-role-cards-wrap"></div>
+
+    </div>
+
+    <!-- 左下角隐藏点击区（透明，点击切换下一张） -->
+    <div id="affinity-card-tap-zone"></div>
+
+    <!-- 右上角卡片指示器 -->
+    <div id="affinity-card-indicator">1 / 1</div>
+  </div>
+
+  <!-- App 网格：4列 × 3行 = 12个 -->
+  <div id="page3-apps-grid">
+    <div class="app-item">
+      <img class="app-icon" src="https://img.icons8.com/fluency/96/partly-cloudy-day.png" alt="">
+      <div class="app-name">天气</div>
+    </div>
+    <div class="app-item">
+      <img class="app-icon" src="https://img.icons8.com/fluency/96/calculator.png" alt="">
+      <div class="app-name">计算器</div>
+    </div>
+    <div class="app-item">
+      <img class="app-icon" src="https://img.icons8.com/fluency/96/gallery.png" alt="">
+      <div class="app-name">相册</div>
+    </div>
+    <div class="app-item">
+      <img class="app-icon" src="https://img.icons8.com/fluency/96/calendar--v1.png" alt="">
+      <div class="app-name">日历</div>
+    </div>
+    <div class="app-item">
+      <img class="app-icon" src="https://img.icons8.com/fluency/96/alarm.png" alt="">
+      <div class="app-name">闹钟</div>
+    </div>
+    <div class="app-item">
+      <img class="app-icon" src="https://img.icons8.com/fluency/96/map.png" alt="">
+      <div class="app-name">地图</div>
+    </div>
+    <div class="app-item">
+      <img class="app-icon" src="https://img.icons8.com/fluency/96/shopping-cart.png" alt="">
+      <div class="app-name">购物</div>
+    </div>
+    <div class="app-item">
+      <img class="app-icon" src="https://img.icons8.com/fluency/96/heart-health.png" alt="">
+      <div class="app-name">健康</div>
+    </div>
+    <div class="app-item" data-app="batoru">
+  <div class="app-icon" style="
+    width:46px;height:46px;border-radius:13px;
+    background:#0a0000;border:1.5px solid #8b0000;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;font-family:monospace;color:#cc0000;
+    box-shadow:0 2px 8px rgba(139,0,0,0.4);
+    letter-spacing:0;line-height:1;
+    flex-shrink:0;
+  ">▒▓</div>
+  <div class="app-name">▒▓░▒▓</div>
+</div>
+    <div class="app-item">
+      <img class="app-icon" src="https://img.icons8.com/fluency/96/music.png" alt="">
+      <div class="app-name">音乐</div>
+    </div>
+    <div class="app-item">
+      <img class="app-icon" src="https://img.icons8.com/fluency/96/movie.png" alt="">
+      <div class="app-name">视频</div>
+    </div>
+    <div class="app-item">
+      <img class="app-icon" src="https://img.icons8.com/fluency/96/controller.png" alt="">
+      <div class="app-name">游戏</div>
+    </div>
+  </div>
+
+</div>

@@ -499,7 +499,7 @@ document.getElementById('textbar-cancel-btn').addEventListener('click', function
    ============================================================ */
 let currentPage  = 0;
 const pagesWrap  = document.getElementById('pages-wrap');
-const totalPages = 3;
+const totalPages = 4;
 let touchStartX  = 0, touchStartY = 0, touchMoved = false;
 
 pagesWrap.style.width = (totalPages * 100) + 'vw';

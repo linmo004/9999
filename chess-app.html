@@ -1,0 +1,171 @@
+<!-- 棋圣 App —— 所有视图 -->
+<div id="chess-app" style="display:none; position:fixed; inset:0; z-index:500;">
+
+  <!-- ① 主界面 -->
+  <div id="chess-home-view" class="chess-view">
+    <div class="chess-topbar">
+      <button class="chess-back-btn" id="chess-home-back">&#8592;</button>
+      <div class="chess-topbar-title">棋圣</div>
+    </div>
+    <div class="chess-home-bg-wrap">
+      <img id="chess-home-bg" src="" alt="" class="chess-home-bg-img">
+      <div class="chess-home-overlay"></div>
+      <div class="chess-home-btns">
+        <button class="chess-game-btn" id="chess-btn-tictactoe">
+          <span class="chess-game-btn-icon">⊞</span>
+          <span class="chess-game-btn-label">井字棋</span>
+        </button>
+        <button class="chess-game-btn" id="chess-btn-gomoku">
+          <span class="chess-game-btn-icon">⬤</span>
+          <span class="chess-game-btn-label">五子棋</span>
+        </button>
+        <button class="chess-game-btn" id="chess-btn-go">
+          <span class="chess-game-btn-icon">◯</span>
+          <span class="chess-game-btn-label">围棋</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 五子棋选项界面 -->
+  <div id="chess-gomoku-menu-view" class="chess-view" style="display:none;">
+    <div class="chess-topbar">
+      <button class="chess-back-btn" id="chess-gomoku-menu-back">&#8592;</button>
+      <div class="chess-topbar-title">五子棋</div>
+    </div>
+    <div class="chess-gomoku-menu-body">
+      <button class="chess-mode-card" id="chess-gomoku-offline">
+        <div class="chess-mode-icon">🤖</div>
+        <div class="chess-mode-name">离线对战</div>
+        <div class="chess-mode-desc">vs AI 内置算法</div>
+      </button>
+      <button class="chess-mode-card" id="chess-gomoku-online">
+        <div class="chess-mode-icon">👤</div>
+        <div class="chess-mode-name">在线对战</div>
+        <div class="chess-mode-desc">vs 角色</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ③ 角色选择界面（通用：井字棋 / 在线五子棋 / 围棋） -->
+  <div id="chess-role-select-view" class="chess-view" style="display:none;">
+    <div class="chess-topbar">
+      <button class="chess-back-btn" id="chess-role-back">&#8592;</button>
+      <div class="chess-topbar-title" id="chess-role-select-title">选择对手</div>
+    </div>
+    <div class="chess-role-list" id="chess-role-list">
+      <!-- 角色卡片由 JS 动态渲染 -->
+    </div>
+    <div class="chess-role-select-footer">
+      <button class="chess-start-btn" id="chess-start-battle-btn">开始对战</button>
+    </div>
+  </div>
+
+  <!-- ④ 井字棋对战界面 -->
+  <div id="chess-tictactoe-view" class="chess-view" style="display:none;">
+    <div class="chess-topbar">
+      <button class="chess-back-btn" id="chess-ttt-back">&#8592;</button>
+      <div class="chess-opponent-info" id="chess-ttt-opponent">
+        <img class="chess-opponent-avatar" id="chess-ttt-avatar" src="" alt="">
+        <span class="chess-opponent-name" id="chess-ttt-name">对手</span>
+      </div>
+    </div>
+    <div class="chess-ttt-body">
+      <div class="chess-turn-hint" id="chess-ttt-turn">轮到你了</div>
+      <div class="chess-ttt-board" id="chess-ttt-board">
+        <div class="chess-ttt-cell" data-idx="0"></div>
+        <div class="chess-ttt-cell" data-idx="1"></div>
+        <div class="chess-ttt-cell" data-idx="2"></div>
+        <div class="chess-ttt-cell" data-idx="3"></div>
+        <div class="chess-ttt-cell" data-idx="4"></div>
+        <div class="chess-ttt-cell" data-idx="5"></div>
+        <div class="chess-ttt-cell" data-idx="6"></div>
+        <div class="chess-ttt-cell" data-idx="7"></div>
+        <div class="chess-ttt-cell" data-idx="8"></div>
+      </div>
+      <!-- 临时聊天框 -->
+      <div class="chess-inline-chat" id="chess-ttt-chat">
+        <div class="chess-chat-msgs" id="chess-ttt-msgs"></div>
+        <div class="chess-chat-inputbar">
+          <input class="chess-chat-input" id="chess-ttt-input" placeholder="说点什么…">
+          <button class="chess-chat-send-btn" id="chess-ttt-send">发送</button>
+        </div>
+      </div>
+      <div class="chess-action-row">
+        <button class="chess-action-btn chess-resign-btn" id="chess-ttt-resign">认输</button>
+        <button class="chess-action-btn chess-replay-btn" id="chess-ttt-replay">再来一局</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑤ 五子棋对战界面 -->
+  <div id="chess-gomoku-view" class="chess-view" style="display:none;">
+    <div class="chess-topbar">
+      <button class="chess-back-btn" id="chess-gomoku-back">&#8592;</button>
+      <div class="chess-topbar-title">五子棋</div>
+      <div class="chess-topbar-opponent" id="chess-gomoku-opponent-name">对手</div>
+    </div>
+    <div class="chess-gomoku-body">
+      <div class="chess-turn-hint" id="chess-gomoku-turn">轮到你了</div>
+      <!-- 15×15 棋盘 -->
+      <div class="chess-gomoku-board-wrap">
+        <div class="chess-gomoku-board" id="chess-gomoku-board">
+          <!-- 225 个交叉点由 JS 生成 -->
+        </div>
+      </div>
+      <!-- 在线模式才显示聊天框 -->
+      <div class="chess-inline-chat chess-gomoku-chat-hidden" id="chess-gomoku-chat">
+        <div class="chess-chat-msgs" id="chess-gomoku-msgs"></div>
+        <div class="chess-chat-inputbar">
+          <input class="chess-chat-input" id="chess-gomoku-input" placeholder="说点什么…">
+          <button class="chess-chat-send-btn" id="chess-gomoku-send">发送</button>
+        </div>
+      </div>
+      <div class="chess-action-row">
+        <button class="chess-action-btn chess-resign-btn" id="chess-gomoku-resign">认输</button>
+        <button class="chess-action-btn chess-replay-btn" id="chess-gomoku-replay">再来一局</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ 围棋对战界面 -->
+  <div id="chess-go-view" class="chess-view" style="display:none;">
+    <div class="chess-topbar">
+      <button class="chess-back-btn" id="chess-go-back">&#8592;</button>
+      <div class="chess-topbar-title">围棋</div>
+      <div class="chess-topbar-opponent" id="chess-go-opponent-name">对手</div>
+    </div>
+    <div class="chess-go-body">
+      <div class="chess-turn-hint" id="chess-go-turn">轮到你了</div>
+      <!-- 19×19 棋盘 -->
+      <div class="chess-go-board-wrap">
+        <div class="chess-go-board" id="chess-go-board">
+          <!-- 361 个交叉点由 JS 生成 -->
+        </div>
+      </div>
+      <div class="chess-inline-chat" id="chess-go-chat">
+        <div class="chess-chat-msgs" id="chess-go-msgs"></div>
+        <div class="chess-chat-inputbar">
+          <input class="chess-chat-input" id="chess-go-input" placeholder="说点什么…">
+          <button class="chess-chat-send-btn" id="chess-go-send">发送</button>
+        </div>
+      </div>
+      <div class="chess-action-row">
+        <button class="chess-action-btn chess-resign-btn" id="chess-go-resign">认输</button>
+        <button class="chess-action-btn chess-replay-btn" id="chess-go-replay">再来一局</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑦ 通用结果弹窗 -->
+  <div id="chess-result-modal" class="chess-result-modal" style="display:none;">
+    <div class="chess-result-box">
+      <div class="chess-result-text" id="chess-result-text">你赢了！</div>
+      <div class="chess-result-actions">
+        <button class="chess-action-btn chess-memory-btn" id="chess-result-memory">注入记忆</button>
+        <button class="chess-action-btn chess-replay-btn" id="chess-result-replay">再来一局</button>
+      </div>
+    </div>
+  </div>
+
+</div>

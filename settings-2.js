@@ -7,6 +7,7 @@ window.initSettings = function () {
 
   let wallpaperSrc  = sLoad('wallpaper',  '');
   let wallpaper2Src = sLoad('wallpaper2', '');
+  let wallpaper3Src = sLoad('wallpaper3', '');  // ★ 新增
 
   /* ---- 层级导航 ---- */
   function showLayer(id) {
@@ -42,7 +43,10 @@ window.initSettings = function () {
     renderIconReplaceList();
     renderColorFields();
     renderAppNameFields();
+    renderAffinityColorFields();   // ★ 新增
     initWallpaper2Preview();
+    initWallpaper3Preview();       // ★ 新增
+    initDockStyleFields();         // ★ 新增
     showLayer('settings-theme');
   });
 
@@ -246,8 +250,22 @@ window.initSettings = function () {
     p2.style.backgroundPosition = src ? 'center' : '';
   }
 
+  /* ★ 新增：第三页壁纸应用函数 */
+  function setPage3Wallpaper(src) {
+    const p3 = document.getElementById('page3');
+    if (!p3) return;
+    p3.style.backgroundImage    = src ? 'url(' + src + ')' : '';
+    p3.style.backgroundSize     = src ? 'cover' : '';
+    p3.style.backgroundPosition = src ? 'center' : '';
+  }
+
   function applyWallpaper2Fallback() {
     if (!wallpaper2Src) setPage2Wallpaper(wallpaperSrc);
+  }
+
+  /* ★ 新增：第三页壁纸 fallback */
+  function applyWallpaper3Fallback() {
+    if (!wallpaper3Src) setPage3Wallpaper(wallpaperSrc);
   }
 
   function applyWallpaper(src) {
@@ -262,6 +280,7 @@ window.initSettings = function () {
       preview.style.border          = src ? 'none' : '';
     }
     applyWallpaper2Fallback();
+    applyWallpaper3Fallback();  // ★ 新增
   }
 
   function applyWallpaper2(src) {
@@ -269,6 +288,19 @@ window.initSettings = function () {
     sSave('wallpaper2', src);
     setPage2Wallpaper(src || wallpaperSrc);
     const preview = document.getElementById('wallpaper2-preview');
+    if (preview) {
+      const ds = src || wallpaperSrc;
+      preview.style.backgroundImage = ds ? 'url(' + ds + ')' : '';
+      preview.style.border          = ds ? 'none' : '';
+    }
+  }
+
+  /* ★ 新增：第三页壁纸完整函数 */
+  function applyWallpaper3(src) {
+    wallpaper3Src = src;
+    sSave('wallpaper3', src);
+    setPage3Wallpaper(src || wallpaperSrc);
+    const preview = document.getElementById('wallpaper3-preview');
     if (preview) {
       const ds = src || wallpaperSrc;
       preview.style.backgroundImage = ds ? 'url(' + ds + ')' : '';
@@ -284,9 +316,20 @@ window.initSettings = function () {
     preview.style.border          = ds ? 'none' : '';
   }
 
+  /* ★ 新增：第三页壁纸预览初始化 */
+  function initWallpaper3Preview() {
+    const preview = document.getElementById('wallpaper3-preview');
+    if (!preview) return;
+    const ds = wallpaper3Src || wallpaperSrc;
+    preview.style.backgroundImage = ds ? 'url(' + ds + ')' : '';
+    preview.style.border          = ds ? 'none' : '';
+  }
+
   applyWallpaper(wallpaperSrc);
   applyWallpaper2(wallpaper2Src);
+  applyWallpaper3(wallpaper3Src);  // ★ 新增
 
+  /* 主页壁纸按钮 */
   const wpUrlBtn = document.getElementById('wallpaper-url-btn');
   if (wpUrlBtn) wpUrlBtn.addEventListener('click', function () {
     const inp = document.getElementById('wallpaper-url-input');
@@ -326,6 +369,7 @@ window.initSettings = function () {
   const wpClearBtn = document.getElementById('wallpaper-clear-btn');
   if (wpClearBtn) wpClearBtn.addEventListener('click', () => applyWallpaper(''));
 
+  /* 第二页壁纸按钮 */
   const wp2UrlBtn = document.getElementById('wallpaper2-url-btn');
   if (wp2UrlBtn) wp2UrlBtn.addEventListener('click', function () {
     const inp = document.getElementById('wallpaper2-url-input');
@@ -365,6 +409,46 @@ window.initSettings = function () {
   const wp2ClearBtn = document.getElementById('wallpaper2-clear-btn');
   if (wp2ClearBtn) wp2ClearBtn.addEventListener('click', () => applyWallpaper2(''));
 
+  /* ★ 新增：第三页壁纸按钮 */
+  const wp3UrlBtn = document.getElementById('wallpaper3-url-btn');
+  if (wp3UrlBtn) wp3UrlBtn.addEventListener('click', function () {
+    const inp = document.getElementById('wallpaper3-url-input');
+    if (inp) inp.value = wallpaper3Src || '';
+    const modal = document.getElementById('wallpaper3-url-modal');
+    if (modal) modal.classList.add('show');
+  });
+  const wp3UrlConfirm = document.getElementById('wallpaper3-url-confirm');
+  if (wp3UrlConfirm) wp3UrlConfirm.addEventListener('click', function () {
+    const inp = document.getElementById('wallpaper3-url-input');
+    if (inp) applyWallpaper3(inp.value.trim());
+    const modal = document.getElementById('wallpaper3-url-modal');
+    if (modal) modal.classList.remove('show');
+  });
+  const wp3UrlCancel = document.getElementById('wallpaper3-url-cancel');
+  if (wp3UrlCancel) wp3UrlCancel.addEventListener('click', function () {
+    const modal = document.getElementById('wallpaper3-url-modal');
+    if (modal) modal.classList.remove('show');
+  });
+  const wp3LocalBtn = document.getElementById('wallpaper3-local-btn');
+  if (wp3LocalBtn) wp3LocalBtn.addEventListener('click', function () {
+    const fi = document.getElementById('wallpaper3-file-input');
+    if (fi) fi.click();
+  });
+  const wp3FileInput = document.getElementById('wallpaper3-file-input');
+  if (wp3FileInput) wp3FileInput.addEventListener('change', async function () {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async e => {
+      const compressed = await compressImage(e.target.result, 1200, 0.75);
+      applyWallpaper3(compressed);
+    };
+    reader.readAsDataURL(file);
+    this.value = '';
+  });
+  const wp3ClearBtn = document.getElementById('wallpaper3-clear-btn');
+  if (wp3ClearBtn) wp3ClearBtn.addEventListener('click', () => applyWallpaper3(''));
+
   /* App 名称修改 */
   const appNameRegistry = [
     { key: 'app-name-dock-chat',     selector: '#dock-chat .app-name',             default: '了了'   },
@@ -380,6 +464,19 @@ window.initSettings = function () {
     { key: 'app-name-p2-app-1',      selector: '[data-app="p2-app-1"] .app-name',  default: '闹钟'   },
     { key: 'app-name-p2-app-2',      selector: '[data-app="p2-app-2"] .app-name',  default: '地图'   },
     { key: 'app-name-p2-app-3',      selector: '[data-app="p2-app-3"] .app-name',  default: '收藏'   },
+    /* ★ 新增：第三页 App */
+    { key: 'app-name-p3-weather',    selector: '[data-app="p3-weather"] .app-name',    default: '天气'   },
+    { key: 'app-name-p3-calculator', selector: '[data-app="p3-calculator"] .app-name', default: '计算器' },
+    { key: 'app-name-p3-gallery',    selector: '[data-app="p3-gallery"] .app-name',    default: '相册'   },
+    { key: 'app-name-p3-calendar',   selector: '[data-app="p3-calendar"] .app-name',   default: '日历'   },
+    { key: 'app-name-p3-alarm',      selector: '[data-app="p3-alarm"] .app-name',      default: '闹钟'   },
+    { key: 'app-name-p3-map',        selector: '[data-app="p3-map"] .app-name',        default: '地图'   },
+    { key: 'app-name-p3-shop',       selector: '[data-app="p3-shop"] .app-name',       default: '购物'   },
+    { key: 'app-name-p3-health',     selector: '[data-app="p3-health"] .app-name',     default: '健康'   },
+    { key: 'app-name-p3-note',       selector: '[data-app="p3-note"] .app-name',       default: '笔记'   },
+    { key: 'app-name-p3-music',      selector: '[data-app="p3-music"] .app-name',      default: '音乐'   },
+    { key: 'app-name-p3-video',      selector: '[data-app="p3-video"] .app-name',      default: '视频'   },
+    { key: 'app-name-p3-game',       selector: '[data-app="p3-game"] .app-name',       default: '游戏'   },
   ];
   let customAppNames = sLoad('customAppNames', {});
 
@@ -452,19 +549,32 @@ window.initSettings = function () {
 
   /* App 图标替换 */
   const iconRegistry = [
-    { key: 'dock-chat',     label: 'Dock · 了了',     selector: '#dock-chat .app-icon'             },
-    { key: 'dock-home',     label: 'Dock · 家园',     selector: '#dock-home .app-icon'             },
-    { key: 'dock-settings', label: 'Dock · 设置',     selector: '#dock-settings .app-icon'         },
-    { key: 'app2-chat',     label: '了了 App',         selector: '[data-app="chat"] .app-icon'      },
-    { key: 'app2-settings', label: '设置 App',         selector: '[data-app="settings"] .app-icon'  },
-    { key: 'app4-0',        label: '音乐',             selector: '[data-app="0"] .app-icon'         },
-    { key: 'app4-wb',       label: '世界书',           selector: '[data-app="worldbook"] .app-icon' },
-    { key: 'app4-2',        label: '日历',             selector: '[data-app="2"] .app-icon'         },
-    { key: 'app4-3',        label: '相册',             selector: '[data-app="3"] .app-icon'         },
-    { key: 'p2-app-0',      label: '第二页 · 备忘录',   selector: '[data-app="p2-app-0"] .app-icon' },
-    { key: 'p2-app-1',      label: '第二页 · 闹钟',    selector: '[data-app="p2-app-1"] .app-icon' },
-    { key: 'p2-app-2',      label: '第二页 · 地图',    selector: '[data-app="p2-app-2"] .app-icon' },
-    { key: 'p2-app-3',      label: '第二页 · 收藏',    selector: '[data-app="p2-app-3"] .app-icon' },
+    { key: 'dock-chat',     label: 'Dock · 了了',       selector: '#dock-chat .app-icon'             },
+    { key: 'dock-home',     label: 'Dock · 家园',       selector: '#dock-home .app-icon'             },
+    { key: 'dock-settings', label: 'Dock · 设置',       selector: '#dock-settings .app-icon'         },
+    { key: 'app2-chat',     label: '了了 App',           selector: '[data-app="chat"] .app-icon'      },
+    { key: 'app2-settings', label: '设置 App',           selector: '[data-app="settings"] .app-icon'  },
+    { key: 'app4-0',        label: '音乐',               selector: '[data-app="0"] .app-icon'         },
+    { key: 'app4-wb',       label: '世界书',             selector: '[data-app="worldbook"] .app-icon' },
+    { key: 'app4-2',        label: '日历',               selector: '[data-app="2"] .app-icon'         },
+    { key: 'app4-3',        label: '相册',               selector: '[data-app="3"] .app-icon'         },
+    { key: 'p2-app-0',      label: '第二页 · 备忘录',     selector: '[data-app="p2-app-0"] .app-icon' },
+    { key: 'p2-app-1',      label: '第二页 · 闹钟',      selector: '[data-app="p2-app-1"] .app-icon' },
+    { key: 'p2-app-2',      label: '第二页 · 地图',      selector: '[data-app="p2-app-2"] .app-icon' },
+    { key: 'p2-app-3',      label: '第二页 · 收藏',      selector: '[data-app="p2-app-3"] .app-icon' },
+    /* ★ 新增：第三页 App 图标 */
+    { key: 'p3-weather',    label: '第三页 · 天气',      selector: '[data-app="p3-weather"] .app-icon'    },
+    { key: 'p3-calculator', label: '第三页 · 计算器',    selector: '[data-app="p3-calculator"] .app-icon' },
+    { key: 'p3-gallery',    label: '第三页 · 相册',      selector: '[data-app="p3-gallery"] .app-icon'    },
+    { key: 'p3-calendar',   label: '第三页 · 日历',      selector: '[data-app="p3-calendar"] .app-icon'   },
+    { key: 'p3-alarm',      label: '第三页 · 闹钟',      selector: '[data-app="p3-alarm"] .app-icon'      },
+    { key: 'p3-map',        label: '第三页 · 地图',      selector: '[data-app="p3-map"] .app-icon'        },
+    { key: 'p3-shop',       label: '第三页 · 购物',      selector: '[data-app="p3-shop"] .app-icon'       },
+    { key: 'p3-health',     label: '第三页 · 健康',      selector: '[data-app="p3-health"] .app-icon'     },
+    { key: 'p3-note',       label: '第三页 · 笔记',      selector: '[data-app="p3-note"] .app-icon'       },
+    { key: 'p3-music',      label: '第三页 · 音乐',      selector: '[data-app="p3-music"] .app-icon'      },
+    { key: 'p3-video',      label: '第三页 · 视频',      selector: '[data-app="p3-video"] .app-icon'      },
+    { key: 'p3-game',       label: '第三页 · 游戏',      selector: '[data-app="p3-game"] .app-icon'       },
   ];
   let customIcons = sLoad('customIcons', {});
   let iconEditKey = '';
@@ -660,20 +770,182 @@ window.initSettings = function () {
     });
   }
 
+  /* ★ 新增：相性卡片配色 */
+  const affinityColorDefs = [
+    { key: 'affinity-card-bg',         label: '卡片背景色',       default: '#ffffff',  cssVar: '--affinity-card-bg'         },
+    { key: 'affinity-card-border',      label: '卡片边框色',       default: '#99C8ED',  cssVar: '--affinity-card-border'     },
+    { key: 'affinity-header-bg-from',   label: '卡片标题渐变起',   default: '#f0f7ff',  cssVar: '--affinity-header-bg-from'  },
+    { key: 'affinity-header-bg-to',     label: '卡片标题渐变止',   default: '#fafcff',  cssVar: '--affinity-header-bg-to'    },
+    { key: 'affinity-fortune-bg-from',  label: '运势区渐变起',     default: '#eaf4ff',  cssVar: '--affinity-fortune-bg-from' },
+    { key: 'affinity-rank-score-color', label: '分数文字色',       default: '#2c3448',  cssVar: '--affinity-rank-score-color'},
+    { key: 'affinity-tag-high-color',   label: '高分标签文字色',   default: '#c8900a',  cssVar: '--affinity-tag-high-color'  },
+    { key: 'affinity-tag-mid-color',    label: '中分标签文字色',   default: '#3a7ab8',  cssVar: '--affinity-tag-mid-color'   },
+    { key: 'affinity-tag-low-color',    label: '低分标签文字色',   default: '#7a8a9a',  cssVar: '--affinity-tag-low-color'   },
+  ];
+  let customAffinityColors = sLoad('customAffinityColors', {});
+
+  function applyAffinityColors(colorMap) {
+    Object.entries(colorMap).forEach(([k, v]) => {
+      const def = affinityColorDefs.find(d => d.key === k);
+      if (def) document.documentElement.style.setProperty(def.cssVar, v);
+    });
+  }
+  applyAffinityColors(customAffinityColors);
+
+  function renderAffinityColorFields() {
+    const container = document.getElementById('affinity-color-fields');
+    if (!container) return;
+    container.innerHTML = '';
+    affinityColorDefs.forEach(def => {
+      const currentVal = customAffinityColors[def.key] || def.default;
+      const row = document.createElement('div');
+      row.className = 'color-field-row';
+      const labelDiv = document.createElement('div');
+      labelDiv.className   = 'color-field-label';
+      labelDiv.textContent = def.label;
+      const picker = document.createElement('input');
+      picker.type         = 'color';
+      picker.className    = 'color-field-input';
+      picker.dataset.akey = def.key;
+      picker.value = /^#[0-9a-fA-F]{6}$/.test(currentVal) ? currentVal : def.default;
+      const hexInput = document.createElement('input');
+      hexInput.type         = 'text';
+      hexInput.className    = 'color-field-hex';
+      hexInput.dataset.ahkey = def.key;
+      hexInput.value        = currentVal;
+      hexInput.maxLength    = 7;
+      picker.addEventListener('input', function () { hexInput.value = this.value; });
+      hexInput.addEventListener('input', function () {
+        if (/^#[0-9a-fA-F]{6}$/.test(this.value.trim())) picker.value = this.value.trim();
+      });
+      row.appendChild(labelDiv);
+      row.appendChild(picker);
+      row.appendChild(hexInput);
+      container.appendChild(row);
+    });
+  }
+
+  const affinityColorApplyBtn = document.getElementById('affinity-color-apply-btn');
+  if (affinityColorApplyBtn) {
+    affinityColorApplyBtn.addEventListener('click', function () {
+      const container = document.getElementById('affinity-color-fields');
+      if (!container) return;
+      affinityColorDefs.forEach(def => {
+        const hexEl = container.querySelector('.color-field-hex[data-ahkey="' + def.key + '"]');
+        if (hexEl) {
+          const val = hexEl.value.trim();
+          if (/^#[0-9a-fA-F]{6}$/.test(val)) customAffinityColors[def.key] = val;
+        }
+      });
+      sSave('customAffinityColors', customAffinityColors);
+      applyAffinityColors(customAffinityColors);
+    });
+  }
+
+  const affinityColorResetBtn = document.getElementById('affinity-color-reset-btn');
+  if (affinityColorResetBtn) {
+    affinityColorResetBtn.addEventListener('click', function () {
+      customAffinityColors = {};
+      sSave('customAffinityColors', {});
+      affinityColorDefs.forEach(def => {
+        document.documentElement.style.removeProperty(def.cssVar);
+      });
+      renderAffinityColorFields();
+    });
+  }
+
+  /* ★ 新增：Dock 栏配色与透明度 */
+  function initDockStyleFields() {
+    const saved = sLoad('dockStyle', null);
+    const pickerEl  = document.getElementById('dock-bg-color-picker');
+    const hexEl     = document.getElementById('dock-bg-color-hex');
+    const sliderEl  = document.getElementById('dock-opacity-slider');
+    const valEl     = document.getElementById('dock-opacity-value');
+    if (!pickerEl || !hexEl || !sliderEl || !valEl) return;
+
+    const color   = (saved && saved.color)   ? saved.color   : '#ffffff';
+    const opacity = (saved && saved.opacity !== undefined) ? saved.opacity : 0.84;
+
+    pickerEl.value = color;
+    hexEl.value    = color;
+    sliderEl.value = opacity;
+    valEl.textContent = parseFloat(opacity).toFixed(2);
+        pickerEl.addEventListener('input', function () { hexEl.value = this.value; });
+    hexEl.addEventListener('input', function () {
+      if (/^#[0-9a-fA-F]{6}$/.test(this.value.trim())) pickerEl.value = this.value.trim();
+    });
+    sliderEl.addEventListener('input', function () {
+      valEl.textContent = parseFloat(this.value).toFixed(2);
+    });
+  }
+
+  function applyDockStyle(color, opacity) {
+    const dock = document.getElementById('dock');
+    if (!dock) return;
+    // 将 hex 转为 rgb 分量
+    const r = parseInt(color.slice(1,3), 16);
+    const g = parseInt(color.slice(3,5), 16);
+    const b = parseInt(color.slice(5,7), 16);
+    dock.style.background = 'rgba(' + r + ',' + g + ',' + b + ',' + opacity + ')';
+  }
+
+  // 启动时恢复 Dock 样式
+  (function restoreDockStyle() {
+    const saved = sLoad('dockStyle', null);
+    if (!saved) return;
+    const color   = saved.color   || '#ffffff';
+    const opacity = saved.opacity !== undefined ? saved.opacity : 0.84;
+    applyDockStyle(color, opacity);
+  })();
+
+  const dockStyleApplyBtn = document.getElementById('dock-style-apply-btn');
+  if (dockStyleApplyBtn) {
+    dockStyleApplyBtn.addEventListener('click', function () {
+      const pickerEl = document.getElementById('dock-bg-color-picker');
+      const hexEl    = document.getElementById('dock-bg-color-hex');
+      const sliderEl = document.getElementById('dock-opacity-slider');
+      if (!pickerEl || !hexEl || !sliderEl) return;
+      const hexVal = hexEl.value.trim();
+      const color  = /^#[0-9a-fA-F]{6}$/.test(hexVal) ? hexVal : pickerEl.value;
+      const opacity = parseFloat(sliderEl.value);
+      sSave('dockStyle', { color, opacity });
+      applyDockStyle(color, opacity);
+    });
+  }
+
+  const dockStyleResetBtn = document.getElementById('dock-style-reset-btn');
+  if (dockStyleResetBtn) {
+    dockStyleResetBtn.addEventListener('click', function () {
+      sSave('dockStyle', null);
+      const dock = document.getElementById('dock');
+      if (dock) dock.style.background = '';
+      // 重置表单
+      const pickerEl = document.getElementById('dock-bg-color-picker');
+      const hexEl    = document.getElementById('dock-bg-color-hex');
+      const sliderEl = document.getElementById('dock-opacity-slider');
+      const valEl    = document.getElementById('dock-opacity-value');
+      if (pickerEl) pickerEl.value = '#ffffff';
+      if (hexEl)    hexEl.value    = '#ffffff';
+      if (sliderEl) sliderEl.value = '0.84';
+      if (valEl)    valEl.textContent = '0.84';
+    });
+  }
+
   /* ---- ③ 数据管理 ---- */
 
   const HOME_DATA_KEYS = [
     'cdItems', 'carouselUrls', 'userAvatar', 'userSig', 'msgData', 'textBars',
     'apiArchives', 'apiActiveConfig', 'apiCurrentModel',
-    'customIcons', 'customColors', 'wallpaper', 'wallpaper2', 'customAppNames',
-    'darkMode', 'pinAvatar', 'lockPin',
+    'customIcons', 'customColors', 'wallpaper', 'wallpaper2', 'wallpaper3',
+    'customAppNames', 'darkMode', 'pinAvatar', 'lockPin',
     'p2UcBg', 'p2UcName', 'p2UcUid', 'p2UcFans', 'p2UcLikes',
     'p2AlbumBg', 'p2CdImg', 'page2Cards',
-    'garden',
+    'garden', 'customAffinityColors', 'dockStyle',
   ];
 
   const THEME_DATA_KEYS = [
-    'customIcons', 'customColors', 'wallpaper', 'wallpaper2', 'customAppNames', 'darkMode',
+    'customIcons', 'customColors', 'wallpaper', 'wallpaper2', 'wallpaper3',
+    'customAppNames', 'darkMode', 'customAffinityColors', 'dockStyle',
   ];
 
   const LIAO_RAW_KEYS = [
@@ -828,11 +1100,16 @@ window.initSettings = function () {
       importAllFromJson(file, () => {
         wallpaperSrc  = sLoad('wallpaper',  '');
         wallpaper2Src = sLoad('wallpaper2', '');
+        wallpaper3Src = sLoad('wallpaper3', '');
         applyWallpaper(wallpaperSrc);
         applyWallpaper2(wallpaper2Src);
+        applyWallpaper3(wallpaper3Src);
         customColors   = sLoad('customColors',   {}); applyColors(customColors);
         customIcons    = sLoad('customIcons',    {}); restoreAllIcons();
         customAppNames = sLoad('customAppNames', {}); applyAllAppNames();
+        customAffinityColors = sLoad('customAffinityColors', {}); applyAffinityColors(customAffinityColors);
+        const dockSaved = sLoad('dockStyle', null);
+        if (dockSaved) applyDockStyle(dockSaved.color || '#ffffff', dockSaved.opacity !== undefined ? dockSaved.opacity : 0.84);
         const darkOn = localStorage.getItem('halo9_darkMode') === 'true';
         document.body.classList.toggle('dark-mode', darkOn);
         const toggle = document.getElementById('dark-mode-toggle');
@@ -855,10 +1132,12 @@ window.initSettings = function () {
 
   /* 将关键函数挂到 window 供 settings-3.js 使用 */
   window._s2 = {
-    applyWallpaper, applyWallpaper2,
+    applyWallpaper, applyWallpaper2, applyWallpaper3,
     applyColors, applyAllAppNames, restoreAllIcons,
     renderIconReplaceList, renderColorFields, renderAppNameFields,
-    initWallpaper2Preview,
+    renderAffinityColorFields, applyAffinityColors,
+    initWallpaper2Preview, initWallpaper3Preview,
+    initDockStyleFields, applyDockStyle,
   };
 
-}; /* end window.initSettings — settings-3.js 会在调用后紧接着执行附加逻辑 */
+}; /* end window.initSettings */

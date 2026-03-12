@@ -21,6 +21,12 @@
 <link rel="stylesheet" href="garden.css">
 <link rel="stylesheet" href="rolephone.css">
 <link rel="stylesheet" href="rolephone-statusbar.css">
+<link rel="stylesheet" href="page3.css">
+<link rel="stylesheet" href="chess-app.css">
+<link rel="stylesheet" href="batoru.css">
+<link rel="stylesheet" href="liao-cardbook.css">
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
 
@@ -35,20 +41,25 @@
 <div id="partial-worldbook"></div>
 <div id="partial-garden-app"></div>
 <div id="partial-rolephone"></div>
+<div id="partial-chess-app"></div>
+<div id="partial-batoru"></div>
 
 <script>
 (function () {
   const partials = [
-    { id: 'partial-lockscreen',    file: 'lockscreen.html' },
-    { id: 'partial-main-ui',       file: 'main-ui.html' },
-    { id: 'partial-home-modals',   file: 'home-modals.html' },
-    { id: 'partial-settings-app',  file: 'settings-app.html' },
-    { id: 'partial-liao-app',      file: 'liao-app.html' },
-    { id: 'partial-liao-chat',     file: 'liao-chat.html' },
-    { id: 'partial-liao-modals',   file: 'liao-modals.html' },
-    { id: 'partial-worldbook',     file: 'worldbook.html' },
-    { id: 'partial-garden-app',    file: 'garden.html' },
-    { id: 'partial-rolephone',     file: 'rolephone.html' },
+    { id: 'partial-lockscreen',   file: 'lockscreen.html' },
+    { id: 'partial-main-ui',      file: 'main-ui.html' },
+    { id: 'partial-home-modals',  file: 'home-modals.html' },
+    { id: 'partial-settings-app', file: 'settings-app.html' },
+    { id: 'partial-liao-app',     file: 'liao-app.html' },
+    { id: 'partial-liao-chat',    file: 'liao-chat.html' },
+    { id: 'partial-liao-modals',  file: 'liao-modals.html' },
+    { id: 'partial-worldbook',    file: 'worldbook.html' },
+    { id: 'partial-garden-app',   file: 'garden.html' },
+    { id: 'partial-rolephone',    file: 'rolephone.html' },
+    { id: 'partial-chess-app',    file: 'chess-app.html' },
+    { id: 'partial-batoru', file: 'batoru.html' },
+     
   ];
 
   async function loadAll() {
@@ -57,7 +68,25 @@
       const html = await res.text();
       document.getElementById(p.id).innerHTML = html;
     }
+
+    /* main-ui.html 加载完后，page3/page4 挂载点已在 DOM 里，现在注入内容 */
+    await injectPagePartials();
+
     await initScripts();
+  }
+
+  async function injectPagePartials() {
+    const subPartials = [
+      { id: 'partial-page3', file: 'page3.html' },
+      { id: 'partial-page4', file: 'page4.html' },
+    ];
+    for (const p of subPartials) {
+      const el = document.getElementById(p.id);
+      if (!el) continue;
+      const res  = await fetch(p.file);
+      const html = await res.text();
+      el.innerHTML = html;
+    }
   }
 
   function loadScript(src) {
@@ -90,8 +119,12 @@
     await loadScript('garden-core.js');
     await loadScript('garden-ui.js');
     await loadScript('garden-main.js');
+    await loadScript('chess-app.js');
     await loadScript('rolephone.js');
-    /* 所有片段和脚本加载完毕后，统一初始化设置模块 */
+    await loadScript('page3.js');
+    await loadScript('batoru.js');
+    await loadScript('liao-cardbook.js');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
     if (typeof window.initSettings === 'function') window.initSettings();
   }
 

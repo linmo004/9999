@@ -31,43 +31,36 @@
     <button class="chat-view-placeholder-btn" id="chat-send-btn" title="发送">↑</button>
   </div>
 
-  <!-- 特殊功能状态栏 -->
-  <div class="chat-special-bar" id="chat-special-bar">
-    <div class="chat-special-bar-inner" id="chat-special-bar-inner">
-      <button class="csb-btn" id="csb-ai" title="AI回复">
-        <span class="csb-icon">◈</span>
-        <span class="csb-label">AI</span>
-      </button>
-      <button class="csb-btn" id="csb-emoji" title="表情包">
-        <span class="csb-icon">◉</span>
-        <span class="csb-label">表情</span>
-      </button>
-      <button class="csb-btn" id="csb-voice" title="语音">
-        <span class="csb-icon">◎</span>
-        <span class="csb-label">语音</span>
-      </button>
-      <button class="csb-btn" id="csb-transfer" title="转账">
-        <span class="csb-icon">◇</span>
-        <span class="csb-label">转账</span>
-      </button>
-      <button class="csb-btn" id="csb-camera" title="拍摄">
-        <span class="csb-icon">▣</span>
-        <span class="csb-label">拍摄</span>
-      </button>
-      <button class="csb-btn" id="csb-image" title="图片">
-        <span class="csb-icon">▤</span>
-        <span class="csb-label">图片</span>
-      </button>
-      <button class="csb-btn" id="csb-rolephone" title="角色手机">
-        <span class="csb-icon">▦</span>
-        <span class="csb-label">手机</span>
-      </button>
-      <button class="csb-btn" id="csb-edit" title="编辑">
-        <span class="csb-icon">▧</span>
-        <span class="csb-label">编辑</span>
-      </button>
-    </div>
+<!-- 特殊功能状态栏 -->
+<div class="chat-special-bar" id="chat-special-bar">
+  <div class="chat-special-bar-inner" id="chat-special-bar-inner">
+    <button class="csb-btn" id="csb-ai" title="AI回复">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="csb-svg"><path d="M16.247 7.761a6 6 0 0 1 0 8.478"/><path d="M19.075 4.933a10 10 0 0 1 0 14.134"/><path d="M4.925 19.067a10 10 0 0 1 0-14.134"/><path d="M7.753 16.239a6 6 0 0 1 0-8.478"/><circle cx="12" cy="12" r="2"/></svg>
+    </button>
+    <button class="csb-btn" id="csb-emoji" title="表情包">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="csb-svg"><circle cx="12" cy="12" r="10"/><path d="M18 13a6 6 0 0 1-6 5 6 6 0 0 1-6-5h12Z"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>
+    </button>
+    <button class="csb-btn" id="csb-voice" title="语音">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="csb-svg"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg>
+    </button>
+    <button class="csb-btn" id="csb-transfer" title="转账">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="csb-svg"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+    </button>
+    <button class="csb-btn" id="csb-camera" title="拍摄">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="csb-svg"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg>
+    </button>
+    <button class="csb-btn" id="csb-image" title="图片">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="csb-svg"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+    </button>
+    <button class="csb-btn" id="csb-rolephone" title="角色手机">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="csb-svg"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+    </button>
+    <button class="csb-btn" id="csb-edit" title="编辑">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="csb-svg"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>
+    </button>
   </div>
+</div>
+
 
   <!-- 表情包面板 -->
   <div class="emoji-panel" id="emoji-panel" style="display:none;">
@@ -118,6 +111,18 @@
           <label class="liao-modal-label">角色设定</label>
           <textarea class="liao-modal-textarea" id="cs-role-setting"
             placeholder="角色性格、背景、说话方式…" style="min-height:100px;"></textarea>
+                      <label class="liao-modal-label">角色图片（展示在卡册中，可上传全身/半身图）</label>
+          <div class="liao-avatar-preview-row" style="margin-top:6px;">
+            <img class="liao-avatar-preview" id="cs-role-cardimage-preview"
+              src="" alt=""
+              style="border-radius:8px;object-fit:cover;background:var(--light-blue,#B3D8F4);">
+            <div class="liao-avatar-upload-btns">
+              <input class="liao-modal-input" id="cs-role-cardimage-url" placeholder="图片 URL…">
+              <button class="liao-avatar-btn" id="cs-role-cardimage-local-btn">本地上传</button>
+              <input type="file" id="cs-role-cardimage-file" accept="image/*" style="display:none;">
+            </div>
+          </div>
+
           <div style="margin-top:12px;">
             <button class="liao-btn-primary" id="cs-role-save-btn" style="width:100%;">保存角色设置</button>
           </div>
@@ -148,66 +153,95 @@
         </div>
 
         <div class="cs-section-title">时间戳</div>
-        <div class="cs-section-card">
-          <div class="cs-row-item">
-            <span class="cs-row-label">隐藏时间戳</span>
-            <label class="cs-toggle">
-              <input type="checkbox" id="cs-hide-timestamp">
-              <span class="cs-toggle-slider"></span>
-            </label>
-          </div>
-          <div style="font-size:11px;color:var(--text-light);margin-top:6px;line-height:1.6;">
-            开启后时间戳变为完全透明，关闭后微透明显示。
-          </div>
-          <div style="margin-top:12px;">
-            <button class="liao-btn-primary" id="cs-timestamp-save-btn" style="width:100%;">保存</button>
-          </div>
-        </div>
+<div class="cs-section-card">
+  <div class="cs-row-item">
+    <span class="cs-row-label">隐藏时间戳</span>
+    <label class="cs-toggle">
+      <input type="checkbox" id="cs-hide-timestamp">
+      <span class="cs-toggle-slider"></span>
+    </label>
+  </div>
+  <div style="font-size:11px;color:var(--text-light);margin-top:6px;line-height:1.6;">
+    开启后时间戳视觉上隐藏，但仍可点击触发消息操作菜单。时间戳格式在上方聊天美化中设置。
+  </div>
+  <div style="margin-top:12px;">
+    <button class="liao-btn-primary" id="cs-timestamp-save-btn" style="width:100%;">保存</button>
+  </div>
+</div>
+
 
         <div class="cs-section-title">聊天美化</div>
-        <div class="cs-section-card">
-          <div class="cs-row-item" style="margin-bottom:12px;">
-            <div>
-              <div class="cs-row-label">使用预设气泡样式</div>
-              <div style="font-size:11px;color:var(--text-light);margin-top:3px;line-height:1.5;">
-                关闭后仅使用下方自定义 CSS，可完全控制聊天界面所有样式
-              </div>
-            </div>
-            <label class="cs-toggle" style="flex-shrink:0;margin-left:12px;">
-              <input type="checkbox" id="cs-use-preset-bubble" checked>
-              <span class="cs-toggle-slider"></span>
-            </label>
-          </div>
-          <div id="cs-preset-bubble-fields">
-            <label class="liao-modal-label">角色气泡颜色</label>
-            <div class="cs-color-row">
-              <input type="color" id="cs-role-bubble-color" value="#ffffff" class="cs-color-input">
-              <span class="cs-color-label">角色消息背景色</span>
-            </div>
-            <label class="liao-modal-label">用户气泡颜色</label>
-            <div class="cs-color-row">
-              <input type="color" id="cs-user-bubble-color" value="#99C8ED" class="cs-color-input">
-              <span class="cs-color-label">用户消息背景色</span>
-            </div>
-            <label class="liao-modal-label">角色气泡圆角（px）</label>
-            <input class="liao-modal-input" id="cs-role-bubble-radius" type="number" min="0" max="999" value="16">
-            <label class="liao-modal-label">用户气泡圆角（px）</label>
-            <input class="liao-modal-input" id="cs-user-bubble-radius" type="number" min="0" max="999" value="16">
-            <label class="liao-modal-label">字体大小（px）</label>
-            <input class="liao-modal-input" id="cs-font-size" type="number" min="10" max="22" value="13.5">
-          </div>
-          <label class="liao-modal-label" style="margin-top:14px;">自定义 CSS（可控制整个聊天界面）</label>
-          <div style="font-size:11px;color:var(--text-light);margin-bottom:6px;line-height:1.6;">
-            关闭预设气泡样式后，此处 CSS 完全接管聊天界面美化，选择器不受限制。
-          </div>
-          <textarea class="liao-modal-textarea" id="cs-custom-css"
-            placeholder=".chat-view-topbar { background: rgba(180,215,248,0.72); }&#10;.chat-messages-area { background: #f0f6ff; }"
-            style="min-height:120px;font-family:monospace;font-size:12px;"></textarea>
-          <div style="margin-top:12px;display:flex;gap:10px;">
-            <button class="liao-btn-primary" id="cs-beauty-save-btn" style="flex:1;">确定</button>
-            <button class="liao-btn-ghost" id="cs-beauty-reset-btn" style="flex:1;">重置</button>
-          </div>
-        </div>
+<div class="cs-section-card">
+  <div class="cs-row-item" style="margin-bottom:12px;">
+    <div>
+      <div class="cs-row-label">使用预设气泡样式</div>
+      <div style="font-size:11px;color:var(--text-light);margin-top:3px;line-height:1.5;">
+        关闭后仅使用下方自定义 CSS
+      </div>
+    </div>
+    <label class="cs-toggle" style="flex-shrink:0;margin-left:12px;">
+      <input type="checkbox" id="cs-use-preset-bubble" checked>
+      <span class="cs-toggle-slider"></span>
+    </label>
+  </div>
+  <div id="cs-preset-bubble-fields">
+    <label class="liao-modal-label">角色气泡颜色</label>
+    <div class="cs-color-row">
+      <input type="color" id="cs-role-bubble-color" value="#ffffff" class="cs-color-input">
+      <span class="cs-color-label">角色消息背景色</span>
+    </div>
+    <label class="liao-modal-label">用户气泡颜色</label>
+    <div class="cs-color-row">
+      <input type="color" id="cs-user-bubble-color" value="#99C8ED" class="cs-color-input">
+      <span class="cs-color-label">用户消息背景色</span>
+    </div>
+    <label class="liao-modal-label">气泡整体圆角（px，0=方形 999=完全圆润）</label>
+    <input class="liao-modal-input" id="cs-bubble-radius" type="number" min="0" max="999" value="999">
+    <label class="liao-modal-label">一行最多字数后换行（0=不限制，建议16~20）</label>
+    <input class="liao-modal-input" id="cs-bubble-max-chars" type="number" min="0" max="100" value="0" placeholder="0">
+    <div style="font-size:11px;color:var(--text-light);margin-top:4px;line-height:1.5;">
+      填 18 则超过18字换行；填 0 则自动换行
+    </div>
+    <label class="liao-modal-label">字体大小（px）</label>
+    <input class="liao-modal-input" id="cs-font-size" type="number" min="10" max="22" value="12">
+  </div>
+
+  <label class="liao-modal-label" style="margin-top:14px;">聊天背景图片</label>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;">
+    <input class="liao-modal-input" id="cs-chat-bg-url" placeholder="背景图片 URL…" style="flex:1;margin-bottom:0;">
+    <button class="liao-avatar-btn" id="cs-chat-bg-local-btn" style="white-space:nowrap;">本地上传</button>
+    <input type="file" id="cs-chat-bg-file" accept="image/*" style="display:none;">
+  </div>
+  <button class="liao-btn-ghost" id="cs-chat-bg-clear-btn" style="width:100%;margin-bottom:8px;">清除背景图</button>
+
+  <label class="liao-modal-label" style="margin-top:8px;">时间戳显示格式</label>
+  <select class="liao-modal-input" id="cs-timestamp-format">
+    <option value="full">年-月-日 时:分:秒</option>
+    <option value="hm">时:分</option>
+    <option value="read">已读</option>
+    <option value="check">√</option>
+    <option value="owo">&gt;ω&lt;</option>
+    <option value="caret">^^</option>
+    <option value="face1">ㅂ_ㅂ</option>
+    <option value="face2">ㅎ_ㅎ</option>
+    <option value="heart">♡</option>
+    <option value="custom">自定义…</option>
+  </select>
+  <input class="liao-modal-input" id="cs-timestamp-custom"
+    placeholder="输入自定义时间戳内容…"
+    style="display:none;margin-top:6px;">
+
+  <label class="liao-modal-label" style="margin-top:14px;">自定义 CSS</label>
+  <textarea class="liao-modal-textarea" id="cs-custom-css"
+    placeholder=".chat-messages-area { background: #f0f6ff; }"
+    style="min-height:100px;font-family:monospace;font-size:12px;"></textarea>
+  <div style="margin-top:12px;display:flex;gap:10px;">
+    <button class="liao-btn-primary" id="cs-beauty-save-btn" style="flex:1;">确定</button>
+    <button class="liao-btn-ghost" id="cs-beauty-reset-btn" style="flex:1;">重置</button>
+  </div>
+</div>
+
+
 
         <div class="cs-section-title">消息数量设置</div>
         <div class="cs-section-card">

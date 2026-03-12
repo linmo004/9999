@@ -1,0 +1,234 @@
+<!-- 大逃杀 App 根容器 -->
+<div id="batoru-app" style="display:none; position:fixed; inset:0; z-index:800; flex-direction:column;">
+
+  <!-- canvas 乱码字符雨（大厅背景层） -->
+  <canvas id="batoru-glitch-canvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+  <!-- 雪花屏遮罩 -->
+  <div id="batoru-static" style="display:none;position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;"></div>
+
+  <!-- ① 大厅界面 -->
+  <div id="batoru-lobby" class="btr-screen" style="display:flex;">
+    <div class="btr-lobby-center">
+      <div class="btr-title-wrap">
+        <div class="btr-title-shadow">▒▓░▒▓░▒▓░▒▓</div>
+        <div class="btr-title-real">SURVIVE</div>
+        <div class="btr-title-sub">生　存　游　戏</div>
+      </div>
+      <div class="btr-lobby-btns">
+        <button class="btr-btn btr-btn-main" id="btr-start-btn">开始游戏</button>
+        <button class="btr-btn btr-btn-main" id="btr-continue-btn">继续游戏</button>
+        <button class="btr-btn btr-btn-ghost" id="btr-quit-lobby-btn">退　出</button>
+      </div>
+    </div>
+    <!-- 存档列表弹窗 -->
+    <div id="btr-saves-modal" class="btr-modal-mask" style="display:none;">
+      <div class="btr-modal-box">
+        <div class="btr-modal-title">选择存档</div>
+        <div id="btr-saves-list" class="btr-saves-list"></div>
+        <button class="btr-btn btr-btn-ghost" id="btr-saves-close">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 用户设定界面 -->
+  <div id="batoru-user-setup" class="btr-screen" style="display:none;">
+    <div class="btr-topbar">
+      <button class="btr-back-btn" id="btr-setup-back">&#9664;</button>
+      <span class="btr-topbar-title">填写你的身份</span>
+    </div>
+    <div class="btr-screen-body">
+      <div class="btr-form-group">
+        <label class="btr-label">你的名字</label>
+        <input class="btr-input" id="btr-user-name-input" placeholder="输入你在游戏中的名字">
+      </div>
+      <div class="btr-form-group">
+        <label class="btr-label">你的设定</label>
+        <textarea class="btr-input btr-textarea" id="btr-user-setting-input" placeholder="描述你的背景、技能、性格…（选填，会影响AI对你行为的判断）" rows="4"></textarea>
+      </div>
+      <div class="btr-form-group">
+        <label class="btr-label">参与方式</label>
+        <div class="btr-radio-group">
+          <label class="btr-radio-label">
+            <input type="radio" name="btr-mode" value="player" checked> 亲自参战（有行动选择权）
+          </label>
+          <label class="btr-radio-label">
+            <input type="radio" name="btr-mode" value="spectator"> 仅旁观（上帝视角观看）
+          </label>
+        </div>
+      </div>
+      <div class="btr-btn-row">
+        <button class="btr-btn btr-btn-main" id="btr-setup-next">下一步</button>
+        <button class="btr-btn btr-btn-ghost" id="btr-setup-back2">返回</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 角色选择界面 -->
+  <div id="batoru-select" class="btr-screen" style="display:none;">
+    <div class="btr-topbar">
+      <button class="btr-back-btn" id="btr-select-back">&#9664;</button>
+      <span class="btr-topbar-title">选择参战者</span>
+    </div>
+    <div class="btr-screen-body">
+      <div class="btr-select-hint" id="btr-select-hint">点击角色选择参战者（可多选）</div>
+      <div id="btr-role-grid" class="btr-role-grid"></div>
+      <div class="btr-btn-row">
+        <button class="btr-btn btr-btn-main" id="btr-random-select">随机选择</button>
+        <button class="btr-btn btr-btn-main" id="btr-select-start">开始游戏</button>
+        <button class="btr-btn btr-btn-ghost" id="btr-select-back2">返回</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ 大纲生成过渡界面 -->
+  <div id="batoru-loading" class="btr-screen" style="display:none;">
+    <div class="btr-loading-center">
+      <div class="btr-loading-text" id="btr-loading-text">正在生成游戏大纲...</div>
+      <div class="btr-progress-track">
+        <div class="btr-progress-bar" id="btr-progress-bar" style="width:0%;"></div>
+      </div>
+      <div class="btr-loading-sub" id="btr-loading-sub">请稍候，AI正在构建你的专属剧本</div>
+    </div>
+  </div>
+
+  <!-- ⑤ 游戏主界面 -->
+  <div id="batoru-main" class="btr-screen" style="display:none;flex-direction:column;">
+    <!-- 广播滚动栏 -->
+    <div class="btr-broadcast-bar">
+      <div class="btr-broadcast-inner" id="btr-broadcast-inner">
+        大逃杀游戏开始……祝各位好运……只有一人能活着走出去……
+      </div>
+    </div>
+    <!-- 信息栏 -->
+    <div class="btr-info-bar">
+      <div class="btr-menu-wrap">
+        <button class="btr-menu-trigger" id="btr-menu-trigger">▶</button>
+        <div class="btr-side-menu" id="btr-side-menu" style="display:none;">
+          <button class="btr-side-menu-item" id="btr-save-game">存档</button>
+          <button class="btr-side-menu-item btr-danger" id="btr-exit-game">退出游戏</button>
+        </div>
+      </div>
+      <div class="btr-day-label" id="btr-day-label">第一天 早</div>
+    </div>
+    <!-- 功能按键栏 -->
+    <div class="btr-func-bar">
+      <button class="btr-func-btn" id="btr-bag-btn">背包 ▣</button>
+      <button class="btr-func-btn" id="btr-attr-btn">属性 ◈</button>
+      <button class="btr-func-btn" id="btr-danmaku-btn">👁 直播间</button>
+    </div>
+    <!-- 主对话框 -->
+    <div class="btr-dialog-box" id="btr-dialog-box">
+      <!-- 叙事文字区 -->
+      <div class="btr-narrative-area" id="btr-narrative-area"></div>
+      <!-- 对话框：对话输入（不影响行动） -->
+      <div class="btr-chat-input-wrap" id="btr-chat-input-wrap">
+        <input class="btr-chat-input" id="btr-chat-input" placeholder="和角色说点什么…（仅对话，不影响行动）">
+      </div>
+      <!-- 参战模式：选项区 -->
+      <div class="btr-choices-area" id="btr-choices-area" style="display:none;">
+        <div id="btr-choices-list" class="btr-choices-list"></div>
+        <!-- 自定义输入 -->
+        <div id="btr-custom-input-wrap" class="btr-custom-input-wrap" style="display:none;">
+          <input class="btr-input" id="btr-custom-action-input" placeholder="输入你的行动…">
+          <button class="btr-btn btr-btn-main" id="btr-custom-action-confirm">确认</button>
+        </div>
+      </div>
+      <!-- 旁观模式：下一段按钮 -->
+      <div id="btr-next-btn-wrap" style="display:none;padding:10px 14px;">
+        <button class="btr-btn btr-btn-main" id="btr-next-segment">下一段 ▷</button>
+      </div>
+    </div>
+    <!-- 弹幕层 -->
+    <div id="btr-danmaku-layer" class="btr-danmaku-layer" style="pointer-events:none;"></div>
+  </div>
+
+  <!-- ⑥ 用户被淘汰界面 -->
+  <div id="batoru-dead" class="btr-screen" style="display:none;">
+    <div class="btr-dead-center">
+      <div class="btr-dead-title">你已离开游戏</div>
+      <div class="btr-dead-sub">被命运淘汰……</div>
+      <div class="btr-btn-row">
+        <button class="btr-btn btr-btn-main" id="btr-dead-watch">继续观看</button>
+        <button class="btr-btn btr-btn-ghost" id="btr-dead-exit">退出游戏</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑦ 结局界面 -->
+  <div id="batoru-ending" class="btr-screen" style="display:none;flex-direction:column;">
+    <div class="btr-ending-the-end" id="btr-the-end">THE END</div>
+    <div class="btr-ending-result-card">
+      <div class="btr-ending-winner" id="btr-ending-winner">存活者：—</div>
+      <div class="btr-ending-stats" id="btr-ending-stats"></div>
+    </div>
+    <div class="btr-ending-last-words" id="btr-ending-last-words"></div>
+        <!-- 大纲回顾 -->
+    <div class="btr-ending-outline-wrap">
+      <div class="btr-ending-outline-title">— 事件回顾 —</div>
+      <div class="btr-ending-outline-list" id="btr-ending-outline-list"></div>
+    </div>
+    <div class="btr-btn-row" style="margin-top:20px;justify-content:center;">
+      <button class="btr-btn btr-btn-main" id="btr-ending-restart">再来一局</button>
+      <button class="btr-btn btr-btn-ghost" id="btr-ending-exit">退出</button>
+    </div>
+    <div id="btr-ending-danmaku-layer" class="btr-danmaku-layer" style="pointer-events:none;"></div>
+  </div>
+
+  <!-- 背包弹窗 -->
+  <div id="btr-bag-modal" class="btr-modal-mask" style="display:none;">
+    <div class="btr-modal-box">
+      <div class="btr-modal-title">背包 <span id="btr-bag-count">0/12</span></div>
+      <div class="btr-bag-grid" id="btr-bag-grid"></div>
+      <div id="btr-bag-full-hint" class="btr-bag-full-hint" style="display:none;">背包已满，无法拾取新物品</div>
+      <!-- 物品操作菜单 -->
+      <div id="btr-item-action-menu" class="btr-item-action-menu" style="display:none;">
+        <div class="btr-item-action-name" id="btr-item-action-name"></div>
+        <button class="btr-btn btr-btn-main" id="btr-item-use">使用</button>
+        <button class="btr-btn btr-btn-ghost" id="btr-item-discard">丢弃</button>
+        <button class="btr-btn btr-btn-ghost" id="btr-item-give">赠送</button>
+        <button class="btr-btn btr-btn-ghost" id="btr-item-action-cancel">取消</button>
+        <!-- 赠送对象选择 -->
+        <div id="btr-give-target-wrap" style="display:none;">
+          <div class="btr-label" style="margin-top:8px;">选择赠送对象：</div>
+          <div id="btr-give-target-list"></div>
+        </div>
+      </div>
+      <button class="btr-btn btr-btn-ghost" id="btr-bag-close" style="margin-top:12px;">关闭</button>
+    </div>
+  </div>
+
+  <!-- 属性弹窗 -->
+  <div id="btr-attr-modal" class="btr-modal-mask" style="display:none;">
+    <div class="btr-modal-box">
+      <div class="btr-modal-title">属性面板</div>
+      <div class="btr-attr-row">
+        <span class="btr-attr-label">血量</span>
+        <div class="btr-bar-track"><div class="btr-bar-fill btr-bar-hp" id="btr-bar-hp" style="width:100%;"></div></div>
+        <span class="btr-attr-val" id="btr-attr-hp-val">100</span>
+      </div>
+      <div class="btr-attr-row">
+        <span class="btr-attr-label">饥饿值</span>
+        <div class="btr-bar-track"><div class="btr-bar-fill btr-bar-hunger" id="btr-bar-hunger" style="width:100%;"></div></div>
+        <span class="btr-attr-val" id="btr-attr-hunger-val">100</span>
+      </div>
+      <div class="btr-attr-row">
+        <span class="btr-attr-label">体力值</span>
+        <div class="btr-bar-track"><div class="btr-bar-fill btr-bar-stamina" id="btr-bar-stamina" style="width:100%;"></div></div>
+        <span class="btr-attr-val" id="btr-attr-stamina-val">100</span>
+      </div>
+      <div class="btr-attr-extra">
+        <span class="btr-attr-label">位置</span>
+        <span id="btr-attr-location">—</span>
+      </div>
+      <div class="btr-attr-extra">
+        <span class="btr-attr-label">状态</span>
+        <span id="btr-attr-status">正常</span>
+      </div>
+      <button class="btr-btn btr-btn-ghost" id="btr-attr-close" style="margin-top:14px;">关闭</button>
+    </div>
+  </div>
+
+  <!-- 退出警告弹窗层 -->
+  <div id="btr-exit-warnings" style="display:none;position:absolute;inset:0;z-index:9999;"></div>
+
+</div>

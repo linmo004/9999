@@ -3,7 +3,6 @@
    在 window.initSettings 执行完毕后，通过独立 IIFE 挂载附加逻辑
    ============================================================ */
 
-/* 等待 initSettings 执行完毕后再运行（由 index.html 的加载顺序保证） */
 (function attachSettings3() {
 
   const DEFAULT_PIN_AVATAR = 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=halo9';
@@ -435,14 +434,14 @@
             }
             setTimeout(function () { location.reload(true); }, 1200);
           });
-      }).catch(function (e) {
+        }).catch(function (e) {
         if (msgEl) { msgEl.style.color = '#e05c5c'; msgEl.textContent = '清除失败：' + e.message; }
       });
     });
   }
 
   /* ---- 弹窗遮罩点击关闭 ---- */
-  ['wallpaper-url-modal', 'wallpaper2-url-modal', 'icon-replace-modal'].forEach(id => {
+  ['wallpaper-url-modal', 'wallpaper2-url-modal', 'wallpaper3-url-modal', 'icon-replace-modal'].forEach(id => {
     const mask = document.getElementById(id);
     if (mask) {
       mask.addEventListener('click', function (e) {

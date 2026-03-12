@@ -1,18 +1,20 @@
 <!-- ===================== 了了 App 覆盖层 ===================== -->
 <div id="liao-app">
   <div class="liao-topbar">
-    <button class="liao-tab-btn" id="liao-close-btn" style="flex:none;width:36px;font-size:20px;color:var(--primary);">←</button>
-    <button class="liao-tab-btn active" data-tab="chatlist">
-      <span class="tab-icon">□</span>聊天
+    <button class="liao-tab-btn liao-pill-btn liao-pill-close" id="liao-close-btn">
+      <i data-lucide="chevron-left" class="liao-lucide-icon"></i>
     </button>
-    <button class="liao-tab-btn" data-tab="rolelib">
-      <span class="tab-icon">○</span>角色库
+    <button class="liao-tab-btn liao-pill-btn liao-pill-1 active" data-tab="chatlist">
+      <i data-lucide="message-circle" class="liao-lucide-icon"></i>
     </button>
-    <button class="liao-tab-btn" data-tab="myhome">
-      <span class="tab-icon">△</span>我的
+    <button class="liao-tab-btn liao-pill-btn liao-pill-2" data-tab="rolelib">
+      <i data-lucide="user-round-cog" class="liao-lucide-icon"></i>
     </button>
-    <button class="liao-tab-btn" data-tab="suiyan">
-      <span class="tab-icon">◇</span>随言
+    <button class="liao-tab-btn liao-pill-btn liao-pill-3" data-tab="myhome">
+      <i data-lucide="heart" class="liao-lucide-icon"></i>
+    </button>
+    <button class="liao-tab-btn liao-pill-btn liao-pill-4" data-tab="suiyan">
+      <i data-lucide="message-square" class="liao-lucide-icon"></i>
     </button>
   </div>
 
@@ -24,27 +26,67 @@
       </div>
       <div class="chat-bottom-bar">
         <button class="chat-bar-btn" id="liao-btn-new-role">
-          <span class="bar-btn-icon">+</span>
-          新建角色
+          <i data-lucide="user-round" class="liao-lucide-icon"></i>
+          <span class="bar-btn-label">新建角色</span>
         </button>
         <button class="chat-bar-btn" id="liao-btn-new-group">
-          <span class="bar-btn-icon">▣</span>
-          新建群聊
+          <i data-lucide="users-round" class="liao-lucide-icon"></i>
+          <span class="bar-btn-label">新建群聊</span>
         </button>
         <button class="chat-bar-btn" id="liao-btn-import">
-          <span class="bar-btn-icon">▲</span>
-          导入角色
+          <i data-lucide="layout-grid" class="liao-lucide-icon"></i>
+          <span class="bar-btn-label">导入角色</span>
         </button>
       </div>
     </div>
 
-    <!-- 角色库面板 -->
-    <div class="liao-panel" data-panel="rolelib">
-      <div class="role-lib-wrap">
-        <div class="role-grid" id="liao-role-grid"></div>
-        <div class="role-lib-count" id="liao-role-count">共 0 个角色</div>
-      </div>
+
+<!-- 角色库面板：卡册嵌入 -->
+<div class="liao-panel" data-panel="rolelib">
+
+  <!-- 封面页 -->
+  <div id="liao-cardbook-cover" class="lcb-cover" style="flex:1;">
+    <div class="lcb-cover-glass">
+      <div class="lcb-cover-title">角色册</div>
+      <div class="lcb-cover-sub">ROLE COLLECTION</div>
+      <div class="lcb-cover-count" id="lcb-cover-count">0 位角色</div>
     </div>
+    <div class="lcb-cover-flip-hint" id="lcb-cover-flip-btn">
+      <div class="lcb-flip-arrow">▶</div>
+      <div class="lcb-flip-label">翻开</div>
+    </div>
+  </div>
+
+  <!-- 内页 -->
+  <div id="liao-cardbook-inner" class="lcb-inner" style="display:none;flex:1;">
+    <div class="lcb-inner-topbar">
+      <button class="lcb-back-btn lcb-inner-back" id="lcb-inner-back">←</button>
+      <div class="lcb-inner-title">角色册</div>
+      <div class="lcb-page-indicator" id="lcb-page-indicator">1 / 1</div>
+    </div>
+    <div class="lcb-pages-wrap" id="lcb-pages-wrap"></div>
+    <div class="lcb-page-nav">
+      <button class="lcb-page-btn" id="lcb-prev-page">‹</button>
+      <button class="lcb-page-btn" id="lcb-next-page">›</button>
+    </div>
+  </div>
+
+  <!-- 抽卡预览层 -->
+  <div id="lcb-card-preview" class="lcb-card-preview" style="display:none;">
+    <div class="lcb-preview-backdrop" id="lcb-preview-backdrop"></div>
+    <div class="lcb-preview-card" id="lcb-preview-card">
+      <img class="lcb-preview-img" id="lcb-preview-img" src="" alt="">
+    </div>
+    <div class="lcb-preview-actions">
+      <button class="lcb-preview-chat-btn" id="lcb-preview-chat-btn">进入聊天设置</button>
+      <button class="lcb-preview-close-btn" id="lcb-preview-close-btn">放回</button>
+    </div>
+  </div>
+
+  <div id="liao-role-count" style="display:none;"></div>
+</div>
+
+
 
     <!-- 我的主页面板 -->
     <div class="liao-panel" data-panel="myhome">
@@ -94,7 +136,8 @@
         </div>
         <div class="suiyan-user-row">
           <img class="suiyan-user-avatar" id="suiyan-user-avatar"
-            src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=user" alt="" style="cursor:pointer;">
+            src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=user"
+            alt="" style="cursor:pointer;">
           <div class="suiyan-user-name" id="suiyan-user-name" style="cursor:pointer;">用户</div>
           <button class="suiyan-post-btn" id="suiyan-post-btn" title="发随言">+</button>
         </div>
@@ -102,8 +145,9 @@
       </div>
     </div>
 
-  </div><!-- /liao-main -->
-</div><!-- /liao-app -->
+  </div>
+</div>
+
 
 <!-- ===================== 我的人设库全屏界面 ===================== -->
 <div id="liao-persona-lib-view" style="display:none;position:fixed;inset:0;z-index:480;background:var(--bg,#F5F5F0);flex-direction:column;">

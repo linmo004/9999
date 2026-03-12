@@ -1,0 +1,463 @@
+/* ============================================================
+   liao-cardbook.css — 角色卡册
+   ============================================================ */
+
+/* ── 根容器 ── */
+
+
+/* ── 封面 ── */
+.lcb-cover {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: var(--lcb-cover-bg, linear-gradient(145deg,
+    rgba(180,218,248,0.82) 0%,
+    rgba(210,235,255,0.72) 50%,
+    rgba(190,222,252,0.78) 100%));
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  overflow: hidden;
+  /* 翻页效果：从右侧滑入 */
+  transform-origin: left center;
+  transition: transform 0.45s cubic-bezier(.4,0,.2,1), opacity 0.45s;
+}
+
+.lcb-cover.page-flip-out {
+  animation: lcb-cover-flip-out 0.45s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+.lcb-cover.page-flip-in {
+  animation: lcb-cover-flip-in 0.45s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+@keyframes lcb-cover-flip-out {
+  0%   { transform: perspective(1200px) rotateY(0deg);   opacity: 1; }
+  100% { transform: perspective(1200px) rotateY(-90deg); opacity: 0; }
+}
+
+@keyframes lcb-cover-flip-in {
+  0%   { transform: perspective(1200px) rotateY(90deg);  opacity: 0; }
+  100% { transform: perspective(1200px) rotateY(0deg);   opacity: 1; }
+}
+
+
+
+.lcb-cover-glass {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 40px;
+  background: rgba(255,255,255,0.32);
+  border: 1.5px solid rgba(255,255,255,0.55);
+  border-radius: 24px;
+  box-shadow:
+    0 8px 32px rgba(100,160,220,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  min-width: 200px;
+  text-align: center;
+}
+
+.lcb-cover-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: rgba(40,80,140,0.85);
+  letter-spacing: 0.18em;
+}
+
+.lcb-cover-sub {
+  font-size: 10px;
+  color: rgba(80,130,190,0.65);
+  letter-spacing: 0.28em;
+  font-weight: 500;
+}
+
+.lcb-cover-count {
+  font-size: 12px;
+  color: rgba(80,120,170,0.72);
+  margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+/* 翻页提示：右侧边缘，不遮卡 */
+.lcb-cover-flip-hint {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.18s;
+  padding: 8px 6px;
+}
+
+.lcb-cover-flip-hint:hover { opacity: 0.9; }
+
+.lcb-flip-arrow {
+  font-size: 22px;
+  color: rgba(80,130,200,0.8);
+  animation: lcb-arrow-pulse 1.8s ease-in-out infinite;
+}
+
+.lcb-flip-label {
+  font-size: 10px;
+  color: rgba(80,130,200,0.7);
+  letter-spacing: 0.08em;
+  writing-mode: vertical-rl;
+}
+
+@keyframes lcb-arrow-pulse {
+  0%, 100% { transform: translateX(0); opacity: 0.55; }
+  50% { transform: translateX(4px); opacity: 1; }
+}
+
+/* ── 返回按键 ── */
+.lcb-back-btn {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(255,255,255,0.45);
+  border: none;
+  border-radius: 999px;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  color: rgba(60,100,170,0.8);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  -webkit-appearance: none;
+  transition: background 0.15s;
+  z-index: 10;
+}
+
+.lcb-back-btn:active { background: rgba(255,255,255,0.7); }
+
+/* ── 内页 ── */
+.lcb-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.lcb-inner-topbar {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  padding: 0 14px;
+  background: rgba(255,255,255,0.38);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(153,200,237,0.22);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.lcb-inner-back {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.lcb-inner-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(40,80,140,0.85);
+  letter-spacing: 0.1em;
+}
+
+.lcb-page-indicator {
+  margin-left: auto;
+  font-size: 11px;
+  color: rgba(100,140,190,0.7);
+  letter-spacing: 0.06em;
+}
+
+/* ── 卡册页容器 ── */
+.lcb-pages-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.lcb-page {
+  position: absolute;
+  inset: 0;
+  display: none;
+  padding: 16px 14px 56px;
+  box-sizing: border-box;
+  align-content: start;
+  /* 3列网格 */
+  display: none;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.lcb-page.active {
+  display: grid;
+}
+
+/* 翻页动画 */
+.lcb-page.slide-in-right {
+  animation: lcb-slide-in-right 0.28s cubic-bezier(.4,0,.2,1) forwards;
+}
+.lcb-page.slide-in-left {
+  animation: lcb-slide-in-left 0.28s cubic-bezier(.4,0,.2,1) forwards;
+}
+.lcb-page.slide-out-left {
+  animation: lcb-slide-out-left 0.28s cubic-bezier(.4,0,.2,1) forwards;
+}
+.lcb-page.slide-out-right {
+  animation: lcb-slide-out-right 0.28s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+@keyframes lcb-slide-in-right {
+  from { transform: translateX(100%); opacity: 0.6; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes lcb-slide-in-left {
+  from { transform: translateX(-100%); opacity: 0.6; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+@keyframes lcb-slide-out-left {
+  from { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(-100%); opacity: 0.6; }
+}
+@keyframes lcb-slide-out-right {
+  from { transform: translateX(0);   opacity: 1; }
+  to   { transform: translateX(100%); opacity: 0.6; }
+}
+
+/* ── 卡套 ── */
+.lcb-slot {
+  position: relative;
+  /* 韩娱小卡比例约 63:100 */
+  aspect-ratio: 63 / 100;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  /* 透明塑料卡套效果 */
+  background: rgba(255,255,255,0.18);
+  border: 1.5px solid rgba(255,255,255,0.55);
+  box-shadow:
+    0 2px 12px rgba(100,160,220,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    inset 0 -1px 0 rgba(100,160,220,0.12);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+
+.lcb-slot:active {
+  transform: scale(0.96);
+}
+
+/* 卡套高光反射层 */
+.lcb-slot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.45) 0%,
+    rgba(255,255,255,0.08) 40%,
+    transparent 60%
+  );
+  z-index: 3;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* 卡套边缘阴影 */
+.lcb-slot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
+  border-radius: inherit;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* 空卡套 */
+.lcb-slot.empty {
+  cursor: default;
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(153,200,237,0.25);
+  box-shadow: none;
+}
+
+/* ── 卡片图片 ── */
+.lcb-card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  z-index: 1;
+  display: block;
+  transition: opacity 0.2s;
+}
+
+/* ── 翻页导航 ── */
+.lcb-page-nav {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.lcb-page-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(153,200,237,0.35);
+  font-size: 22px;
+  color: rgba(60,100,170,0.8);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  -webkit-appearance: none;
+  pointer-events: auto;
+  transition: background 0.15s, opacity 0.15s;
+  line-height: 1;
+}
+
+.lcb-page-btn:active { background: rgba(255,255,255,0.82); }
+.lcb-page-btn:disabled { opacity: 0.25; pointer-events: none; }
+
+/* ── 抽卡预览层 ── */
+.lcb-card-preview {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+
+.lcb-preview-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(30,60,120,0.35);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  z-index: 0;
+}
+
+.lcb-preview-card {
+  position: relative;
+  z-index: 2;
+  width: min(52vw, 220px);
+  aspect-ratio: 63 / 100;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    0 16px 48px rgba(40,80,160,0.32),
+    0 2px 8px rgba(40,80,160,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.5);
+  border: 1.5px solid rgba(255,255,255,0.55);
+  animation: lcb-card-pull-up 0.32s cubic-bezier(.2,1.4,.4,1) forwards;
+}
+
+@keyframes lcb-card-pull-up {
+  from { transform: translateY(60px) scale(0.88); opacity: 0.4; }
+  to   { transform: translateY(0)    scale(1);    opacity: 1; }
+}
+
+.lcb-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lcb-preview-actions {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(52vw, 220px);
+}
+
+.lcb-preview-chat-btn {
+  width: 100%;
+  background: rgba(153,200,237,0.82);
+  border: none;
+  border-radius: 999px;
+  padding: 11px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 12px rgba(100,160,220,0.28);
+  transition: opacity 0.15s;
+}
+
+.lcb-preview-chat-btn:active { opacity: 0.75; }
+
+.lcb-preview-close-btn {
+  background: rgba(255,255,255,0.38);
+  border: 1px solid rgba(153,200,237,0.35);
+  border-radius: 999px;
+  padding: 8px 24px;
+  font-size: 12px;
+  color: rgba(60,100,170,0.8);
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: background 0.15s;
+}
+
+.lcb-preview-close-btn:active { background: rgba(255,255,255,0.65); }
+
+.lcb-inner.page-flip-out {
+  animation: lcb-cover-flip-out 0.45s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+.lcb-inner.page-flip-in {
+  animation: lcb-cover-flip-in 0.45s cubic-bezier(.4,0,.2,1) forwards;
+}
