@@ -19,6 +19,7 @@
   </div>
 
   <div class="liao-main">
+
     <!-- 聊天列表面板 -->
     <div class="liao-panel active" data-panel="chatlist">
       <div class="chat-list-wrap">
@@ -40,93 +41,147 @@
       </div>
     </div>
 
-
-<!-- 角色库面板：卡册嵌入 -->
-<div class="liao-panel" data-panel="rolelib">
-
-  <!-- 封面页 -->
-  <div id="liao-cardbook-cover" class="lcb-cover" style="flex:1;">
-    <div class="lcb-cover-glass">
-      <div class="lcb-cover-title">角色册</div>
-      <div class="lcb-cover-sub">ROLE COLLECTION</div>
-      <div class="lcb-cover-count" id="lcb-cover-count">0 位角色</div>
-    </div>
-    <div class="lcb-cover-flip-hint" id="lcb-cover-flip-btn">
-      <div class="lcb-flip-arrow">▶</div>
-      <div class="lcb-flip-label">翻开</div>
-    </div>
-  </div>
-
-  <!-- 内页 -->
-  <div id="liao-cardbook-inner" class="lcb-inner" style="display:none;flex:1;">
-    <div class="lcb-inner-topbar">
-      <button class="lcb-back-btn lcb-inner-back" id="lcb-inner-back">←</button>
-      <div class="lcb-inner-title">角色册</div>
-      <div class="lcb-page-indicator" id="lcb-page-indicator">1 / 1</div>
-    </div>
-    <div class="lcb-pages-wrap" id="lcb-pages-wrap"></div>
-    <div class="lcb-page-nav">
-      <button class="lcb-page-btn" id="lcb-prev-page">‹</button>
-      <button class="lcb-page-btn" id="lcb-next-page">›</button>
-    </div>
-  </div>
-
-  <!-- 抽卡预览层 -->
-  <div id="lcb-card-preview" class="lcb-card-preview" style="display:none;">
-    <div class="lcb-preview-backdrop" id="lcb-preview-backdrop"></div>
-    <div class="lcb-preview-card" id="lcb-preview-card">
-      <img class="lcb-preview-img" id="lcb-preview-img" src="" alt="">
-    </div>
-    <div class="lcb-preview-actions">
-      <button class="lcb-preview-chat-btn" id="lcb-preview-chat-btn">进入聊天设置</button>
-      <button class="lcb-preview-close-btn" id="lcb-preview-close-btn">放回</button>
-    </div>
-  </div>
-
-  <div id="liao-role-count" style="display:none;"></div>
-</div>
-
-
-
-    <!-- 我的主页面板 -->
-    <div class="liao-panel" data-panel="myhome">
-      <div class="my-home-wrap">
-        <div class="my-home-menu">
-          <div class="my-menu-item" id="menu-persona-lib">
-            <div class="my-menu-icon">◈</div>
-            <div class="my-menu-info">
-              <div class="my-menu-title">我的人设库</div>
-              <div class="my-menu-sub">管理你的角色设定与人物档案</div>
-            </div>
-            <div class="my-menu-arrow">›</div>
-          </div>
-          <div class="my-menu-item" id="menu-favorites">
-            <div class="my-menu-icon">★</div>
-            <div class="my-menu-info">
-              <div class="my-menu-title">收藏夹</div>
-              <div class="my-menu-sub">保存喜欢的对话片段</div>
-            </div>
-            <div class="my-menu-arrow">›</div>
-          </div>
-          <div class="my-menu-item">
-            <div class="my-menu-icon">◎</div>
-            <div class="my-menu-info">
-              <div class="my-menu-title">记忆宫殿</div>
-              <div class="my-menu-sub">角色的长期记忆与世界观设定</div>
-            </div>
-            <div class="my-menu-arrow">›</div>
-          </div>
-          <div class="my-menu-item">
-            <div class="my-menu-icon">◆</div>
-            <div class="my-menu-info">
-              <div class="my-menu-title">美化</div>
-              <div class="my-menu-sub">自定义聊天背景与气泡样式</div>
-            </div>
-            <div class="my-menu-arrow">›</div>
-          </div>
+    <!-- 角色库面板：卡册嵌入 -->
+    <div class="liao-panel" data-panel="rolelib">
+      <div id="liao-cardbook-cover" class="lcb-cover" style="flex:1;">
+        <div class="lcb-cover-glass">
+          <div class="lcb-cover-title">角色册</div>
+          <div class="lcb-cover-sub">ROLE COLLECTION</div>
+          <div class="lcb-cover-count" id="lcb-cover-count">0 位角色</div>
+        </div>
+        <div class="lcb-cover-flip-hint" id="lcb-cover-flip-btn">
+          <div class="lcb-flip-arrow">▶</div>
+          <div class="lcb-flip-label">翻开</div>
         </div>
       </div>
+      <div id="liao-cardbook-inner" class="lcb-inner" style="display:none;flex:1;">
+        <div class="lcb-inner-topbar">
+          <button class="lcb-back-btn lcb-inner-back" id="lcb-inner-back">←</button>
+          <div class="lcb-inner-title">角色册</div>
+          <div class="lcb-page-indicator" id="lcb-page-indicator">1 / 1</div>
+        </div>
+        <div class="lcb-pages-wrap" id="lcb-pages-wrap"></div>
+        <div class="lcb-page-nav">
+          <button class="lcb-page-btn" id="lcb-prev-page">‹</button>
+          <button class="lcb-page-btn" id="lcb-next-page">›</button>
+        </div>
+      </div>
+      <div id="lcb-card-preview" class="lcb-card-preview" style="display:none;">
+        <div class="lcb-preview-backdrop" id="lcb-preview-backdrop"></div>
+        <div class="lcb-preview-card" id="lcb-preview-card">
+          <img class="lcb-preview-img" id="lcb-preview-img" src="" alt="">
+        </div>
+        <div class="lcb-preview-actions">
+          <button class="lcb-preview-chat-btn" id="lcb-preview-chat-btn">进入聊天设置</button>
+          <button class="lcb-preview-close-btn" id="lcb-preview-close-btn">放回</button>
+        </div>
+      </div>
+      <div id="liao-role-count" style="display:none;"></div>
     </div>
+
+    <!-- ===================== 我的主页面板（INS风） ===================== -->
+    <div class="liao-panel" data-panel="myhome">
+
+      <!-- 顶部个人信息区 -->
+      <div class="mh-profile-section">
+
+        <!-- 左上角：切换用户面具 -->
+        <button class="mh-mask-switch-btn" id="mh-mask-switch-btn" title="切换用户面具">
+          <span class="mh-mask-switch-icon">⇌</span>
+          <span class="mh-mask-switch-label">面具</span>
+        </button>
+
+        <!-- 头像 + 右侧信息 -->
+        <div class="mh-profile-row">
+          <!-- 左：头像 -->
+          <div class="mh-avatar-wrap" id="mh-avatar-wrap">
+            <img class="mh-avatar-img" id="mh-avatar-img"
+              src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=user" alt="">
+            <input type="file" id="mh-avatar-file" accept="image/*" style="display:none;">
+          </div>
+
+          <!-- 右：名字 + 人设 + 保存 -->
+          <div class="mh-profile-info">
+            <div class="mh-name-row">
+              <span class="mh-name" id="mh-name" contenteditable="true" spellcheck="false">用户名</span>
+              <button class="mh-save-btn" id="mh-save-btn" title="保存">✓</button>
+            </div>
+            <div class="mh-setting-text" id="mh-setting-text"
+              contenteditable="true" spellcheck="false">点击编辑人设描述…</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 分割线 -->
+      <div class="mh-divider"></div>
+
+      <!-- 作品列表 -->
+<div class="mh-works-list">
+
+  <!-- 作品 1：我的人设库 -->
+  <div class="mh-work-item" id="mh-work-persona">
+    <div class="mh-work-cover" id="mhwc-0">
+      <img class="mh-work-cover-img" id="mhwci-0" src="" alt="">
+      <div class="mh-work-cover-placeholder" id="mhwcp-0">◈</div>
+      <input type="file" id="mhwcf-0" accept="image/*" style="display:none;">
+    </div>
+    <div class="mh-work-info">
+      <div class="mh-work-title" id="mhwt-0"  contenteditable="true" spellcheck="false">我的人设库</div>
+      <div class="mh-work-tag"   id="mhwtg-0" contenteditable="true" spellcheck="false">#人设 #角色</div>
+      <div class="mh-work-user"  id="mhwu-0"  contenteditable="true" spellcheck="false">@用户</div>
+      <div class="mh-work-dur"   id="mhwd-0"  contenteditable="true" spellcheck="false">∞</div>
+    </div>
+  </div>
+
+  <!-- 作品 2：收藏夹 -->
+  <div class="mh-work-item" id="mh-work-favorites">
+    <div class="mh-work-cover" id="mhwc-1">
+      <img class="mh-work-cover-img" id="mhwci-1" src="" alt="">
+      <div class="mh-work-cover-placeholder" id="mhwcp-1">★</div>
+      <input type="file" id="mhwcf-1" accept="image/*" style="display:none;">
+    </div>
+    <div class="mh-work-info">
+      <div class="mh-work-title" id="mhwt-1"  contenteditable="true" spellcheck="false">收藏夹</div>
+      <div class="mh-work-tag"   id="mhwtg-1" contenteditable="true" spellcheck="false">#收藏 #片段</div>
+      <div class="mh-work-user"  id="mhwu-1"  contenteditable="true" spellcheck="false">@用户</div>
+      <div class="mh-work-dur"   id="mhwd-1"  contenteditable="true" spellcheck="false">∞</div>
+    </div>
+  </div>
+
+  <!-- 作品 3：记忆宫殿 -->
+  <div class="mh-work-item" id="mh-work-memory">
+    <div class="mh-work-cover" id="mhwc-2">
+      <img class="mh-work-cover-img" id="mhwci-2" src="" alt="">
+      <div class="mh-work-cover-placeholder" id="mhwcp-2">◎</div>
+      <input type="file" id="mhwcf-2" accept="image/*" style="display:none;">
+    </div>
+    <div class="mh-work-info">
+      <div class="mh-work-title" id="mhwt-2"  contenteditable="true" spellcheck="false">记忆宫殿</div>
+      <div class="mh-work-tag"   id="mhwtg-2" contenteditable="true" spellcheck="false">#记忆 #世界观</div>
+      <div class="mh-work-user"  id="mhwu-2"  contenteditable="true" spellcheck="false">@用户</div>
+      <div class="mh-work-dur"   id="mhwd-2"  contenteditable="true" spellcheck="false">∞</div>
+    </div>
+  </div>
+
+  <!-- 作品 4：美化 -->
+  <div class="mh-work-item" id="mh-work-beauty">
+    <div class="mh-work-cover" id="mhwc-3">
+      <img class="mh-work-cover-img" id="mhwci-3" src="" alt="">
+      <div class="mh-work-cover-placeholder" id="mhwcp-3">◆</div>
+      <input type="file" id="mhwcf-3" accept="image/*" style="display:none;">
+    </div>
+    <div class="mh-work-info">
+      <div class="mh-work-title" id="mhwt-3"  contenteditable="true" spellcheck="false">美化</div>
+      <div class="mh-work-tag"   id="mhwtg-3" contenteditable="true" spellcheck="false">#美化 #聊天</div>
+      <div class="mh-work-user"  id="mhwu-3"  contenteditable="true" spellcheck="false">@用户</div>
+      <div class="mh-work-dur"   id="mhwd-3"  contenteditable="true" spellcheck="false">∞</div>
+    </div>
+  </div>
+
+</div><!-- end mh-works-list -->
+
+    </div><!-- end myhome panel -->
 
     <!-- 随言面板 -->
     <div class="liao-panel" data-panel="suiyan">
@@ -145,6 +200,24 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+
+<!-- ===================== 面具切换弹窗 ===================== -->
+<div id="mh-mask-modal" style="display:none;position:fixed;inset:0;z-index:530;
+  background:rgba(26,31,46,0.42);backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  align-items:flex-end;justify-content:center;">
+  <div style="background:#fff;border-radius:22px 22px 0 0;width:100%;max-width:480px;
+    padding:20px 18px 40px;max-height:70dvh;overflow-y:auto;">
+    <div style="font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:14px;">
+      选择用户面具
+    </div>
+    <div id="mh-mask-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+    <button id="mh-mask-cancel" style="margin-top:16px;width:100%;background:var(--bg2,#F8F9FA);
+      color:var(--text-mid);border:1.5px solid var(--light-blue,#B3D8F4);border-radius:999px;
+      padding:11px;font-size:14px;cursor:pointer;font-family:inherit;">取消</button>
   </div>
 </div>
 

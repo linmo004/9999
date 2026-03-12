@@ -6,16 +6,22 @@ let liaoPersonas    = lLoad('personas', []);
 let editingPersonaIdx = -1;
 let personaAvatarSrc  = '';
 
-/* ---------- 入口 ---------- */
-document.getElementById('menu-persona-lib').addEventListener('click', openPersonaLib);
+/* ---------- 入口（兼容旧版按钮，不报错）---------- */
+const _menuPersonaLib = document.getElementById('menu-persona-lib');
+if (_menuPersonaLib) _menuPersonaLib.addEventListener('click', openPersonaLib);
 
 function openPersonaLib() {
   renderPersonaLib();
-  document.getElementById('liao-persona-lib-view').style.display = 'flex';
+  const view = document.getElementById('liao-persona-lib-view');
+  if (view) {
+    view.style.display = 'flex';
+    view.style.flexDirection = 'column';
+  }
 }
 
 document.getElementById('persona-lib-back').addEventListener('click', () => {
-  document.getElementById('liao-persona-lib-view').style.display = 'none';
+  const view = document.getElementById('liao-persona-lib-view');
+  if (view) view.style.display = 'none';
 });
 
 /* ---------- 渲染 ---------- */
@@ -71,18 +77,18 @@ function openPersonaEdit(idx) {
 
   if (idx >= 0 && liaoPersonas[idx]) {
     const p = liaoPersonas[idx];
-    document.getElementById('persona-edit-title').textContent            = '编辑人设';
-    document.getElementById('persona-edit-avatar-preview').src           = p.avatar || defaultAvatar();
-    document.getElementById('persona-edit-avatar-url').value             = '';
-    document.getElementById('persona-edit-name').value                   = p.name    || '';
-    document.getElementById('persona-edit-setting').value                = p.setting || '';
+    document.getElementById('persona-edit-title').textContent  = '编辑人设';
+    document.getElementById('persona-edit-avatar-preview').src = p.avatar || defaultAvatar();
+    document.getElementById('persona-edit-avatar-url').value   = '';
+    document.getElementById('persona-edit-name').value         = p.name    || '';
+    document.getElementById('persona-edit-setting').value      = p.setting || '';
     personaAvatarSrc = p.avatar || '';
   } else {
-    document.getElementById('persona-edit-title').textContent            = '新建人设';
-    document.getElementById('persona-edit-avatar-preview').src           = defaultAvatar();
-    document.getElementById('persona-edit-avatar-url').value             = '';
-    document.getElementById('persona-edit-name').value                   = '';
-    document.getElementById('persona-edit-setting').value                = '';
+    document.getElementById('persona-edit-title').textContent  = '新建人设';
+    document.getElementById('persona-edit-avatar-preview').src = defaultAvatar();
+    document.getElementById('persona-edit-avatar-url').value   = '';
+    document.getElementById('persona-edit-name').value         = '';
+    document.getElementById('persona-edit-setting').value      = '';
   }
 
   document.getElementById('liao-persona-edit-modal').style.display = 'flex';

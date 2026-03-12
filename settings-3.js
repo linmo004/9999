@@ -1,6 +1,5 @@
 /* ============================================================
    settings-3.js — 隐私设置 / 密码 / 开发者工具 / 弹窗遮罩
-   在 window.initSettings 执行完毕后，通过独立 IIFE 挂载附加逻辑
    ============================================================ */
 
 (function attachSettings3() {
@@ -8,12 +7,40 @@
   const DEFAULT_PIN_AVATAR = 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=halo9';
   let pinAvatarTab = 'url';
 
-  /* 恢复锁屏头像预览 */
-  (function () {
-    const saved = sLoad('pinAvatar', null);
-    const prev  = document.getElementById('privacy-pin-avatar-preview');
+  /* 恢复锁屏头像预览（从 IndexedDB 读取） */
+  (async function () {
+    /* 优先从 IndexedDB 读，兼容旧的 localStorage */
+    const savedIdb = await imgLoad('pinAvatar', null);
+    const savedLs  = sLoad('pinAvatar', null);
+    const saved    = savedIdb || savedLs;
+    const prev     = document.getElementById('privacy-pin-avatar-preview');
     if (saved && prev) prev.src = saved;
+    /* 同步到锁屏头像 */
+    const pinAvatarEl = document.getElementById('pin-avatar-img');
+    if (pinAvatarEl && saved) pinAvatarEl.src = saved;
   })();
+
+  /* 恢复锁屏壁纸预览 */
+  (async function () {
+    const savedIdb = await imgLoad('lockWallpaper', null);
+    const savedLs  = sLoad('lockWallpaper', null);
+    const saved    = savedIdb || savedLs;
+    applyLockWallpaper(saved);
+    const preview = document.getElementById('lock-wallpaper-preview');
+    if (preview && saved) {
+      preview.style.backgroundImage = 'url(' + saved + ')';
+      preview.style.border = 'none';
+    }
+  })();
+
+  /* ---- 锁屏壁纸 ---- */
+  function applyLockWallpaper(src) {
+    const lsEl = document.getElementById('lockscreen');
+    if (!lsEl) return;
+    lsEl.style.backgroundImage    = src ? 'url(' + src + ')' : '';
+    lsEl.style.backgroundSize     = src ? 'cover' : '';
+    lsEl.style.backgroundPosition = src ? 'center' : '';
+  }
 
   function setPinAvatarTab(tab) {
     pinAvatarTab = tab;
@@ -60,8 +87,16 @@
       const msgEl = document.getElementById('privacy-pin-avatar-msg');
       if (!msgEl) return;
       msgEl.style.color = '#e07a7a';
+
       async function applyAndSave(src) {
-        sSave('pinAvatar', src);
+        /* 本地图片存 IndexedDB，URL 存 localStorage */
+        if (src && src.startsWith('data:')) {
+          await imgSave('pinAvatar', src);
+          sSave('pinAvatar', null);
+        } else {
+          sSave('pinAvatar', src);
+          await imgDelete('pinAvatar');
+        }
         const pinAvatarEl = document.getElementById('pin-avatar-img');
         if (pinAvatarEl) pinAvatarEl.src = src;
         const prev = document.getElementById('privacy-pin-avatar-preview');
@@ -70,6 +105,7 @@
         msgEl.textContent = '头像已保存';
         setTimeout(() => { msgEl.textContent = ''; }, 2000);
       }
+
       if (pinAvatarTab === 'url') {
         const urlEl = document.getElementById('privacy-pin-avatar-url');
         const url   = urlEl ? urlEl.value.trim() : '';
@@ -91,9 +127,10 @@
 
   const pinAvatarResetBtn = document.getElementById('privacy-pin-avatar-reset-btn');
   if (pinAvatarResetBtn) {
-    pinAvatarResetBtn.addEventListener('click', function () {
+    pinAvatarResetBtn.addEventListener('click', async function () {
       const msgEl = document.getElementById('privacy-pin-avatar-msg');
       sSave('pinAvatar', null);
+      await imgDelete('pinAvatar');
       const pinAvatarEl = document.getElementById('pin-avatar-img');
       if (pinAvatarEl) pinAvatarEl.src = DEFAULT_PIN_AVATAR;
       const prev = document.getElementById('privacy-pin-avatar-preview');
@@ -103,6 +140,104 @@
       if (msgEl) {
         msgEl.style.color = '#5aaa7a';
         msgEl.textContent = '已恢复默认头像';
+        setTimeout(() => { msgEl.textContent = ''; }, 2000);
+      }
+    });
+  }
+
+  /* ---- 锁屏壁纸按钮 ---- */
+  const lockWpLocalBtn = document.getElementById('lock-wallpaper-local-btn');
+  if (lockWpLocalBtn) {
+    lockWpLocalBtn.addEventListener('click', function () {
+      const fi = document.getElementById('lock-wallpaper-file-input');
+      if (fi) fi.click();
+    });
+  }
+
+  const lockWpFileInput = document.getElementById('lock-wallpaper-file-input');
+  if (lockWpFileInput) {
+    lockWpFileInput.addEventListener('change', async function () {
+      const file = this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async e => {
+        const compressed = await compressImage(e.target.result, 1200, 0.75);
+        await imgSave('lockWallpaper', compressed);
+        sSave('lockWallpaper', null);
+        applyLockWallpaper(compressed);
+        const preview = document.getElementById('lock-wallpaper-preview');
+        if (preview) {
+          preview.style.backgroundImage = 'url(' + compressed + ')';
+          preview.style.border = 'none';
+        }
+        const msgEl = document.getElementById('lock-wallpaper-msg');
+        if (msgEl) {
+          msgEl.style.color = '#5aaa7a';
+          msgEl.textContent = '壁纸已保存';
+          setTimeout(() => { msgEl.textContent = ''; }, 2000);
+        }
+      };
+      reader.readAsDataURL(file);
+      this.value = '';
+    });
+  }
+
+  const lockWpUrlBtn = document.getElementById('lock-wallpaper-url-btn');
+  if (lockWpUrlBtn) {
+    lockWpUrlBtn.addEventListener('click', function () {
+      const urlModal = document.getElementById('lock-wallpaper-url-modal');
+      if (urlModal) urlModal.classList.add('show');
+    });
+  }
+
+  const lockWpUrlConfirm = document.getElementById('lock-wallpaper-url-confirm');
+  if (lockWpUrlConfirm) {
+    lockWpUrlConfirm.addEventListener('click', async function () {
+      const urlEl = document.getElementById('lock-wallpaper-url-input');
+      const url   = urlEl ? urlEl.value.trim() : '';
+      if (!url) return;
+      sSave('lockWallpaper', url);
+      await imgDelete('lockWallpaper');
+      applyLockWallpaper(url);
+      const preview = document.getElementById('lock-wallpaper-preview');
+      if (preview) {
+        preview.style.backgroundImage = 'url(' + url + ')';
+        preview.style.border = 'none';
+      }
+      const urlModal = document.getElementById('lock-wallpaper-url-modal');
+      if (urlModal) urlModal.classList.remove('show');
+      const msgEl = document.getElementById('lock-wallpaper-msg');
+      if (msgEl) {
+        msgEl.style.color = '#5aaa7a';
+        msgEl.textContent = '壁纸已保存';
+        setTimeout(() => { msgEl.textContent = ''; }, 2000);
+      }
+    });
+  }
+
+  const lockWpUrlCancel = document.getElementById('lock-wallpaper-url-cancel');
+  if (lockWpUrlCancel) {
+    lockWpUrlCancel.addEventListener('click', function () {
+      const urlModal = document.getElementById('lock-wallpaper-url-modal');
+      if (urlModal) urlModal.classList.remove('show');
+    });
+  }
+
+  const lockWpClearBtn = document.getElementById('lock-wallpaper-clear-btn');
+  if (lockWpClearBtn) {
+    lockWpClearBtn.addEventListener('click', async function () {
+      sSave('lockWallpaper', null);
+      await imgDelete('lockWallpaper');
+      applyLockWallpaper('');
+      const preview = document.getElementById('lock-wallpaper-preview');
+      if (preview) {
+        preview.style.backgroundImage = '';
+        preview.style.border = '';
+      }
+      const msgEl = document.getElementById('lock-wallpaper-msg');
+      if (msgEl) {
+        msgEl.style.color = '#5aaa7a';
+        msgEl.textContent = '壁纸已清除';
         setTimeout(() => { msgEl.textContent = ''; }, 2000);
       }
     });
@@ -171,7 +306,6 @@
 
   window.halo9Log = devLogWrite;
 
-  /* 劫持 fetch 记录 AI API */
   (function patchFetch() {
     const originalFetch = window.fetch;
     window.fetch = async function (...args) {
@@ -182,7 +316,7 @@
           const body = args[1] && args[1].body ? JSON.parse(args[1].body) : null;
           devLogWrite('request',
             '→ POST ' + url + '\n' +
-            '  model: '    + (body && body.model    ? body.model    : '?') + '\n' +
+            '  model: '    + (body && body.model    ? body.model : '?') + '\n' +
             '  messages: ' + (body && body.messages ? body.messages.length : '?') + ' 条');
         } catch (e) {
           devLogWrite('request', '→ POST ' + url);
@@ -441,7 +575,8 @@
   }
 
   /* ---- 弹窗遮罩点击关闭 ---- */
-  ['wallpaper-url-modal', 'wallpaper2-url-modal', 'wallpaper3-url-modal', 'icon-replace-modal'].forEach(id => {
+  ['wallpaper-url-modal', 'wallpaper2-url-modal', 'wallpaper3-url-modal',
+   'icon-replace-modal', 'lock-wallpaper-url-modal'].forEach(id => {
     const mask = document.getElementById(id);
     if (mask) {
       mask.addEventListener('click', function (e) {
@@ -450,12 +585,13 @@
     }
   });
 
-document.getElementById('settings-storage-entry').addEventListener('click', function() {
-  if (window.StorageManager) window.StorageManager.open();
-});
+  const storageEntryBtn = document.getElementById('settings-storage-entry');
+  if (storageEntryBtn) {
+    storageEntryBtn.addEventListener('click', function () {
+      if (window.StorageManager) window.StorageManager.open();
+    });
+  }
 
-
-  /* ---- 将 refreshAllKeysList 和 setPinAvatarTab 挂到全局，供 settings-2.js 中导航回调使用 ---- */
   window.refreshAllKeysList = refreshAllKeysList;
   window.setPinAvatarTab    = setPinAvatarTab;
   window.DEFAULT_PIN_AVATAR = DEFAULT_PIN_AVATAR;

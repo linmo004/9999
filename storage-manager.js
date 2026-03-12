@@ -28,17 +28,18 @@
     { name: '其他设置',   color: '#c8c8c8', match: k => k.startsWith('halo9_') },
   ];
 
+  /* IndexedDB 图片分组单独列出 */
+  const IDB_COLOR = '#f0a0d0';
+
   function smFormatSize(bytes) {
-    if (bytes < 1024)       return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    if (bytes < 1024)         return bytes + ' B';
+    if (bytes < 1024 * 1024)  return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
   }
 
   function smGetLocalStorageMax() {
     const ua = navigator.userAgent.toLowerCase();
-    if (ua.includes('safari') && !ua.includes('chrome')) {
-      return 5 * 1024 * 1024;
-    }
+    if (ua.includes('safari') && !ua.includes('chrome')) return 5 * 1024 * 1024;
     return 10 * 1024 * 1024;
   }
 
@@ -52,7 +53,6 @@
       if (!key) continue;
       const val  = localStorage.getItem(key) || '';
       const size = (key.length + val.length) * 2;
-
       let matched = false;
       for (const rule of GROUP_RULES) {
         if (rule.match(key)) {
@@ -78,6 +78,22 @@
       total += (key.length + val.length) * 2;
     }
     return total;
+  }
+
+  /* 获取 IndexedDB 图片总大小 */
+  async function smGetIdbSize() {
+    try {
+      if (typeof imgLoadAll !== 'function') return 0;
+      const items = await imgLoadAll();
+      let total = 0;
+      items.forEach(item => {
+        total += (item.key || '').length * 2;
+        total += (item.val || '').length * 2;
+      });
+      return total;
+    } catch (e) {
+      return 0;
+    }
   }
 
   function smDrawDonut(canvas, segments) {
@@ -110,7 +126,7 @@
     ctx.fill();
   }
 
-  function smRenderList(groups, totalSize) {
+  function smRenderList(groups, totalSize, idbSize) {
     const container = document.getElementById('storage-list');
     if (!container) return;
     container.innerHTML = '';
@@ -119,6 +135,7 @@
       .filter(([, g]) => g.size > 0)
       .sort((a, b) => b[1].size - a[1].size);
 
+    /* 先渲染 localStorage 各分组 */
     sorted.forEach(([name, g]) => {
       const pct = totalSize > 0 ? ((g.size / totalSize) * 100).toFixed(1) : '0.0';
       const row = document.createElement('div');
@@ -130,6 +147,18 @@
         '<div class="storage-item-pct">' + pct + '%</div>';
       container.appendChild(row);
     });
+
+    /* 最后追加 IndexedDB 图片分组 */
+    if (idbSize > 0) {
+      const row = document.createElement('div');
+      row.className = 'storage-list-item';
+      row.innerHTML =
+        '<div class="storage-color-dot" style="background:' + IDB_COLOR + '"></div>' +
+        '<div class="storage-item-name">图片（IndexedDB）</div>' +
+        '<div class="storage-item-size">' + smFormatSize(idbSize) + '</div>' +
+        '<div class="storage-item-pct" style="color:#f0a0d0;">独立存储</div>';
+      container.appendChild(row);
+    }
   }
 
   function smFindAllImages() {
@@ -177,18 +206,35 @@
 
   let smSelectedQuality = 'high';
 
-  function smRenderImageStats() {
+  async function smRenderImageStats() {
     const el = document.getElementById('storage-image-stats');
     if (!el) return;
-    const images = smFindAllImages();
-    let totalImgSize = 0;
-    images.forEach(img => {
+
+    /* localStorage 里的图片 */
+    const lsImages = smFindAllImages();
+    let lsImgSize = 0;
+    lsImages.forEach(img => {
       const val = localStorage.getItem(img.key) || '';
-      totalImgSize += val.length * 2;
+      lsImgSize += val.length * 2;
     });
+
+    /* IndexedDB 里的图片 */
+    let idbCount = 0;
+    let idbSize  = 0;
+    try {
+      if (typeof imgLoadAll === 'function') {
+        const items = await imgLoadAll();
+        idbCount = items.length;
+        items.forEach(item => {
+          idbSize += ((item.key || '').length + (item.val || '').length) * 2;
+        });
+      }
+    } catch (e) {}
+
     el.innerHTML =
-      '检测到 <b>' + images.length + '</b> 处图片数据，' +
-      '共占用约 <b>' + smFormatSize(totalImgSize) + '</b>';
+      'localStorage 图片：<b>' + lsImages.length + '</b> 处，约 <b>' + smFormatSize(lsImgSize) + '</b>' +
+      '&nbsp;&nbsp;|&nbsp;&nbsp;' +
+      'IndexedDB 图片：<b>' + idbCount + '</b> 张，约 <b>' + smFormatSize(idbSize) + '</b>';
   }
 
   async function smCompressAll() {
@@ -197,14 +243,15 @@
     const preset = QUALITY_PRESETS[smSelectedQuality];
     if (!btn || !result) return;
 
-    btn.disabled    = true;
-    btn.textContent = '压缩中…';
+    btn.disabled       = true;
+    btn.textContent    = '压缩中…';
     result.textContent = '';
 
-    const images   = smFindAllImages();
     let savedBytes = 0;
 
-    for (const imgInfo of images) {
+    /* 压缩 localStorage 里的图片 */
+    const lsImages = smFindAllImages();
+    for (const imgInfo of lsImages) {
       try {
         if (imgInfo.type === 'single') {
           const oldVal = localStorage.getItem(imgInfo.key) || '';
@@ -223,9 +270,27 @@
           localStorage.setItem(imgInfo.key, newVal);
         }
       } catch (e) {
-        console.error('压缩失败:', imgInfo.key, e);
+        console.error('压缩失败（localStorage）:', imgInfo.key, e);
       }
     }
+
+    /* 压缩 IndexedDB 里的图片 */
+    try {
+      if (typeof imgLoadAll === 'function' && typeof imgSave === 'function') {
+        const idbItems = await imgLoadAll();
+        for (const item of idbItems) {
+          try {
+            const oldVal = item.val || '';
+            if (!oldVal.startsWith('data:image/')) continue;
+            const newVal = await smCompressImage(oldVal, preset.maxWidth, preset.quality);
+            savedBytes  += (oldVal.length - newVal.length) * 2;
+            await imgSave(item.key, newVal);
+          } catch (e) {
+            console.error('压缩失败（IndexedDB）:', item.key, e);
+          }
+        }
+      }
+    } catch (e) {}
 
     btn.disabled    = false;
     btn.textContent = '一键压缩所有图片';
@@ -302,9 +367,8 @@
       : null;
 
     const parts = [];
-
-    parts.push({ name: '角色设定',   chars: (role.setting || '').length,                                                      color: '#99C8ED' });
-    parts.push({ name: '用户设定',   chars: ((chat && chat.chatUserSetting) || '').length,                                    color: '#f0cc78' });
+    parts.push({ name: '角色设定',   chars: (role.setting || '').length, color: '#99C8ED' });
+    parts.push({ name: '用户设定',   chars: ((chat && chat.chatUserSetting) || '').length, color: '#f0cc78' });
     parts.push({ name: '长期记忆',   chars: ((chat && chat.memory && chat.memory.longTerm)  || []).map(m => m.content || '').join('\n').length, color: '#7ecb7e' });
     parts.push({ name: '重要记忆',   chars: ((chat && chat.memory && chat.memory.important) || []).map(m => m.content || '').join('\n').length, color: '#c8a0e8' });
 
@@ -373,15 +437,14 @@
     } else {
       lines.push('⚠ 字符数较多，可能影响 AI 响应速度和质量，建议优化。');
     }
-
     if (settingPart && settingPart.chars > 1500) {
-      lines.push('• 角色设定过长（' + settingPart.chars + ' 字符），建议精简到 800 字以内，保留最核心的性格和说话方式。');
+      lines.push('• 角色设定过长（' + settingPart.chars + ' 字符），建议精简到 800 字以内。');
     }
     if (memPart && memPart.chars > 1000) {
       lines.push('• 长期记忆条目较多（' + memPart.chars + ' 字符），可以删除过时或重复的记忆条目。');
     }
     if (wbPart && wbPart.chars > 2000) {
-      lines.push('• 世界书注入内容较多（' + wbPart.chars + ' 字符），建议检查触发词设置，避免不必要的条目被注入。');
+      lines.push('• 世界书注入内容较多（' + wbPart.chars + ' 字符），建议检查触发词设置。');
     }
     if (emojiPart && emojiPart.chars > 500) {
       lines.push('• 表情包名称列表较长（' + emojiPart.chars + ' 字符），可以删减不常用的表情包。');
@@ -392,34 +455,41 @@
     if (lines.length === 1) {
       lines.push('• 各部分配置均衡，继续保持！');
     }
-
     return lines.join('<br>');
   }
 
-  function smRender() {
+  async function smRender() {
     const groups   = smGetAllData();
     const total    = smTotalSize();
     const LS_MAX   = smGetLocalStorageMax();
+    const idbSize  = await smGetIdbSize();
+
     const totalEl  = document.getElementById('storage-total-text');
     const warnEl   = document.getElementById('storage-warning');
     const centerEl = document.getElementById('storage-center-value');
     const canvas   = document.getElementById('storage-donut-canvas');
 
+    const grandTotal = total + idbSize;
     const pct = (total / LS_MAX * 100).toFixed(1);
-    if (totalEl)  totalEl.textContent  = '已使用 ' + smFormatSize(total) + ' / 约 ' + smFormatSize(LS_MAX) + '（' + pct + '%）';
+
+    if (totalEl) totalEl.textContent =
+      'localStorage：' + smFormatSize(total) + ' / 约 ' + smFormatSize(LS_MAX) + '（' + pct + '%）' +
+      '　IndexedDB 图片：' + smFormatSize(idbSize);
     if (centerEl) centerEl.textContent = pct + '%';
 
     if (warnEl) {
-      if (total > LS_MAX * 0.9)      warnEl.textContent = '⚠ 存储空间即将耗尽，建议立即压缩图片或清理数据！';
-      else if (total > LS_MAX * 0.7) warnEl.textContent = '存储空间使用超过 70%，建议压缩图片。';
+      if (total > LS_MAX * 0.9)      warnEl.textContent = '⚠ localStorage 即将耗尽，建议立即压缩图片！';
+      else if (total > LS_MAX * 0.7) warnEl.textContent = 'localStorage 使用超过 70%，建议压缩图片。';
       else                            warnEl.textContent = '';
     }
 
+    /* 甜甜圈图：localStorage 各分组 + IndexedDB 图片 */
     const segments = Object.values(groups).filter(g => g.size > 0);
+    if (idbSize > 0) segments.push({ color: IDB_COLOR, size: idbSize });
     if (canvas) smDrawDonut(canvas, segments);
 
-    smRenderList(groups, total);
-    smRenderImageStats();
+    smRenderList(groups, total, idbSize);
+    await smRenderImageStats();
     smRenderTokenRoleList();
   }
 

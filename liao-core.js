@@ -114,16 +114,20 @@ function switchLiaoTab(tabId) {
 
   if (tabId === 'chatlist') renderChatList();
   if (tabId === 'rolelib') {
-    /* 刷新封面角色数量 */
     const countEl = document.getElementById('lcb-cover-count');
     if (countEl) {
       const count = typeof liaoRoles !== 'undefined' ? liaoRoles.length : 0;
       countEl.textContent = count + ' 位角色';
     }
   }
+  /* ↓ 加上这一行 */
+  if (tabId === 'myhome') {
+    if (typeof window.initMyhomePanel === 'function') window.initMyhomePanel();
+  }
   if (tabId === 'suiyan') renderSuiyan();
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
+
 
 /* ---------- 标签点击事件委托 ---------- */
 document.addEventListener('click', function (e) {

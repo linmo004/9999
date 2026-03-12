@@ -27,6 +27,7 @@
 <link rel="stylesheet" href="liao-cardbook.css">
 <link rel="stylesheet" href="storage-manager.css">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/dexie@3/dist/dexie.js"></script>
 </head>
 <body>
 
@@ -100,6 +101,7 @@
   }
 
   async function initScripts() {
+    await loadScript('db-images.js');
     await loadScript('app.js');
     await loadScript('settings-1.js');
     await loadScript('settings-2.js');

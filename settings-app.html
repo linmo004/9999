@@ -304,6 +304,19 @@
       </div>
       <div id="privacy-pin-avatar-msg" style="font-size:12px;margin-top:8px;height:16px;color:#e07a7a;"></div>
     </div>
+    <!-- 锁屏壁纸 -->
+<div class="settings-section-title">锁屏壁纸</div>
+<div class="settings-card">
+  <div class="settings-desc">设置锁屏界面的背景壁纸。</div>
+  <div class="theme-wallpaper-preview" id="lock-wallpaper-preview" style="margin-top:10px;"></div>
+  <div class="settings-row-btns" style="margin-top:10px;">
+    <button class="settings-btn-primary" id="lock-wallpaper-url-btn">输入URL</button>
+    <button class="settings-btn-ghost"   id="lock-wallpaper-local-btn">本地上传</button>
+    <button class="settings-btn-danger"  id="lock-wallpaper-clear-btn">清除</button>
+  </div>
+  <input type="file" id="lock-wallpaper-file-input" accept="image/*" style="display:none;">
+  <div id="lock-wallpaper-msg" style="font-size:12px;margin-top:8px;height:16px;"></div>
+</div>
     <div class="settings-section-title">主屏幕密码</div>
     <div class="settings-card">
       <div class="settings-desc">修改解锁主屏幕所需的 6 位数字密码。</div>
@@ -483,6 +496,18 @@
     <div class="btn-row">
       <button class="modal-btn" id="icon-replace-confirm">确认</button>
       <button class="modal-btn-ghost" id="icon-replace-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 锁屏壁纸URL弹窗 -->
+<div class="modal-mask" id="lock-wallpaper-url-modal">
+  <div class="modal-box">
+    <div class="modal-title">输入锁屏壁纸URL</div>
+    <input class="modal-input" id="lock-wallpaper-url-input" placeholder="https://…" style="height:40px;resize:none;">
+    <div class="btn-row">
+      <button class="modal-btn"       id="lock-wallpaper-url-confirm">确认</button>
+      <button class="modal-btn-ghost" id="lock-wallpaper-url-cancel">取消</button>
     </div>
   </div>
 </div>

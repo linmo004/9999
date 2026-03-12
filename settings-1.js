@@ -38,3 +38,16 @@ function compressImage(dataUrl, maxSize, quality) {
     img.src = dataUrl;
   });
 }
+
+/**
+ * 读取图片并应用到元素（兼容 URL 和 IndexedDB）
+ * - 如果传入的是 http/https 开头的 URL，直接用
+ * - 如果是本地上传的，从 IndexedDB 读取
+ * @param {string}   key       图片键名
+ * @param {Function} callback  回调 function(src)
+ * @param {string}   def       默认值
+ */
+async function loadImageAndApply(key, callback, def) {
+  const src = await imgLoad(key, def || null);
+  if (src && callback) callback(src);
+}

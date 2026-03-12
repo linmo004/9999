@@ -4,11 +4,9 @@
 
 (function () {
 
-  /* ---- 默认密码（6位）---- */
   const DEFAULT_PIN = '444444';
   const PIN_LENGTH  = 6;
 
-  /* ---- 读取存储的密码 ---- */
   function getSavedPin() {
     try {
       const v = localStorage.getItem('halo9_lockPin');
@@ -20,11 +18,27 @@
     try { localStorage.setItem('halo9_lockPin', pin); } catch (e) {}
   }
 
-  /* ---- 状态 ---- */
-  let pinBuffer = '';
+  let pinBuffer   = '';
   let pinUnlocked = false;
 
-  /* ---- 时钟 ---- */
+  /* ---- 启动时加载锁屏壁纸 ---- */
+  (async function applyLockscreenWallpaper() {
+    try {
+      /* 优先 IndexedDB，其次 localStorage */
+      const fromIdb = await imgLoad('lockWallpaper', null);
+      const fromLs  = sLoad('lockWallpaper', null);
+      const src     = fromIdb || fromLs;
+      if (src) {
+        const lsEl = document.getElementById('lockscreen');
+        if (lsEl) {
+          lsEl.style.backgroundImage    = 'url(' + src + ')';
+          lsEl.style.backgroundSize     = 'cover';
+          lsEl.style.backgroundPosition = 'center';
+        }
+      }
+    } catch (e) {}
+  })();
+
   function updateLsClock() {
     const now  = new Date();
     const h    = String(now.getHours()).padStart(2, '0');
@@ -42,8 +56,7 @@
   setInterval(updateLsClock, 1000);
   updateLsClock();
 
-  /* ---- 锁屏界面：滑动上划 or 点击触发 ---- */
-  const lsEl = document.getElementById('lockscreen');
+  const lsEl  = document.getElementById('lockscreen');
   const pinEl = document.getElementById('pinscreen');
 
   let lsTouchStartY = 0;
@@ -55,21 +68,28 @@
     pinBuffer = '';
     renderDots();
     clearError();
-    /* 优先使用隐私设置中专门设置的锁屏头像，
-       其次回退到主页用户头像，最后使用默认 */
-    try {
-      const pinAvatar = localStorage.getItem('halo9_pinAvatar');
-      const av = document.getElementById('pin-avatar-img');
-      if (av) {
-        if (pinAvatar && pinAvatar !== 'null') {
-          av.src = JSON.parse(pinAvatar);
-        } else {
-          const fallback = localStorage.getItem('halo9_userAvatar') ||
-                           localStorage.getItem('liao_userAvatar');
-          if (fallback) av.src = JSON.parse(fallback);
-        }
-      }
-    } catch (e) {}
+    /* 锁屏头像：优先 IndexedDB，其次 localStorage，最后默认 */
+    (async function () {
+      try {
+        const fromIdb = await imgLoad('pinAvatar', null);
+        const fromLs  = (() => {
+          try {
+            const v = localStorage.getItem('halo9_pinAvatar');
+            return v && v !== 'null' ? JSON.parse(v) : null;
+          } catch (e) { return null; }
+        })();
+        const fallbackIdb = await imgLoad('userAvatar', null);
+        const fallbackLs  = (() => {
+          try {
+            const v = localStorage.getItem('halo9_userAvatar') || localStorage.getItem('liao_userAvatar');
+            return v ? JSON.parse(v) : null;
+          } catch (e) { return null; }
+        })();
+        const src = fromIdb || fromLs || fallbackIdb || fallbackLs;
+        const av  = document.getElementById('pin-avatar-img');
+        if (av && src) av.src = src;
+      } catch (e) {}
+    })();
   }
 
   if (lsEl) {
@@ -85,7 +105,6 @@
     lsEl.addEventListener('click', showPinScreen);
   }
 
-  /* ---- 密码键盘 ---- */
   function renderDots() {
     const dots = document.querySelectorAll('.pin-dot');
     dots.forEach((dot, i) => {
@@ -150,27 +169,22 @@
     }
   }
 
-  /* 绑定键盘按键 */
   document.querySelectorAll('.pin-key[data-key]').forEach(key => {
     const val = key.dataset.key;
-
     key.addEventListener('touchstart', e => {
       e.preventDefault();
       key.classList.add('pressed');
       handleKeyPress(val);
     }, { passive: false });
-
     key.addEventListener('touchend', e => {
       e.preventDefault();
       key.classList.remove('pressed');
     }, { passive: false });
-
     key.addEventListener('click', () => {
       handleKeyPress(val);
     });
   });
 
-  /* 物理键盘支持 */
   document.addEventListener('keydown', e => {
     if (pinUnlocked) return;
     if (!pinEl || !pinEl.classList.contains('show')) return;
@@ -178,9 +192,6 @@
     if (e.key === 'Backspace') handleKeyPress('del');
   });
 
-  /* ============================================================
-     对外暴露：锁定/解锁 & 密码修改
-     ============================================================ */
   window.LockScreen = {
     lock: function () {
       pinUnlocked = false;
