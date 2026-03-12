@@ -25,12 +25,21 @@ document.getElementById('menu-favorites').addEventListener('click', openFavorite
 
 function openFavorites() {
   renderFavorites();
-  document.getElementById('liao-favorites-view').style.display = 'flex';
+  const view = document.getElementById('liao-favorites-view');
+  if (view) {
+    view.style.display = 'flex';
+    view.style.flexDirection = 'column';
+  }
 }
 
-document.getElementById('favorites-back').addEventListener('click', () => {
-  document.getElementById('liao-favorites-view').style.display = 'none';
-});
+
+const _favBack = document.getElementById('favorites-back');
+if (_favBack) {
+  _favBack.addEventListener('click', () => {
+    const view = document.getElementById('liao-favorites-view');
+    if (view) view.style.display = 'none';
+  });
+}
 
 /* ---------- 渲染 ---------- */
 function renderFavorites() {
