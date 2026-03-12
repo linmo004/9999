@@ -383,6 +383,45 @@ async function triggerAiReply() {
   const role = liaoRoles.find(r => r.id === chat.roleId);
   if (!role) return;
 
+  /* 在线状态判断：离线时不调用 API */
+  if (typeof arGetStatus === 'function') {
+    const status = arGetStatus(chat.roleId);
+    if (status === 'offline') {
+      const uAvt   = chat.chatUserAvatar || liaoUserAvatar;
+      const notice = {
+        role:    'assistant',
+        type:    'text',
+        content: '（当前为离线状态，无法回复）',
+        ts:      Date.now(),
+        id:      'msg_' + Date.now() + '_offline'
+      };
+      chat.messages.push(notice);
+      lSave('chats', liaoChats);
+      appendMessageBubble(notice, role, uAvt, true);
+      return;
+    }
+  }
+  /* ── 角色日程判断（本地判断，不消耗 API） ── */
+  if (typeof schCheckCanReply === 'function') {
+    const schResult = schCheckCanReply(chat.roleId);
+    if (!schResult.canReply) {
+      /* 在聊天界面显示提示气泡 */
+      const uAvt = chat.chatUserAvatar || liaoUserAvatar;
+      const noticeMsg = {
+        role:    'assistant',
+        type:    'text',
+        content: schResult.reason || '现在不方便回复',
+        ts:      Date.now(),
+        id:      'msg_' + Date.now() + '_sch'
+      };
+      chat.messages.push(noticeMsg);
+      lSave('chats', liaoChats);
+      appendMessageBubble(noticeMsg, role, uAvt, true);
+      renderChatList();
+      return; /* 不调用 API */
+    }
+  }
+
   const activeConfig = loadApiConfig();
   if (!activeConfig || !activeConfig.url) { alert('请先在设置中配置 API 地址'); return; }
   const model = loadApiModel();
@@ -553,6 +592,16 @@ async function triggerAiReply() {
    processAiResponse
    ============================================================ */
 function processAiResponse(rawContent, role, chat) {
+  /* 识别 AI 里的状态切换指令 */
+  if (typeof arParseStatusFromContent === 'function') {
+    arParseStatusFromContent(rawContent, chat.roleId);
+    if (typeof arUpdateStatusBar === 'function') {
+      arUpdateStatusBar(chat.roleId);
+    }
+  }
+  /* 从回复内容中移除状态指令，不显示给用户 */
+  rawContent = rawContent.replace(/\[STATUS:(online|offline)\]/gi, '').trim();
+
   /* ---- 提取并剥离状态栏块 ---- */
   let extractedStatusBar = null;
   const sbRe = /\[STATUSBAR:status=([^:]*):mood=([^:]*):inner=([^:]*):draft=([^:]*):funFact=([^:]*):theater=([^\]]*)\]/;

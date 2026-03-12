@@ -1,0 +1,464 @@
+/* ============================================================
+   liao-schedule.css — 角色日程样式
+   ============================================================ */
+
+/* ── 顶部操作栏 ── */
+.sch-topbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(153,200,237,0.18);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* ── 星期选项卡 ── */
+.sch-day-tabs {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 6px 10px 0;
+  gap: 4px;
+}
+
+.sch-day-tabs::-webkit-scrollbar { display: none; }
+
+.sch-day-btn {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(153,200,237,0.28);
+  background: transparent;
+  color: var(--text-mid, #5a6a80);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  transition: all .15s;
+  position: relative;
+}
+
+.sch-day-btn.active {
+  background: var(--primary, #99C8ED);
+  border-color: var(--primary, #99C8ED);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* 当天标记 */
+.sch-day-btn.today::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--primary, #99C8ED);
+}
+
+.sch-day-btn.active.today::after {
+  background: #fff;
+}
+
+/* ── 操作按钮行 ── */
+.sch-topbar-actions {
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+}
+
+.sch-ai-btn {
+  flex: 1;
+  background: linear-gradient(135deg, rgba(153,200,237,0.18), rgba(153,200,237,0.08));
+  border: 1.5px solid rgba(153,200,237,0.35);
+  border-radius: 10px;
+  color: var(--primary, #99C8ED);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 0;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  transition: opacity .15s;
+}
+
+.sch-ai-btn:active { opacity: 0.7; }
+
+.sch-add-btn {
+  flex: 1;
+  background: var(--primary, #99C8ED);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 0;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  transition: opacity .15s;
+}
+
+.sch-add-btn:active { opacity: 0.72; }
+
+/* ── 说明文字 ── */
+.sch-hint {
+  font-size: 11px;
+  color: var(--text-light, #9aafc4);
+  padding: 6px 14px 2px;
+  line-height: 1.5;
+}
+
+/* ── 日程列表 ── */
+.sch-list {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 14px 16px;
+  gap: 8px;
+}
+
+/* ── 空状态 ── */
+.sch-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-light, #9aafc4);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.sch-empty-icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+/* ── 单个时间段卡片 ── */
+.sch-slot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1.5px solid rgba(153,200,237,0.18);
+  border-radius: 14px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background .13s, border-color .13s;
+  box-shadow: 0 1px 6px rgba(100,140,190,0.06);
+  position: relative;
+}
+
+.sch-slot:active {
+  background: rgba(153,200,237,0.06);
+}
+
+/* 根据状态给左边加颜色条 */
+.sch-slot::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--sch-color, rgba(153,200,237,0.4));
+}
+
+/* ── 时间区域 ── */
+.sch-slot-time {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 52px;
+  padding-left: 6px;
+}
+
+.sch-slot-time-range {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dark, #2c3448);
+  letter-spacing: .02em;
+}
+
+.sch-slot-duration {
+  font-size: 9px;
+  color: var(--text-light, #9aafc4);
+  margin-top: 2px;
+}
+
+/* ── 状态图标 ── */
+.sch-slot-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* ── 内容区 ── */
+.sch-slot-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.sch-slot-activity {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dark, #2c3448);
+  line-height: 1.3;
+}
+
+.sch-slot-desc {
+  font-size: 11px;
+  color: var(--text-mid, #5a6a80);
+  margin-top: 2px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── 回复概率标签 ── */
+.sch-slot-reply {
+  flex-shrink: 0;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.sch-slot-reply.high {
+  background: rgba(76,175,132,0.12);
+  color: #4caf84;
+}
+
+.sch-slot-reply.mid {
+  background: rgba(240,192,64,0.15);
+  color: #c8900a;
+}
+
+.sch-slot-reply.low {
+  background: rgba(224,122,122,0.12);
+  color: #e07a7a;
+}
+
+.sch-slot-reply.none {
+  background: rgba(154,175,196,0.12);
+  color: var(--text-light, #9aafc4);
+}
+
+/* ── 删除按钮 ── */
+.sch-slot-del {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(224,122,122,0.1);
+  border: none;
+  color: #e07a7a;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  -webkit-appearance: none;
+  transition: background .13s;
+}
+
+.sch-slot-del:active { background: rgba(224,122,122,0.22); }
+
+/* ── 复制到所有天按钮 ── */
+.sch-copy-all-btn {
+  width: 100%;
+  background: var(--bg2, #F8F9FA);
+  border: 1.5px solid rgba(153,200,237,0.28);
+  border-radius: 12px;
+  color: var(--text-mid, #5a6a80);
+  font-size: 12px;
+  padding: 10px 0;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  transition: background .13s;
+}
+
+.sch-copy-all-btn:active { background: rgba(153,200,237,0.12); }
+
+/* ── AI 生成中提示 ── */
+.sch-generating {
+  text-align: center;
+  padding: 30px 20px;
+  color: var(--text-mid, #5a6a80);
+  font-size: 13px;
+}
+
+.sch-generating-dot {
+  display: inline-block;
+  animation: sch-dot-blink 1.2s infinite;
+}
+
+@keyframes sch-dot-blink {
+  0%, 80%, 100% { opacity: 0.2; }
+  40% { opacity: 1; }
+}
+
+/* ── 编辑弹窗 ── */
+.sch-edit-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  background: rgba(26,31,46,0.42);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.sch-edit-modal.show {
+  display: flex;
+}
+
+.sch-edit-box {
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 20px 18px 40px;
+  max-height: 85dvh;
+  overflow-y: auto;
+}
+
+.sch-edit-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark, #2c3448);
+  margin-bottom: 14px;
+}
+
+/* ── 状态选择器 ── */
+.sch-status-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.sch-status-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(153,200,237,0.2);
+  cursor: pointer;
+  transition: all .13s;
+  background: var(--bg2, #F8F9FA);
+}
+
+.sch-status-option.selected {
+  border-color: var(--primary, #99C8ED);
+  background: rgba(153,200,237,0.1);
+}
+
+.sch-status-option:active { opacity: 0.7; }
+
+.sch-status-emoji { font-size: 18px; line-height: 1; }
+
+.sch-status-label {
+  font-size: 9px;
+  color: var(--text-mid, #5a6a80);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ── 回复概率选择 ── */
+.sch-reply-options {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.sch-reply-option {
+  flex: 1;
+  padding: 8px 4px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(153,200,237,0.2);
+  background: var(--bg2, #F8F9FA);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  font-family: inherit;
+  -webkit-appearance: none;
+  transition: all .13s;
+}
+
+.sch-reply-option.selected-high {
+  border-color: #4caf84;
+  background: rgba(76,175,132,0.1);
+  color: #4caf84;
+}
+
+.sch-reply-option.selected-mid {
+  border-color: #c8900a;
+  background: rgba(240,192,64,0.1);
+  color: #c8900a;
+}
+
+.sch-reply-option.selected-low {
+  border-color: #e07a7a;
+  background: rgba(224,122,122,0.1);
+  color: #e07a7a;
+}
+
+.sch-reply-option.selected-none {
+  border-color: var(--text-light, #9aafc4);
+  background: rgba(154,175,196,0.1);
+  color: var(--text-light, #9aafc4);
+}
+
+/* 暗色模式 */
+body.dark-mode .sch-topbar {
+  background: rgba(28,30,40,0.96);
+  border-bottom-color: rgba(80,120,160,0.18);
+}
+
+body.dark-mode .sch-slot {
+  background: #22242c;
+  border-color: rgba(80,120,160,0.15);
+}
+
+body.dark-mode .sch-slot-activity { color: #e8eaf0; }
+body.dark-mode .sch-slot-desc     { color: #9aa4b8; }
+body.dark-mode .sch-slot-time-range { color: #e8eaf0; }
+
+body.dark-mode .sch-edit-box {
+  background: #1a1a1f;
+}
+
+body.dark-mode .sch-edit-title { color: #e8eaf0; }
+
+body.dark-mode .sch-status-option {
+  background: #22242c;
+  border-color: rgba(80,120,160,0.2);
+}
+
+body.dark-mode .sch-reply-option {
+  background: #22242c;
+  border-color: rgba(80,120,160,0.2);
+}
+
+body.dark-mode .sch-copy-all-btn {
+  background: #22242c;
+  border-color: rgba(80,120,160,0.2);
+  color: #9aa4b8;
+}

@@ -259,6 +259,25 @@ function openChatView(chatIdx) {
   const csCloseBtn = document.getElementById('cs-close-btn');
   if (csCloseBtn) csCloseBtn.dataset.returnTo = '';
 
+/* 更新在线状态显示 */
+if (typeof arUpdateStatusBar === 'function') {
+  arUpdateStatusBar(chat.roleId);
+}
+
+/* 绑定在线状态点击切换 */
+const statusRow = document.getElementById('chat-status-row');
+if (statusRow && !statusRow._arBound) {
+  statusRow._arBound = true;
+  statusRow.addEventListener('click', () => {
+    if (currentChatIdx < 0) return;
+    const c      = liaoChats[currentChatIdx];
+    const cur    = arGetStatus(c.roleId);
+    const newSt  = cur === 'online' ? 'offline' : 'online';
+    arSetStatus(c.roleId, newSt);
+    arUpdateStatusBar(c.roleId);
+  });
+}
+
   document.getElementById('liao-chat-view').classList.add('show');
   setTimeout(scrollChatToBottom, 100);
 }
@@ -398,6 +417,12 @@ function sendUserMessage() {
   const quoteBar = document.getElementById('chat-quote-bar');
   if (quoteBar) quoteBar.style.display = 'none';
   appendMessageBubble(msgObj, role, uAvt, true);
+
+/* 自动回复判断 */
+if (typeof arTryAutoReply === 'function') {
+  arTryAutoReply(currentChatIdx, content);
+}
+
 }
 
 /* ============================================================
@@ -500,7 +525,22 @@ function switchChatSettingsTab(tabId) {
     renderMemoryLists();
     renderOtherMemoryList();
   }
+  /* 加这一段 */
+  if (tabId === 'cs-tab-schedule') {
+    if (currentChatIdx >= 0 && typeof schInitUI === 'function') {
+      const chat = liaoChats[currentChatIdx];
+      if (chat) schInitUI(chat.roleId);
+    }
+  }
+  if (tabId === 'cs-tab-autoreply') {
+  if (currentChatIdx >= 0 && typeof arInitTab === 'function') {
+    const chat = liaoChats[currentChatIdx];
+    if (chat) arInitTab(chat.roleId);
+  }
 }
+
+}
+
 
 document.querySelectorAll('.cs-tab-btn').forEach(btn => {
   btn.addEventListener('click', function () {

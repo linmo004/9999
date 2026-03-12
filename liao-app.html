@@ -80,106 +80,108 @@
     </div>
 
     <!-- ===================== 我的主页面板（INS风） ===================== -->
-    <div class="liao-panel" data-panel="myhome">
+<div class="liao-panel" data-panel="myhome">
 
-      <!-- 顶部个人信息区 -->
-      <div class="mh-profile-section">
+  <!-- 顶部个人信息区 -->
+  <div class="mh-profile-section">
 
-        <!-- 左上角：切换用户面具 -->
-        <button class="mh-mask-switch-btn" id="mh-mask-switch-btn" title="切换用户面具">
-          <span class="mh-mask-switch-icon">⇌</span>
-          <span class="mh-mask-switch-label">面具</span>
-        </button>
-
-        <!-- 头像 + 右侧信息 -->
-        <div class="mh-profile-row">
-          <!-- 左：头像 -->
-          <div class="mh-avatar-wrap" id="mh-avatar-wrap">
-            <img class="mh-avatar-img" id="mh-avatar-img"
-              src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=user" alt="">
-            <input type="file" id="mh-avatar-file" accept="image/*" style="display:none;">
-          </div>
-
-          <!-- 右：名字 + 人设 + 保存 -->
-          <div class="mh-profile-info">
-            <div class="mh-name-row">
-              <span class="mh-name" id="mh-name" contenteditable="true" spellcheck="false">用户名</span>
-              <button class="mh-save-btn" id="mh-save-btn" title="保存">✓</button>
-            </div>
-            <div class="mh-setting-text" id="mh-setting-text"
-              contenteditable="true" spellcheck="false">点击编辑人设描述…</div>
-          </div>
-        </div>
-
+    <!-- 头像 + 右侧信息 -->
+    <div class="mh-profile-row">
+      <!-- 左：头像（点击可换，长按可输入URL） -->
+      <div class="mh-avatar-wrap" id="mh-avatar-wrap">
+        <img class="mh-avatar-img" id="mh-avatar-img"
+          src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=user" alt="">
+        <input type="file" id="mh-avatar-file" accept="image/*" style="display:none;">
       </div>
 
-      <!-- 分割线 -->
-      <div class="mh-divider"></div>
-
-      <!-- 作品列表 -->
-<div class="mh-works-list">
-
-  <!-- 作品 1：我的人设库 -->
-  <div class="mh-work-item" id="mh-work-persona">
-    <div class="mh-work-cover" id="mhwc-0">
-      <img class="mh-work-cover-img" id="mhwci-0" src="" alt="">
-      <div class="mh-work-cover-placeholder" id="mhwcp-0">◈</div>
-      <input type="file" id="mhwcf-0" accept="image/*" style="display:none;">
+      <!-- 右：名字行 + 面具切换 + 人设描述 + 保存 -->
+      <div class="mh-profile-info">
+        <div class="mh-name-row">
+          <span class="mh-name" id="mh-name" contenteditable="true" spellcheck="false">用户名</span>
+          <!-- 面具切换按钮：@名字 样式，无边框，底部横线 -->
+          <span class="mh-mask-switch-btn" id="mh-mask-switch-btn">@用户</span>
+        </div>
+        <div class="mh-setting-text" id="mh-setting-text"
+          contenteditable="true" spellcheck="false">点击编辑人设描述…</div>
+        <button class="mh-save-btn" id="mh-save-btn" title="保存到人设库">保存</button>
+      </div>
     </div>
-    <div class="mh-work-info">
-      <div class="mh-work-title" id="mhwt-0"  contenteditable="true" spellcheck="false">我的人设库</div>
-      <div class="mh-work-tag"   id="mhwtg-0" contenteditable="true" spellcheck="false">#人设 #角色</div>
-      <div class="mh-work-user"  id="mhwu-0"  contenteditable="true" spellcheck="false">@用户</div>
-      <div class="mh-work-dur"   id="mhwd-0"  contenteditable="true" spellcheck="false">∞</div>
-    </div>
+
   </div>
 
-  <!-- 作品 2：收藏夹 -->
-  <div class="mh-work-item" id="mh-work-favorites">
-    <div class="mh-work-cover" id="mhwc-1">
-      <img class="mh-work-cover-img" id="mhwci-1" src="" alt="">
-      <div class="mh-work-cover-placeholder" id="mhwcp-1">★</div>
-      <input type="file" id="mhwcf-1" accept="image/*" style="display:none;">
+  <!-- 分割线 -->
+  <div class="mh-divider"></div>
+
+  <!-- 作品列表 -->
+  <div class="mh-works-list">
+
+    <!-- 作品 1：我的人设库 -->
+    <div class="mh-work-item" id="mh-work-persona">
+      <div class="mh-work-cover" id="mhwc-0">
+        <img class="mh-work-cover-img" id="mhwci-0" src="" alt="">
+        <div class="mh-work-cover-placeholder" id="mhwcp-0">◈</div>
+        <input type="file" id="mhwcf-0" accept="image/*" style="display:none;">
+      </div>
+      <div class="mh-work-info">
+        <div class="mh-work-title" id="mhwt-0"  contenteditable="true" spellcheck="false">我的人设库</div>
+        <div class="mh-work-tag"   id="mhwtg-0" contenteditable="true" spellcheck="false">#人设 #角色</div>
+        <div class="mh-work-user"  id="mhwu-0"  contenteditable="true" spellcheck="false">@用户</div>
+        <div class="mh-work-dur"   id="mhwd-0"  contenteditable="true" spellcheck="false">∞</div>
+      </div>
+      <div class="mh-work-enter">›</div>
     </div>
-    <div class="mh-work-info">
-      <div class="mh-work-title" id="mhwt-1"  contenteditable="true" spellcheck="false">收藏夹</div>
-      <div class="mh-work-tag"   id="mhwtg-1" contenteditable="true" spellcheck="false">#收藏 #片段</div>
-      <div class="mh-work-user"  id="mhwu-1"  contenteditable="true" spellcheck="false">@用户</div>
-      <div class="mh-work-dur"   id="mhwd-1"  contenteditable="true" spellcheck="false">∞</div>
+
+    <!-- 作品 2：收藏夹 -->
+    <div class="mh-work-item" id="mh-work-favorites">
+      <div class="mh-work-cover" id="mhwc-1">
+        <img class="mh-work-cover-img" id="mhwci-1" src="" alt="">
+        <div class="mh-work-cover-placeholder" id="mhwcp-1">★</div>
+        <input type="file" id="mhwcf-1" accept="image/*" style="display:none;">
+      </div>
+      <div class="mh-work-info">
+        <div class="mh-work-title" id="mhwt-1"  contenteditable="true" spellcheck="false">收藏夹</div>
+        <div class="mh-work-tag"   id="mhwtg-1" contenteditable="true" spellcheck="false">#收藏 #片段</div>
+        <div class="mh-work-user"  id="mhwu-1"  contenteditable="true" spellcheck="false">@用户</div>
+        <div class="mh-work-dur"   id="mhwd-1"  contenteditable="true" spellcheck="false">∞</div>
+      </div>
+      <div class="mh-work-enter">›</div>
     </div>
+
+    <!-- 作品 3：记忆宫殿 -->
+    <div class="mh-work-item" id="mh-work-memory">
+      <div class="mh-work-cover" id="mhwc-2">
+        <img class="mh-work-cover-img" id="mhwci-2" src="" alt="">
+        <div class="mh-work-cover-placeholder" id="mhwcp-2">◎</div>
+        <input type="file" id="mhwcf-2" accept="image/*" style="display:none;">
+      </div>
+      <div class="mh-work-info">
+        <div class="mh-work-title" id="mhwt-2"  contenteditable="true" spellcheck="false">记忆宫殿</div>
+        <div class="mh-work-tag"   id="mhwtg-2" contenteditable="true" spellcheck="false">#记忆 #世界观</div>
+        <div class="mh-work-user"  id="mhwu-2"  contenteditable="true" spellcheck="false">@用户</div>
+        <div class="mh-work-dur"   id="mhwd-2"  contenteditable="true" spellcheck="false">∞</div>
+      </div>
+      <div class="mh-work-enter">›</div>
+    </div>
+
+    <!-- 作品 4：美化 -->
+    <div class="mh-work-item" id="mh-work-beauty">
+      <div class="mh-work-cover" id="mhwc-3">
+        <img class="mh-work-cover-img" id="mhwci-3" src="" alt="">
+        <div class="mh-work-cover-placeholder" id="mhwcp-3">◆</div>
+        <input type="file" id="mhwcf-3" accept="image/*" style="display:none;">
+      </div>
+      <div class="mh-work-info">
+        <div class="mh-work-title" id="mhwt-3"  contenteditable="true" spellcheck="false">美化</div>
+        <div class="mh-work-tag"   id="mhwtg-3" contenteditable="true" spellcheck="false">#美化 #聊天</div>
+        <div class="mh-work-user"  id="mhwu-3"  contenteditable="true" spellcheck="false">@用户</div>
+        <div class="mh-work-dur"   id="mhwd-3"  contenteditable="true" spellcheck="false">∞</div>
+      </div>
+      <div class="mh-work-enter">›</div>
+    </div>
+
   </div>
 
-  <!-- 作品 3：记忆宫殿 -->
-  <div class="mh-work-item" id="mh-work-memory">
-    <div class="mh-work-cover" id="mhwc-2">
-      <img class="mh-work-cover-img" id="mhwci-2" src="" alt="">
-      <div class="mh-work-cover-placeholder" id="mhwcp-2">◎</div>
-      <input type="file" id="mhwcf-2" accept="image/*" style="display:none;">
-    </div>
-    <div class="mh-work-info">
-      <div class="mh-work-title" id="mhwt-2"  contenteditable="true" spellcheck="false">记忆宫殿</div>
-      <div class="mh-work-tag"   id="mhwtg-2" contenteditable="true" spellcheck="false">#记忆 #世界观</div>
-      <div class="mh-work-user"  id="mhwu-2"  contenteditable="true" spellcheck="false">@用户</div>
-      <div class="mh-work-dur"   id="mhwd-2"  contenteditable="true" spellcheck="false">∞</div>
-    </div>
-  </div>
-
-  <!-- 作品 4：美化 -->
-  <div class="mh-work-item" id="mh-work-beauty">
-    <div class="mh-work-cover" id="mhwc-3">
-      <img class="mh-work-cover-img" id="mhwci-3" src="" alt="">
-      <div class="mh-work-cover-placeholder" id="mhwcp-3">◆</div>
-      <input type="file" id="mhwcf-3" accept="image/*" style="display:none;">
-    </div>
-    <div class="mh-work-info">
-      <div class="mh-work-title" id="mhwt-3"  contenteditable="true" spellcheck="false">美化</div>
-      <div class="mh-work-tag"   id="mhwtg-3" contenteditable="true" spellcheck="false">#美化 #聊天</div>
-      <div class="mh-work-user"  id="mhwu-3"  contenteditable="true" spellcheck="false">@用户</div>
-      <div class="mh-work-dur"   id="mhwd-3"  contenteditable="true" spellcheck="false">∞</div>
-    </div>
-  </div>
-
-</div><!-- end mh-works-list -->
+</div><!-- end myhome panel -->
 
     </div><!-- end myhome panel -->
 

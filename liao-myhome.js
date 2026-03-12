@@ -1,36 +1,27 @@
 /* ============================================================
-   liao-myhome.js — 我的主页 INS 风逻辑
+   liao-myhome.js — 我的主页逻辑
    ============================================================ */
 
 (function () {
 
-  /* ============================================================
-     存储 key 定义
-     ============================================================ */
   const MH_STORE_KEY = 'liao_myhome_data';
 
-  /* 默认数据结构 */
   function getDefaultData() {
     return {
-      avatar:   '',
-      name:     lLoad('userName', '用户'),
-      setting:  '',
+      avatar:  '',
+      name:    lLoad('userName', '用户'),
+      setting: '',
       works: [
-        { title: '我的人设库', tag: '#人设 #角色',  user: '@用户', dur: '∞', cover: '' },
-        { title: '收藏夹',     tag: '#收藏 #片段',  user: '@用户', dur: '∞', cover: '' },
+        { title: '我的人设库', tag: '#人设 #角色',   user: '@用户', dur: '∞', cover: '' },
+        { title: '收藏夹',     tag: '#收藏 #片段',   user: '@用户', dur: '∞', cover: '' },
         { title: '记忆宫殿',   tag: '#记忆 #世界观', user: '@用户', dur: '∞', cover: '' },
         { title: '美化',       tag: '#美化 #聊天',   user: '@用户', dur: '∞', cover: '' },
       ]
     };
   }
 
-  /* ============================================================
-     读写工具
-     ============================================================ */
   function mhSave(data) {
-    try {
-      localStorage.setItem(MH_STORE_KEY, JSON.stringify(data));
-    } catch (e) {}
+    try { localStorage.setItem(MH_STORE_KEY, JSON.stringify(data)); } catch (e) {}
   }
 
   function mhLoad() {
@@ -38,32 +29,27 @@
       const raw = localStorage.getItem(MH_STORE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        /* 兼容：确保 works 数组长度正确 */
-        const def = getDefaultData();
-        if (!parsed.works || parsed.works.length < 4) parsed.works = def.works;
+        if (!parsed.works || parsed.works.length < 4) parsed.works = getDefaultData().works;
         return parsed;
       }
     } catch (e) {}
     return getDefaultData();
   }
 
-  /* ============================================================
-     渲染：将数据同步到 DOM
-     ============================================================ */
+  /* ── 渲染 ── */
   function renderMyhome(data) {
-    /* 头像 */
     const avatarImg = document.getElementById('mh-avatar-img');
     if (avatarImg && data.avatar) avatarImg.src = data.avatar;
 
-    /* 名字 */
     const nameEl = document.getElementById('mh-name');
     if (nameEl) nameEl.textContent = data.name || '用户名';
 
-    /* 人设描述 */
     const settingEl = document.getElementById('mh-setting-text');
     if (settingEl) settingEl.textContent = data.setting || '';
 
-    /* 四个作品 */
+    /* 面具按钮显示当前名字 */
+    updateMaskBtnLabel(data.name);
+
     data.works.forEach((work, idx) => {
       const titleEl = document.getElementById('mhwt-'  + idx);
       const tagEl   = document.getElementById('mhwtg-' + idx);
@@ -90,9 +76,12 @@
     });
   }
 
-  /* ============================================================
-     收集当前 DOM 里的数据
-     ============================================================ */
+  function updateMaskBtnLabel(name) {
+    const btn = document.getElementById('mh-mask-switch-btn');
+    if (btn) btn.textContent = '@' + (name || '用户');
+  }
+
+  /* ── 收集数据 ── */
   function collectData(currentData) {
     const nameEl    = document.getElementById('mh-name');
     const settingEl = document.getElementById('mh-setting-text');
@@ -105,26 +94,21 @@
     }
 
     currentData.works.forEach((work, idx) => {
-      const titleEl = document.getElementById('mhwt-'  + idx);
-      const tagEl   = document.getElementById('mhwtg-' + idx);
-      const userEl  = document.getElementById('mhwu-'  + idx);
-      const durEl   = document.getElementById('mhwd-'  + idx);
-
-      if (titleEl) work.title = titleEl.textContent.trim();
-      if (tagEl)   work.tag   = tagEl.textContent.trim();
-      if (userEl)  work.user  = userEl.textContent.trim();
-      if (durEl)   work.dur   = durEl.textContent.trim();
+      const t = document.getElementById('mhwt-'  + idx);
+      const g = document.getElementById('mhwtg-' + idx);
+      const u = document.getElementById('mhwu-'  + idx);
+      const d = document.getElementById('mhwd-'  + idx);
+      if (t) work.title = t.textContent.trim();
+      if (g) work.tag   = g.textContent.trim();
+      if (u) work.user  = u.textContent.trim();
+      if (d) work.dur   = d.textContent.trim();
     });
 
     return currentData;
   }
 
-  /* ============================================================
-     初始化
-     ============================================================ */
   let mhData = mhLoad();
 
-  /* 面板首次激活时渲染 */
   function initMyhome() {
     mhData = mhLoad();
     renderMyhome(mhData);
@@ -132,52 +116,152 @@
   }
 
   /* ============================================================
+     URL 弹窗（头像和封面共用）
+     ============================================================ */
+  let _urlModalCallback = null;
+  let _urlModalFileInput = null;
+
+  function openUrlModal(title, fileInputId, onConfirm) {
+    _urlModalCallback  = onConfirm;
+    _urlModalFileInput = fileInputId;
+
+    let modal = document.getElementById('mh-url-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id        = 'mh-url-modal';
+      modal.className = 'mh-url-modal';
+      modal.innerHTML = `
+        <div class="mh-url-modal-box">
+          <div class="mh-url-modal-title" id="mh-url-modal-title"></div>
+          <input class="mh-url-modal-input" id="mh-url-modal-input" placeholder="输入图片 URL…">
+          <div class="mh-url-modal-or">— 或 —</div>
+          <div class="mh-url-modal-btns">
+            <button class="liao-btn-ghost"   id="mh-url-modal-local"  style="flex:1;">本地上传</button>
+            <button class="liao-btn-primary" id="mh-url-modal-confirm" style="flex:1;">确认 URL</button>
+            <button class="liao-btn-ghost"   id="mh-url-modal-cancel" style="flex:1;">取消</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+
+      modal.addEventListener('click', e => { if (e.target === modal) closeUrlModal(); });
+
+      document.getElementById('mh-url-modal-confirm').addEventListener('click', () => {
+        const url = (document.getElementById('mh-url-modal-input').value || '').trim();
+        if (!url) { alert('请输入图片 URL'); return; }
+        if (_urlModalCallback) _urlModalCallback(url);
+        closeUrlModal();
+      });
+
+      document.getElementById('mh-url-modal-local').addEventListener('click', () => {
+        closeUrlModal();
+        if (_urlModalFileInput) {
+          const fi = document.getElementById(_urlModalFileInput);
+          if (fi) fi.click();
+        }
+      });
+
+      document.getElementById('mh-url-modal-cancel').addEventListener('click', closeUrlModal);
+    }
+
+    document.getElementById('mh-url-modal-title').textContent = title;
+    document.getElementById('mh-url-modal-input').value = '';
+    modal.classList.add('show');
+    setTimeout(() => {
+      const inp = document.getElementById('mh-url-modal-input');
+      if (inp) inp.focus();
+    }, 100);
+  }
+
+  function closeUrlModal() {
+    const modal = document.getElementById('mh-url-modal');
+    if (modal) modal.classList.remove('show');
+    _urlModalCallback  = null;
+    _urlModalFileInput = null;
+  }
+
+  /* ============================================================
      事件绑定
      ============================================================ */
   function bindEvents() {
 
-    /* ── 头像点击上传 ── */
+    /* ── 头像：短按选URL或本地，长按也一样 ── */
     const avatarWrap = document.getElementById('mh-avatar-wrap');
     const avatarFile = document.getElementById('mh-avatar-file');
 
-    if (avatarWrap && avatarFile && !avatarWrap._mhBound) {
+    if (avatarWrap && !avatarWrap._mhBound) {
       avatarWrap._mhBound = true;
-      avatarWrap.addEventListener('click', () => avatarFile.click());
-      avatarFile.addEventListener('change', async function () {
-        const file = this.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async e => {
-          const compressed = typeof compressImage === 'function'
-            ? await compressImage(e.target.result, 300, 0.85)
-            : e.target.result;
+
+      avatarWrap.addEventListener('click', () => {
+        openUrlModal('更换头像', 'mh-avatar-file', (url) => {
           const img = document.getElementById('mh-avatar-img');
-          if (img) img.src = compressed;
-          mhData.avatar = compressed;
+          if (img) img.src = url;
+          mhData.avatar = url;
           mhSave(mhData);
-        };
-        reader.readAsDataURL(file);
-        this.value = '';
+        });
       });
+
+      if (avatarFile) {
+        avatarFile.addEventListener('change', async function () {
+          const file = this.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = async e => {
+            const compressed = typeof compressImage === 'function'
+              ? await compressImage(e.target.result, 300, 0.85)
+              : e.target.result;
+            const img = document.getElementById('mh-avatar-img');
+            if (img) img.src = compressed;
+            mhData.avatar = compressed;
+            mhSave(mhData);
+          };
+          reader.readAsDataURL(file);
+          this.value = '';
+        });
+      }
     }
 
-    /* ── 保存按钮 ── */
+    /* ── 保存按钮：保存到人设库 ── */
     const saveBtn = document.getElementById('mh-save-btn');
     if (saveBtn && !saveBtn._mhBound) {
       saveBtn._mhBound = true;
       saveBtn.addEventListener('click', () => {
-  /* 先让所有编辑框失焦，确保 blur 触发 */
-  document.querySelectorAll('[contenteditable="true"]').forEach(el => el.blur());
-  mhData = collectData(mhData);
-  mhSave(mhData);
-  saveBtn.textContent = '✔';
-  saveBtn.style.background = '#4caf84';
-  setTimeout(() => {
-    saveBtn.textContent = '✓';
-    saveBtn.style.background = '';
-  }, 1200);
-});
+        document.querySelectorAll('[contenteditable="true"]').forEach(el => el.blur());
+        mhData = collectData(mhData);
+        mhSave(mhData);
 
+        /* 同时保存到人设库 */
+        const name    = mhData.name    || '';
+        const setting = mhData.setting || '';
+        const avatar  = mhData.avatar  || '';
+        if (!name) { alert('请先填写用户名再保存'); return; }
+
+        let personas = lLoad('personas', []);
+        const existIdx = personas.findIndex(p => p.name === name);
+        const personaObj = {
+          id:      existIdx >= 0 ? personas[existIdx].id : ('persona_' + Date.now()),
+          name,
+          setting,
+          avatar:  avatar || 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=default'
+        };
+
+        if (existIdx >= 0) {
+          personas[existIdx] = personaObj;
+        } else {
+          personas.push(personaObj);
+        }
+        lSave('personas', personas);
+
+        /* 更新面具按钮显示 */
+        updateMaskBtnLabel(name);
+
+        /* 视觉反馈 */
+        saveBtn.textContent = '已保存 ✓';
+        saveBtn.style.background = '#4caf84';
+        setTimeout(() => {
+          saveBtn.textContent = '保存';
+          saveBtn.style.background = '';
+        }, 1500);
+      });
     }
 
     /* ── contenteditable 失焦自动保存 ── */
@@ -196,29 +280,32 @@
         el.addEventListener('blur', () => {
           mhData = collectData(mhData);
           mhSave(mhData);
+          /* 名字变化时同步面具按钮 */
+          if (id === 'mh-name') updateMaskBtnLabel(mhData.name);
         });
-        /* 回车失焦 */
         el.addEventListener('keydown', e => {
           if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
         });
-        /* 阻止点击封面时触发导航 */
         el.addEventListener('click', e => e.stopPropagation());
       }
     });
 
-    /* ── 四个封面图点击上传 ── */
+    /* ── 四个封面图：点击弹出URL/本地选择 ── */
     for (let idx = 0; idx < 4; idx++) {
       bindCoverUpload(idx);
     }
 
-    /* ── 四个作品条目点击导航 ── */
+    /* ── 作品条目导航 ── */
     bindWorkNavigation();
 
-    /* ── 切换面具按钮 ── */
+    /* ── 面具切换按钮 ── */
     const maskBtn = document.getElementById('mh-mask-switch-btn');
     if (maskBtn && !maskBtn._mhBound) {
       maskBtn._mhBound = true;
-      maskBtn.addEventListener('click', openMaskModal);
+      maskBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        openMaskModal();
+      });
     }
 
     /* ── 面具弹窗取消 ── */
@@ -228,7 +315,7 @@
       maskCancel.addEventListener('click', closeMaskModal);
     }
 
-    /* ── 面具弹窗遮罩点击关闭 ── */
+    /* ── 面具弹窗遮罩 ── */
     const maskModal = document.getElementById('mh-mask-modal');
     if (maskModal && !maskModal._mhBound) {
       maskModal._mhBound = true;
@@ -238,7 +325,7 @@
     }
   }
 
-  /* ── 封面图上传绑定 ── */
+  /* ── 封面图上传（URL + 本地） ── */
   function bindCoverUpload(idx) {
     const coverEl = document.getElementById('mhwc-'  + idx);
     const fileEl  = document.getElementById('mhwcf-' + idx);
@@ -246,8 +333,15 @@
     coverEl._mhCoverBound = true;
 
     coverEl.addEventListener('click', e => {
-      e.stopPropagation(); /* 阻止冒泡到作品条目的导航点击 */
-      fileEl.click();
+      e.stopPropagation();
+      openUrlModal('更换封面图片', 'mhwcf-' + idx, (url) => {
+        const imgEl = document.getElementById('mhwci-' + idx);
+        const phEl  = document.getElementById('mhwcp-' + idx);
+        if (imgEl) { imgEl.src = url; imgEl.classList.add('visible'); }
+        if (phEl) phEl.style.display = 'none';
+        mhData.works[idx].cover = url;
+        mhSave(mhData);
+      });
     });
 
     fileEl.addEventListener('change', async function () {
@@ -260,10 +354,7 @@
           : e.target.result;
         const imgEl = document.getElementById('mhwci-' + idx);
         const phEl  = document.getElementById('mhwcp-' + idx);
-        if (imgEl) {
-          imgEl.src = compressed;
-          imgEl.classList.add('visible');
-        }
+        if (imgEl) { imgEl.src = compressed; imgEl.classList.add('visible'); }
         if (phEl) phEl.style.display = 'none';
         mhData.works[idx].cover = compressed;
         mhSave(mhData);
@@ -273,7 +364,7 @@
     });
   }
 
-  /* ── 作品条目导航绑定 ── */
+  /* ── 作品条目导航 ── */
   function bindWorkNavigation() {
     const map = [
       { id: 'mh-work-persona',   action: () => { if (typeof openPersonaLib === 'function') openPersonaLib(); } },
@@ -287,7 +378,6 @@
       if (!el || el._mhNavBound) return;
       el._mhNavBound = true;
       el.addEventListener('click', function (e) {
-        /* 如果点击的是可编辑元素或封面，不触发导航 */
         if (e.target.contentEditable === 'true') return;
         if (e.target.closest('.mh-work-cover')) return;
         action();
@@ -299,21 +389,21 @@
      面具切换弹窗
      ============================================================ */
   function openMaskModal() {
-    const modal    = document.getElementById('mh-mask-modal');
-    const listEl   = document.getElementById('mh-mask-list');
+    const modal  = document.getElementById('mh-mask-modal');
+    const listEl = document.getElementById('mh-mask-list');
     if (!modal || !listEl) return;
 
     const personas = lLoad('personas', []);
     listEl.innerHTML = '';
 
     if (!personas.length) {
-      listEl.innerHTML = '<div style="font-size:13px;color:var(--text-light);text-align:center;padding:16px 0;">人设库为空，请先在人设库中新建人设。</div>';
+      listEl.innerHTML = '<div style="font-size:13px;color:var(--text-light);text-align:center;padding:16px 0;">人设库为空，请先新建人设。</div>';
     } else {
       personas.forEach(p => {
         const item = document.createElement('div');
         item.className = 'mh-mask-item';
 
-        const isActive = (mhData.name === p.name && mhData.setting === (p.setting || ''));
+        const isActive = (mhData.name === p.name);
         if (isActive) item.classList.add('active-mask');
 
         const avatar = document.createElement('img');
@@ -341,7 +431,6 @@
         item.appendChild(avatar);
         item.appendChild(info);
         item.appendChild(check);
-
         item.addEventListener('click', () => applyMask(p));
         listEl.appendChild(item);
       });
@@ -356,64 +445,43 @@
   }
 
   function applyMask(persona) {
-    /* 同步头像 */
     if (persona.avatar) {
       const img = document.getElementById('mh-avatar-img');
       if (img) img.src = persona.avatar;
       mhData.avatar = persona.avatar;
     }
-    /* 同步名字 */
     const nameEl = document.getElementById('mh-name');
     if (nameEl) nameEl.textContent = persona.name || '';
     mhData.name = persona.name || '';
 
-    /* 同步人设描述 */
     const settingEl = document.getElementById('mh-setting-text');
     if (settingEl) settingEl.textContent = persona.setting || '';
     mhData.setting = persona.setting || '';
 
+    updateMaskBtnLabel(mhData.name);
     mhSave(mhData);
     closeMaskModal();
   }
 
   /* ============================================================
-     标签切换时触发初始化（只初始化一次）
+     初始化入口
      ============================================================ */
   let _inited = false;
 
-  /* 暴露给 liao-core.js 的 switchLiaoTab 调用 */
   window.initMyhomePanel = function () {
     if (!_inited) {
       initMyhome();
       _inited = true;
     } else {
-      /* 再次切换时刷新数据（人设库可能有更新） */
       mhData = mhLoad();
       renderMyhome(mhData);
     }
   };
 
-  /* 兼容旧版：如果没有调用 initMyhomePanel，直接在 DOMContentLoaded 后初始化 */
   document.addEventListener('DOMContentLoaded', () => {
-    /* 延迟等待 liao-core.js 加载完 */
     setTimeout(() => {
-      if (!_inited) {
-        initMyhome();
-        _inited = true;
-      }
+      if (!_inited) { initMyhome(); _inited = true; }
     }, 300);
-  });
-
-  /* ============================================================
-     菜单项事件绑定（兼容旧的 my-menu-item 写法，现在已不存在，保留兜底）
-     ============================================================ */
-  document.querySelectorAll('.my-menu-item').forEach(item => {
-    const id = item.id;
-    if (id === 'menu-persona-lib' || id === 'menu-favorites') return;
-    item.addEventListener('click', function () {
-      const title = this.querySelector('.my-menu-title');
-      if (title) alert('「' + title.textContent + '」功能建设中，敬请期待');
-    });
   });
 
 })();

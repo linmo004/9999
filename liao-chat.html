@@ -1,10 +1,17 @@
 <!-- ===================== 聊天界面（独立全屏） ===================== -->
 <div id="liao-chat-view">
   <div class="chat-view-topbar">
-    <button class="chat-view-back" id="chat-view-back">←</button>
+  <button class="chat-view-back" id="chat-view-back">←</button>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
     <div class="chat-view-title" id="chat-view-title">聊天</div>
-    <button class="chat-settings-open-btn" id="chat-settings-open-btn" title="聊天设置">···</button>
+    <div class="chat-view-status-row" id="chat-status-row" title="点击切换在线状态">
+      <div class="chat-status-dot online" id="chat-status-dot"></div>
+      <span class="chat-status-text online" id="chat-status-text">在线</span>
+    </div>
   </div>
+  <button class="chat-settings-open-btn" id="chat-settings-open-btn" title="聊天设置">···</button>
+</div>
+
   <div class="chat-typing-indicator" id="chat-typing">
     <div class="typing-dot"></div>
     <div class="typing-dot"></div>
@@ -81,11 +88,13 @@
     <div class="cs-topbar-title">聊天设置</div>
   </div>
   <div class="cs-tabs">
-    <button class="cs-tab-btn active" data-cstab="cs-tab-role">角色设置</button>
-    <button class="cs-tab-btn" data-cstab="cs-tab-schedule">角色日程</button>
-    <button class="cs-tab-btn" data-cstab="cs-tab-memory">角色记忆</button>
-    <button class="cs-tab-btn" data-cstab="cs-tab-rolephone">角色手机</button>
-  </div>
+  <button class="cs-tab-btn active" data-cstab="cs-tab-role">角色设置</button>
+  <button class="cs-tab-btn" data-cstab="cs-tab-schedule">角色日程</button>
+  <button class="cs-tab-btn" data-cstab="cs-tab-autoreply">自动回复</button>
+  <button class="cs-tab-btn" data-cstab="cs-tab-memory">角色记忆</button>
+  <button class="cs-tab-btn" data-cstab="cs-tab-rolephone">角色手机</button>
+</div>
+
 
   <div class="cs-pages-wrap">
 
@@ -162,7 +171,7 @@
     </label>
   </div>
   <div style="font-size:11px;color:var(--text-light);margin-top:6px;line-height:1.6;">
-    开启后时间戳视觉上隐藏，但仍可点击触发消息操作菜单。时间戳格式在上方聊天美化中设置。
+    开启后时间戳视觉上隐藏，但仍可点击触发消息操作菜单。时间戳格式在下方聊天美化中设置。
   </div>
   <div style="margin-top:12px;">
     <button class="liao-btn-primary" id="cs-timestamp-save-btn" style="width:100%;">保存</button>
@@ -260,13 +269,49 @@
     </div>
 
     <!-- 第二页：角色日程 -->
-    <div class="cs-page" id="cs-tab-schedule-page">
-      <div class="cs-page-scroll cs-coming-soon">
-        <div class="cs-coming-soon-icon">◷</div>
-        <div class="cs-coming-soon-text">角色日程</div>
-        <div class="cs-coming-soon-sub">功能建设中，敬请期待</div>
+<div class="cs-page" id="cs-tab-schedule-page">
+
+  <div class="cs-page-scroll" style="padding:0;">
+
+    <!-- 顶部操作栏 -->
+    <div class="sch-topbar">
+      <div class="sch-day-tabs" id="sch-day-tabs">
+        <button class="sch-day-btn active" data-day="0">周一</button>
+        <button class="sch-day-btn" data-day="1">周二</button>
+        <button class="sch-day-btn" data-day="2">周三</button>
+        <button class="sch-day-btn" data-day="3">周四</button>
+        <button class="sch-day-btn" data-day="4">周五</button>
+        <button class="sch-day-btn" data-day="5">周六</button>
+        <button class="sch-day-btn" data-day="6">周日</button>
+      </div>
+      <div class="sch-topbar-actions">
+        <button class="sch-ai-btn" id="sch-ai-gen-btn">✦ AI生成</button>
+        <button class="sch-add-btn" id="sch-add-slot-btn">＋ 添加</button>
       </div>
     </div>
+
+    <!-- 日程说明 -->
+    <div class="sch-hint" id="sch-hint">
+      点击时间段可编辑，拖动可调整顺序。AI 回复时会根据当前时间判断角色状态。
+    </div>
+
+    <!-- 日程列表 -->
+    <div class="sch-list" id="sch-list"></div>
+
+    <!-- 复制到所有天 -->
+    <div style="padding:12px 14px 4px;">
+      <button class="sch-copy-all-btn" id="sch-copy-all-btn">将今天日程复制到所有天</button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- 自动回复页 -->
+<div class="cs-page" id="cs-tab-autoreply-page">
+  <!-- 内容由 arInitTab() 动态渲染 -->
+</div>
+
 
     <!-- 第三页：角色记忆 -->
     <div class="cs-page" id="cs-tab-memory-page">

@@ -1,8 +1,7 @@
 /* ============================================================
-   liao-myhome.css — 我的主页 INS 风样式
+   liao-myhome.css — 我的主页 油管/INS 风样式
    ============================================================ */
 
-/* ── 面板容器：白色背景，不透明 ── */
 .liao-panel[data-panel="myhome"] {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -15,62 +14,27 @@
    ============================================================ */
 .mh-profile-section {
   position: relative;
-  padding: 18px 16px 16px;
+  padding: 16px 16px 14px;
   background: #fff;
   border-bottom: 1px solid rgba(0,0,0,0.06);
-}
-
-.mh-mask-switch-btn {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  background: rgba(153,200,237,0.12);
-  border: 1.5px solid rgba(153,200,237,0.35);
-  border-radius: 10px;
-  padding: 5px 8px;
-  cursor: pointer;
-  font-family: inherit;
-  -webkit-appearance: none;
-  transition: background .15s;
-  z-index: 2;
-}
-
-.mh-mask-switch-btn:active {
-  background: rgba(153,200,237,0.28);
-}
-
-.mh-mask-switch-icon {
-  font-size: 15px;
-  line-height: 1;
-  color: var(--primary, #99C8ED);
-}
-
-.mh-mask-switch-label {
-  font-size: 9px;
-  color: var(--text-mid, #5a6a80);
-  letter-spacing: .04em;
 }
 
 .mh-profile-row {
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  padding-top: 6px;
-  padding-left: 68px;
 }
 
+/* ── 头像 ── */
 .mh-avatar-wrap {
   flex-shrink: 0;
   cursor: pointer;
+  position: relative;
 }
 
 .mh-avatar-img {
-  width: 72px;
-  height: 72px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   object-fit: cover;
   border: 2.5px solid rgba(153,200,237,0.45);
@@ -83,19 +47,22 @@
   opacity: 0.75;
 }
 
+/* ── 右侧信息区 ── */
 .mh-profile-info {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-top: 4px;
+  gap: 5px;
+  padding-top: 2px;
 }
 
+/* ── 名字行（名字 + 面具切换） ── */
 .mh-name-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .mh-name {
@@ -106,7 +73,7 @@
   border-bottom: 1.5px solid transparent;
   line-height: 1.3;
   min-width: 20px;
-  max-width: 160px;
+  max-width: 140px;
   word-break: break-all;
   transition: border-color .15s;
   cursor: text;
@@ -116,38 +83,35 @@
   border-bottom-color: var(--primary, #99C8ED);
 }
 
-.mh-save-btn {
-  flex-shrink: 0;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--primary, #99C8ED);
-  color: #fff;
+/* ── 面具切换：@名字 样式 ── */
+.mh-mask-switch-btn {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--primary, #99C8ED);
   border: none;
-  font-size: 11px;
-  font-weight: 700;
+  background: none;
+  border-bottom: 1.5px solid var(--primary, #99C8ED);
+  padding: 0 0 1px 0;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-family: inherit;
   -webkit-appearance: none;
-  transition: opacity .15s, transform .1s;
-  line-height: 1;
+  transition: opacity .15s;
+  white-space: nowrap;
+  line-height: 1.4;
 }
 
-.mh-save-btn:active {
-  opacity: 0.72;
-  transform: scale(0.9);
+.mh-mask-switch-btn:active {
+  opacity: 0.6;
 }
 
+/* ── 人设描述 ── */
 .mh-setting-text {
   font-size: 12px;
   color: rgba(0,0,0,0.45);
   line-height: 1.55;
   outline: none;
   cursor: text;
-  height: 54px;
+  height: 48px;
   overflow: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -163,6 +127,27 @@
 .mh-setting-text::-webkit-scrollbar { display: none; }
 .mh-setting-text { scrollbar-width: none; }
 
+/* ── 保存按钮 ── */
+.mh-save-btn {
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--primary, #99C8ED);
+  color: #fff;
+  border: none;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  transition: opacity .15s;
+  margin-top: 2px;
+}
+
+.mh-save-btn:active {
+  opacity: 0.72;
+}
+
 /* ============================================================
    分割线
    ============================================================ */
@@ -173,8 +158,7 @@
 }
 
 /* ============================================================
-   作品列表 — 油管视频布局
-   左：横版封面（16:9）  右：文字信息
+   作品列表
    ============================================================ */
 .mh-works-list {
   display: flex;
@@ -185,8 +169,8 @@
 .mh-work-item {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  padding: 12px 14px;
+  align-items: center;
+  padding: 12px 0 12px 14px;
   border-bottom: 1px solid rgba(0,0,0,0.05);
   cursor: pointer;
   transition: background .13s;
@@ -204,8 +188,8 @@
 /* ── 左侧横版封面（16:9） ── */
 .mh-work-cover {
   flex-shrink: 0;
-  width: 140px;
-  height: 79px;
+  width: 136px;
+  height: 77px;
   border-radius: 8px;
   overflow: hidden;
   background: rgba(153,200,237,0.12);
@@ -236,7 +220,7 @@
 }
 
 .mh-work-cover-placeholder {
-  font-size: 24px;
+  font-size: 22px;
   color: rgba(153,200,237,0.55);
   pointer-events: none;
   user-select: none;
@@ -262,15 +246,14 @@
   opacity: 1;
 }
 
-/* ── 右侧文字信息 ── */
+/* ── 中间文字信息 ── */
 .mh-work-info {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 4px;
-  padding-top: 2px;
 }
 
 .mh-work-title {
@@ -317,6 +300,24 @@
   border-bottom-color: rgba(153,200,237,0.4);
   white-space: normal;
   overflow: visible;
+}
+
+/* ── 最右边进入箭头区域 ── */
+.mh-work-enter {
+  flex-shrink: 0;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: rgba(0,0,0,0.18);
+  align-self: stretch;
+  cursor: pointer;
+  transition: color .13s;
+}
+
+.mh-work-enter:active {
+  color: rgba(0,0,0,0.4);
 }
 
 /* ============================================================
@@ -390,6 +391,70 @@
 }
 
 /* ============================================================
+   URL输入弹窗（头像和封面共用）
+   ============================================================ */
+.mh-url-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 540;
+  background: rgba(26,31,46,0.42);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.mh-url-modal.show {
+  display: flex;
+}
+
+.mh-url-modal-box {
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 20px 18px 40px;
+}
+
+.mh-url-modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark, #2c3448);
+  margin-bottom: 12px;
+}
+
+.mh-url-modal-input {
+  width: 100%;
+  border: 1.5px solid var(--light-blue, #B3D8F4);
+  border-radius: 11px;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: var(--text-dark, #2c3448);
+  background: var(--bg2, #F8F9FA);
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.mh-url-modal-input:focus {
+  border-color: var(--primary, #99C8ED);
+}
+
+.mh-url-modal-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.mh-url-modal-or {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-light, #9aafc4);
+  margin: 6px 0;
+}
+
+/* ============================================================
    暗色模式
    ============================================================ */
 body.dark-mode .liao-panel[data-panel="myhome"] {
@@ -406,7 +471,6 @@ body.dark-mode .mh-divider {
 }
 
 body.dark-mode .mh-name { color: #e8eaf0; }
-
 body.dark-mode .mh-setting-text { color: rgba(255,255,255,0.38); }
 
 body.dark-mode .mh-work-item {
@@ -430,6 +494,10 @@ body.dark-mode .mh-work-cover {
   border-color: rgba(153,200,237,0.12);
 }
 
+body.dark-mode .mh-work-enter {
+  color: rgba(255,255,255,0.15);
+}
+
 body.dark-mode .mh-mask-item {
   background: #22242c;
   border-color: rgba(80,120,160,0.2);
@@ -437,3 +505,9 @@ body.dark-mode .mh-mask-item {
 
 body.dark-mode .mh-mask-name { color: #e8eaf0; }
 body.dark-mode .mh-mask-sub  { color: #5a6a80; }
+
+body.dark-mode .mh-url-modal-box {
+  background: #1a1a1f;
+}
+
+body.dark-mode .mh-url-modal-title { color: #e8eaf0; }
