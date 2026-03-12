@@ -5,14 +5,6 @@
 (function () {
   'use strict';
 
-  /* ── 颜色表（自动分组用） ── */
-  const GROUP_COLORS = [
-    '#99C8ED','#f0cc78','#7ecb7e','#e07a7a','#c8a0e8',
-    '#f0a070','#70c0d0','#a0b8d8','#d0a8c0','#90d0b0',
-    '#e8c070','#b0c8e8'
-  ];
-
-  /* ── 分组规则（以后加新App只需加一行）── */
   const GROUP_RULES = [
     { name: '聊天记录',   color: '#99C8ED', match: k => k === 'liao_chats' },
     { name: '角色设置',   color: '#f0cc78', match: k => k === 'liao_roles' },
@@ -36,11 +28,18 @@
     { name: '其他设置',   color: '#c8c8c8', match: k => k.startsWith('halo9_') },
   ];
 
-  /* ── 工具函数 ── */
   function smFormatSize(bytes) {
     if (bytes < 1024)       return bytes + ' B';
-    if (bytes < 1024*1024)  return (bytes/1024).toFixed(1) + ' KB';
-    return (bytes/(1024*1024)).toFixed(2) + ' MB';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+
+  function smGetLocalStorageMax() {
+    const ua = navigator.userAgent.toLowerCase();
+    if (ua.includes('safari') && !ua.includes('chrome')) {
+      return 5 * 1024 * 1024;
+    }
+    return 10 * 1024 * 1024;
   }
 
   function smGetAllData() {
@@ -52,7 +51,7 @@
       const key = localStorage.key(i);
       if (!key) continue;
       const val  = localStorage.getItem(key) || '';
-      const size = (key.length + val.length) * 2; // UTF-16
+      const size = (key.length + val.length) * 2;
 
       let matched = false;
       for (const rule of GROUP_RULES) {
@@ -68,7 +67,6 @@
         groups['未知'].keys.push({ key, size });
       }
     }
-
     return groups;
   }
 
@@ -82,7 +80,6 @@
     return total;
   }
 
-  /* ── 甜甜圈图 ── */
   function smDrawDonut(canvas, segments) {
     const ctx    = canvas.getContext('2d');
     const cx     = canvas.width  / 2;
@@ -106,7 +103,6 @@
       startAngle += slice;
     });
 
-    // 内圆（挖空甜甜圈）
     ctx.beginPath();
     ctx.arc(cx, cy, inner, 0, Math.PI * 2);
     ctx.fillStyle = getComputedStyle(document.documentElement)
@@ -114,14 +110,13 @@
     ctx.fill();
   }
 
-  /* ── 渲染列表 ── */
   function smRenderList(groups, totalSize) {
     const container = document.getElementById('storage-list');
     if (!container) return;
     container.innerHTML = '';
 
     const sorted = Object.entries(groups)
-      .filter(([,g]) => g.size > 0)
+      .filter(([, g]) => g.size > 0)
       .sort((a, b) => b[1].size - a[1].size);
 
     sorted.forEach(([name, g]) => {
@@ -137,29 +132,24 @@
     });
   }
 
-  /* ── 图片检测 ── */
   function smFindAllImages() {
     const images = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (!key) continue;
       const val = localStorage.getItem(key) || '';
-      // 检测直接是 base64 图片的键
       if (val.startsWith('"data:image/')) {
         try {
           const src = JSON.parse(val);
           images.push({ key, src, type: 'single' });
-        } catch(e) {}
-      }
-      // 检测 JSON 数组或对象里包含 base64 的
-      else if (val.includes('data:image/')) {
+        } catch (e) {}
+      } else if (val.includes('data:image/')) {
         images.push({ key, val, type: 'embedded' });
       }
     }
     return images;
   }
 
-  /* ── 压缩单张图片 ── */
   function smCompressImage(src, maxWidth, quality) {
     return new Promise((resolve) => {
       const img = new Image();
@@ -174,12 +164,11 @@
         ctx.drawImage(img, 0, 0, w, h);
         resolve(canvas.toDataURL('image/jpeg', quality));
       };
-      img.onerror = () => resolve(src); // 失败就原样返回
+      img.onerror = () => resolve(src);
       img.src = src;
     });
   }
 
-  /* ── 压缩质量配置 ── */
   const QUALITY_PRESETS = {
     high:   { maxWidth: 1200, quality: 0.80 },
     medium: { maxWidth: 900,  quality: 0.65 },
@@ -188,7 +177,6 @@
 
   let smSelectedQuality = 'high';
 
-  /* ── 渲染图片统计 ── */
   function smRenderImageStats() {
     const el = document.getElementById('storage-image-stats');
     if (!el) return;
@@ -203,7 +191,6 @@
       '共占用约 <b>' + smFormatSize(totalImgSize) + '</b>';
   }
 
-  /* ── 一键压缩 ── */
   async function smCompressAll() {
     const btn    = document.getElementById('storage-compress-btn');
     const result = document.getElementById('storage-compress-result');
@@ -214,34 +201,28 @@
     btn.textContent = '压缩中…';
     result.textContent = '';
 
-    const images     = smFindAllImages();
-    let savedBytes   = 0;
-    let processedCount = 0;
+    const images   = smFindAllImages();
+    let savedBytes = 0;
 
     for (const imgInfo of images) {
       try {
         if (imgInfo.type === 'single') {
-          const oldVal    = localStorage.getItem(imgInfo.key) || '';
-          const oldSrc    = JSON.parse(oldVal);
-          const newSrc    = await smCompressImage(oldSrc, preset.maxWidth, preset.quality);
-          const newVal    = JSON.stringify(newSrc);
-          savedBytes     += (oldVal.length - newVal.length) * 2;
+          const oldVal = localStorage.getItem(imgInfo.key) || '';
+          const oldSrc = JSON.parse(oldVal);
+          const newSrc = await smCompressImage(oldSrc, preset.maxWidth, preset.quality);
+          const newVal = JSON.stringify(newSrc);
+          savedBytes  += (oldVal.length - newVal.length) * 2;
           localStorage.setItem(imgInfo.key, newVal);
-          processedCount++;
-
         } else if (imgInfo.type === 'embedded') {
-          // 处理嵌套在 JSON 里的图片
           const oldVal = imgInfo.val;
           let parsed;
-          try { parsed = JSON.parse(oldVal); } catch(e) { continue; }
-
+          try { parsed = JSON.parse(oldVal); } catch (e) { continue; }
           const newParsed = await smReplaceImagesInObject(parsed, preset);
           const newVal    = JSON.stringify(newParsed);
           savedBytes     += (oldVal.length - newVal.length) * 2;
           localStorage.setItem(imgInfo.key, newVal);
-          processedCount++;
         }
-      } catch(e) {
+      } catch (e) {
         console.error('压缩失败:', imgInfo.key, e);
       }
     }
@@ -257,11 +238,9 @@
       result.textContent = '图片已是最优状态，无需压缩';
     }
 
-    // 刷新显示
     smRender();
   }
 
-  /* 递归替换对象中的 base64 图片 */
   async function smReplaceImagesInObject(obj, preset) {
     if (typeof obj === 'string' && obj.startsWith('data:image/')) {
       return await smCompressImage(obj, preset.maxWidth, preset.quality);
@@ -285,13 +264,6 @@
     return obj;
   }
 
-  /* ── Token 预估器 ── */
-  function smEstimateTokens(str) {
-    // 粗略估算：中文约1.5字符/token，英文约4字符/token
-    // 混合文本用平均值约2.5字符/token
-    return Math.ceil((str || '').length / 2.5);
-  }
-
   function smRenderTokenRoleList() {
     const container = document.getElementById('storage-token-role-list');
     if (!container) return;
@@ -307,7 +279,9 @@
       const item = document.createElement('div');
       item.className = 'storage-token-role-item';
       item.innerHTML =
-        '<img class="storage-token-role-avatar" src="' + (role.avatar || 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=default') + '" alt="">' +
+        '<img class="storage-token-role-avatar" src="' +
+        (role.avatar || 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=default') +
+        '" alt="">' +
         '<div class="storage-token-role-name">' + (role.nickname || role.realname || '未知') + '</div>' +
         '<div class="storage-token-role-arrow">›</div>';
       item.addEventListener('click', () => smOpenTokenModal(role));
@@ -316,9 +290,9 @@
   }
 
   function smOpenTokenModal(role) {
-    const modal    = document.getElementById('storage-token-modal');
-    const title    = document.getElementById('storage-token-modal-title');
-    const body     = document.getElementById('storage-token-modal-body');
+    const modal = document.getElementById('storage-token-modal');
+    const title = document.getElementById('storage-token-modal-title');
+    const body  = document.getElementById('storage-token-modal-body');
     if (!modal || !title || !body) return;
 
     title.textContent = (role.nickname || role.realname) + ' · Token 分析';
@@ -327,54 +301,32 @@
       ? liaoChats.find(c => c.roleId === role.id)
       : null;
 
-    // 各部分字符数
     const parts = [];
 
-    // 1. 角色设定
-    const settingStr = role.setting || '';
-    parts.push({ name: '角色设定', chars: settingStr.length, color: '#99C8ED' });
+    parts.push({ name: '角色设定',   chars: (role.setting || '').length,                                                      color: '#99C8ED' });
+    parts.push({ name: '用户设定',   chars: ((chat && chat.chatUserSetting) || '').length,                                    color: '#f0cc78' });
+    parts.push({ name: '长期记忆',   chars: ((chat && chat.memory && chat.memory.longTerm)  || []).map(m => m.content || '').join('\n').length, color: '#7ecb7e' });
+    parts.push({ name: '重要记忆',   chars: ((chat && chat.memory && chat.memory.important) || []).map(m => m.content || '').join('\n').length, color: '#c8a0e8' });
 
-    // 2. 用户设定
-    const userSetting = (chat && chat.chatUserSetting) || '';
-    parts.push({ name: '用户设定', chars: userSetting.length, color: '#f0cc78' });
-
-    // 3. 长期记忆
-    const longMem = (chat && chat.memory && chat.memory.longTerm) || [];
-    const longMemStr = longMem.map(m => m.content || '').join('\n');
-    parts.push({ name: '长期记忆', chars: longMemStr.length, color: '#7ecb7e' });
-
-    // 4. 重要记忆
-    const impMem = (chat && chat.memory && chat.memory.important) || [];
-    const impMemStr = impMem.map(m => m.content || '').join('\n');
-    parts.push({ name: '重要记忆', chars: impMemStr.length, color: '#c8a0e8' });
-
-    // 5. 世界书
     let wbStr = '';
     if (typeof getWorldBookInjection === 'function' && chat) {
       wbStr = getWorldBookInjection(chat.messages || [], role.id) || '';
     }
     parts.push({ name: '世界书注入', chars: wbStr.length, color: '#f0a070' });
 
-    // 6. 表情包名称列表
     const emojiList = (typeof liaoEmojis !== 'undefined') ? liaoEmojis : [];
-    const emojiStr  = emojiList.map(e => e.name || '').join('、');
-    parts.push({ name: '表情包名称', chars: emojiStr.length, color: '#e07a7a' });
+    parts.push({ name: '表情包名称', chars: emojiList.map(e => e.name || '').join('、').length, color: '#e07a7a' });
 
-    // 7. 最近聊天记录（按设置条数）
     const maxApiMsgs = (chat && chat.chatSettings && chat.chatSettings.maxApiMsgs) || 0;
-    const msgs = (chat && chat.messages || []).filter(m => !m.hidden && (m.role === 'user' || m.role === 'assistant'));
+    const msgs       = (chat && chat.messages || []).filter(m => !m.hidden && (m.role === 'user' || m.role === 'assistant'));
     const recentMsgs = maxApiMsgs > 0 ? msgs.slice(-maxApiMsgs) : msgs;
-    const msgsStr = recentMsgs.map(m => (m.content || '')).join('\n');
-    parts.push({ name: '聊天记录 (' + recentMsgs.length + '条)', chars: msgsStr.length, color: '#70c0d0' });
+    parts.push({ name: '聊天记录 (' + recentMsgs.length + '条)', chars: recentMsgs.map(m => m.content || '').join('\n').length, color: '#70c0d0' });
 
     const totalChars  = parts.reduce((s, p) => s + p.chars, 0);
-
-const totalTokens = Math.ceil(totalChars / 2.5);
- // 粗算
+    const totalTokens = Math.ceil(totalChars / 2.5);
 
     body.innerHTML = '';
 
-    // 总览卡片
     const overview = document.createElement('div');
     overview.className = 'storage-token-section';
     overview.innerHTML =
@@ -383,7 +335,6 @@ const totalTokens = Math.ceil(totalChars / 2.5);
       '<div class="storage-token-section-sub">约 ' + totalTokens.toLocaleString() + ' tokens（估算）</div>';
     body.appendChild(overview);
 
-    // 各部分详情
     parts.forEach(p => {
       if (p.chars === 0) return;
       const pct  = totalChars > 0 ? (p.chars / totalChars * 100).toFixed(1) : 0;
@@ -398,7 +349,6 @@ const totalTokens = Math.ceil(totalChars / 2.5);
       body.appendChild(item);
     });
 
-    // 建议
     const advice = document.createElement('div');
     advice.className = 'storage-token-advice';
     advice.innerHTML = '<div class="storage-token-advice-title">优化建议</div><div class="storage-token-advice-text">' +
@@ -409,13 +359,12 @@ const totalTokens = Math.ceil(totalChars / 2.5);
   }
 
   function smGenerateAdvice(parts, totalChars) {
-  const lines = []; // 加上这一行
+    const lines       = [];
     const settingPart = parts.find(p => p.name === '角色设定');
-    const memPart      = parts.find(p => p.name === '长期记忆');
-    const wbPart       = parts.find(p => p.name === '世界书注入');
-    const emojiPart    = parts.find(p => p.name === '表情包名称');
-    const msgPart      = parts.find(p => p.name.startsWith('聊天记录'));
-
+    const memPart     = parts.find(p => p.name === '长期记忆');
+    const wbPart      = parts.find(p => p.name === '世界书注入');
+    const emojiPart   = parts.find(p => p.name === '表情包名称');
+    const msgPart     = parts.find(p => p.name.startsWith('聊天记录'));
 
     if (totalChars < 2000) {
       lines.push('✓ 当前发送字符数较少，对 AI 响应速度影响不大。');
@@ -440,7 +389,6 @@ const totalTokens = Math.ceil(totalChars / 2.5);
     if (msgPart && msgPart.chars > 4000) {
       lines.push('• 聊天记录发送量较大，可以在聊天设置中降低「AI 可读取的消息数量」。');
     }
-
     if (lines.length === 1) {
       lines.push('• 各部分配置均衡，继续保持！');
     }
@@ -448,43 +396,33 @@ const totalTokens = Math.ceil(totalChars / 2.5);
     return lines.join('<br>');
   }
 
-  /* ── 主渲染函数 ── */
   function smRender() {
-    const groups    = smGetAllData();
-    const total     = smTotalSize();
-    const totalEl   = document.getElementById('storage-total-text');
-    const warnEl    = document.getElementById('storage-warning');
-    const centerEl  = document.getElementById('storage-center-value');
-    const canvas    = document.getElementById('storage-donut-canvas');
+    const groups   = smGetAllData();
+    const total    = smTotalSize();
+    const LS_MAX   = smGetLocalStorageMax();
+    const totalEl  = document.getElementById('storage-total-text');
+    const warnEl   = document.getElementById('storage-warning');
+    const centerEl = document.getElementById('storage-center-value');
+    const canvas   = document.getElementById('storage-donut-canvas');
 
-    // 总量显示
-    const LS_MAX = 5 * 1024 * 1024; // 5MB
-    const pct    = (total / LS_MAX * 100).toFixed(1);
-    if (totalEl)  totalEl.textContent  = '已使用 ' + smFormatSize(total) + ' / 约 5 MB（' + pct + '%）';
+    const pct = (total / LS_MAX * 100).toFixed(1);
+    if (totalEl)  totalEl.textContent  = '已使用 ' + smFormatSize(total) + ' / 约 ' + smFormatSize(LS_MAX) + '（' + pct + '%）';
     if (centerEl) centerEl.textContent = pct + '%';
 
-    // 警告
     if (warnEl) {
       if (total > LS_MAX * 0.9)      warnEl.textContent = '⚠ 存储空间即将耗尽，建议立即压缩图片或清理数据！';
       else if (total > LS_MAX * 0.7) warnEl.textContent = '存储空间使用超过 70%，建议压缩图片。';
       else                            warnEl.textContent = '';
     }
 
-    // 甜甜圈
     const segments = Object.values(groups).filter(g => g.size > 0);
     if (canvas) smDrawDonut(canvas, segments);
 
-    // 列表
     smRenderList(groups, total);
-
-    // 图片统计
     smRenderImageStats();
-
-    // Token 角色列表
     smRenderTokenRoleList();
   }
 
-  /* ── 页面入口 ── */
   function smOpen() {
     const view = document.getElementById('storage-manager-view');
     if (view) {
@@ -498,7 +436,6 @@ const totalTokens = Math.ceil(totalChars / 2.5);
     if (view) view.style.display = 'none';
   }
 
-  /* ── 事件绑定 ── */
   const backBtn    = document.getElementById('storage-back-btn');
   const refreshBtn = document.getElementById('storage-refresh-btn');
   const compBtn    = document.getElementById('storage-compress-btn');
@@ -511,20 +448,18 @@ const totalTokens = Math.ceil(totalChars / 2.5);
   if (tokenClose) tokenClose.addEventListener('click', () => {
     if (tokenModal) tokenModal.style.display = 'none';
   });
-  if (tokenModal) tokenModal.addEventListener('click', function(e) {
+  if (tokenModal) tokenModal.addEventListener('click', function (e) {
     if (e.target === this) this.style.display = 'none';
   });
 
-  // 压缩质量按钮
   document.querySelectorAll('.storage-quality-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
       document.querySelectorAll('.storage-quality-btn').forEach(b => b.classList.remove('active'));
       this.classList.add('active');
       smSelectedQuality = this.dataset.quality;
     });
   });
 
-  // 暴露给设置页面调用
   window.StorageManager = { open: smOpen, close: smClose };
 
 })();
