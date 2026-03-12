@@ -368,7 +368,9 @@
     parts.push({ name: '聊天记录 (' + recentMsgs.length + '条)', chars: msgsStr.length, color: '#70c0d0' });
 
     const totalChars  = parts.reduce((s, p) => s + p.chars, 0);
-    const totalTokens = smEstimateTokens(Array(totalChars).join('x')); // 粗算
+
+const totalTokens = Math.ceil(totalChars / 2.5);
+ // 粗算
 
     body.innerHTML = '';
 
@@ -407,11 +409,13 @@
   }
 
   function smGenerateAdvice(parts, totalChars) {
-    const settingPart  = parts.find(p => p.name === '角色设定');
+  const lines = []; // 加上这一行
+    const settingPart = parts.find(p => p.name === '角色设定');
     const memPart      = parts.find(p => p.name === '长期记忆');
     const wbPart       = parts.find(p => p.name === '世界书注入');
     const emojiPart    = parts.find(p => p.name === '表情包名称');
     const msgPart      = parts.find(p => p.name.startsWith('聊天记录'));
+
 
     if (totalChars < 2000) {
       lines.push('✓ 当前发送字符数较少，对 AI 响应速度影响不大。');
