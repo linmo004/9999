@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="chess-app.css">
 <link rel="stylesheet" href="batoru.css">
 <link rel="stylesheet" href="liao-cardbook.css">
-
+<link rel="stylesheet" href="storage-manager.css">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
@@ -124,6 +124,7 @@
     await loadScript('page3.js');
     await loadScript('batoru.js');
     await loadScript('liao-cardbook.js');
+    await loadScript('storage-manager.js');
     if (typeof lucide !== 'undefined') lucide.createIcons();
     if (typeof window.initSettings === 'function') window.initSettings();
   }

@@ -450,6 +450,11 @@
     }
   });
 
+document.getElementById('settings-storage-entry').addEventListener('click', function() {
+  if (window.StorageManager) window.StorageManager.open();
+});
+
+
   /* ---- 将 refreshAllKeysList 和 setPinAvatarTab 挂到全局，供 settings-2.js 中导航回调使用 ---- */
   window.refreshAllKeysList = refreshAllKeysList;
   window.setPinAvatarTab    = setPinAvatarTab;
