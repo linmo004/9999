@@ -1897,6 +1897,7 @@ document.querySelectorAll('.mp-view-btn').forEach(btn => {
     lSave('mpViewMode', view);
     if (settingsPanel) settingsPanel.style.display = 'none';
   });
+});  /* ← 这里是关键，补上这个 }); */
 
 /* ── 主题色切换 ── */
 document.querySelectorAll('.mp-theme-swatch').forEach(btn => {
@@ -1905,22 +1906,22 @@ document.querySelectorAll('.mp-theme-swatch').forEach(btn => {
     this.classList.add('active');
     const theme = this.dataset.theme;
     const app   = document.getElementById('music-app');
-    /* 移除所有主题类 */
     app.classList.remove('mp-theme-rosegold','mp-theme-dark','mp-theme-green','mp-theme-purple','mp-theme-gold');
     if (theme !== 'blue') {
       app.classList.add('mp-theme-' + theme);
     }
     lSave('mpTheme', theme);
+    if (settingsPanel) settingsPanel.style.display = 'none';
   });
 });
 
 /* ── 恢复保存的视图和主题 ── */
 const savedView  = lLoad('mpViewMode', 'outline');
 const savedTheme = lLoad('mpTheme', 'blue');
-const app = document.getElementById('music-app');
+const appEl      = document.getElementById('music-app');
 
 if (savedView === 'fullscreen') {
-  app.classList.add('mp-fullscreen');
+  appEl.classList.add('mp-fullscreen');
   const fullBtn = document.getElementById('mp-view-fullscreen');
   const outBtn  = document.getElementById('mp-view-outline');
   if (fullBtn) fullBtn.classList.add('active');
@@ -1928,11 +1929,12 @@ if (savedView === 'fullscreen') {
 }
 
 if (savedTheme && savedTheme !== 'blue') {
-  app.classList.add('mp-theme-' + savedTheme);
+  appEl.classList.add('mp-theme-' + savedTheme);
   document.querySelectorAll('.mp-theme-swatch').forEach(b => {
     b.classList.toggle('active', b.dataset.theme === savedTheme);
   });
 }
+
 
     /* ── 进度条 ── */
     initProgressBar();
