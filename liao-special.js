@@ -19,6 +19,14 @@ function renderSpecialContent(content, msg) {
   if (!content) return { html: '', isEmojiOnly: false, isTransferOnly: false };
 
   const raw = content.trim();
+  
+  /* music 类型消息 */
+if (msg && msg.type === 'music') {
+  if (typeof window.mpRenderMusicCard === 'function') {
+    const card = window.mpRenderMusicCard(raw, msg);
+    if (card) return { html: card.outerHTML, isEmojiOnly: false, isTransferOnly: false };
+  }
+}
 
   const isEmojiOnly    = /^\[\([^)]+\)发送了一个表情包：[^\]]+\]$/.test(raw);
   const isTransferOnly = /^\[\([^)]+\)发起了一笔转账：[^\]]+\]$/.test(raw);

@@ -962,3 +962,15 @@ document.addEventListener('click', function (e) {
     }
   }
 });
+
+/* ============================================================
+   音乐 App 入口
+   ============================================================ */
+document.addEventListener('click', function(e) {
+  const appItem = e.target.closest('.app-item[data-app="0"]');
+  if (appItem) {
+    if (typeof window.MusicApp !== 'undefined') {
+      window.MusicApp.open();
+    }
+  }
+});

@@ -1,0 +1,1729 @@
+/* ============================================================
+   music.css — 音乐 App 样式
+   复古 MP3 外壳风格，蓝银配色
+   ============================================================ */
+
+/* ── 全屏遮罩 ── */
+#music-app {
+  font-family: 'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================
+   外壳主体
+   ============================================================ */
+.mp-shell {
+  position: relative;
+  width: 300px;
+  background: linear-gradient(170deg,
+    #d8e4f0 0%,
+    #b8cfe8 20%,
+    #9ab8d8 40%,
+    #7a9ec0 60%,
+    #8aaed0 80%,
+    #c0d4e8 100%
+  );
+  border-radius: 28px 28px 32px 32px;
+  box-shadow:
+    0 0 0 2px #a0b8d0,
+    0 0 0 4px #6888a8,
+    0 4px 8px rgba(0,0,0,0.25),
+    0 12px 40px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    inset 0 -2px 4px rgba(0,0,0,0.15);
+  padding: 10px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-height: 96vh;
+  overflow: hidden;
+}
+
+/* ── 顶部装饰条 ── */
+.mp-shell-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.mp-shell-top-bar {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #5888b8, #8ab8e0, #5888b8);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.mp-speaker-dots {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.mp-speaker-dots span {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(40,70,110,0.4);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* ── 品牌标志 ── */
+.mp-brand {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: rgba(40,70,110,0.55);
+  text-transform: uppercase;
+  margin: -4px 0 0;
+}
+
+/* ── 底部装饰 ── */
+.mp-shell-bottom {
+  width: 100%;
+  padding: 0 8px;
+}
+
+.mp-port-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+}
+
+.mp-port {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #4a6888, #2a4868);
+  box-shadow:
+    inset 0 1px 2px rgba(0,0,0,0.4),
+    0 1px 0 rgba(255,255,255,0.2);
+}
+
+.mp-port-main {
+  width: 20px;
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+   屏幕外框（凹陷质感）
+   ============================================================ */
+.mp-screen-bezel {
+  width: 100%;
+  background: linear-gradient(145deg, #1a2a3a, #0a1520);
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow:
+    inset 0 2px 6px rgba(0,0,0,0.8),
+    inset 0 0 0 1px rgba(0,0,0,0.5),
+    0 1px 0 rgba(255,255,255,0.2);
+}
+
+.mp-screen {
+  width: 100%;
+  height: 260px;
+  background: linear-gradient(180deg, #050d18 0%, #081525 100%);
+  border-radius: 9px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* ── 屏幕页切换 ── */
+.mp-page {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.mp-page.active {
+  display: flex;
+}
+
+/* ── 屏幕顶栏 ── */
+.mp-screen-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px 4px;
+  background: rgba(10,30,60,0.6);
+  border-bottom: 1px solid rgba(79,140,220,0.15);
+  flex-shrink: 0;
+}
+
+.mp-screen-btn {
+  background: none;
+  border: none;
+  color: rgba(120,170,240,0.8);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-family: inherit;
+  width: 28px;
+  text-align: center;
+}
+
+.mp-now-playing-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #a8d0f8;
+  letter-spacing: 0.1em;
+  text-align: center;
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+}
+
+/* ── Tab 行 ── */
+.mp-screen-tab-row {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+  justify-content: center;
+}
+
+.mp-tab-btn {
+  background: none;
+  border: none;
+  color: rgba(120,170,240,0.5);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  border-radius: 6px;
+  transition: all .15s;
+}
+
+.mp-tab-btn.active {
+  background: rgba(79,140,220,0.2);
+  color: #a8d8ff;
+}
+
+.mp-tab-page {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.mp-tab-page.active {
+  display: flex;
+}
+
+/* ============================================================
+   主播放页
+   ============================================================ */
+
+/* ── 封面 ── */
+.mp-cover-wrap {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  margin: 6px auto 4px;
+  flex-shrink: 0;
+}
+
+.mp-cover-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(
+    rgba(79,140,220,0.6) 0deg,
+    rgba(120,180,255,0.3) 90deg,
+    rgba(40,80,160,0.6) 180deg,
+    rgba(100,160,240,0.3) 270deg,
+    rgba(79,140,220,0.6) 360deg
+  );
+  animation: mp-ring-spin 8s linear infinite;
+  box-shadow: 0 0 12px rgba(79,140,220,0.3);
+}
+
+@keyframes mp-ring-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.mp-cover-ring.paused {
+  animation-play-state: paused;
+}
+
+.mp-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.mp-cover-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: rgba(79,140,220,0.4);
+  border-radius: 50%;
+  background: rgba(10,25,50,0.8);
+  z-index: 1;
+}
+
+/* ── 歌曲信息 ── */
+.mp-artist {
+  font-size: 11px;
+  font-weight: 700;
+  color: #a8d0f8;
+  text-align: center;
+  padding: 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+.mp-album {
+  font-size: 9px;
+  color: rgba(120,170,240,0.5);
+  text-align: center;
+  padding: 0 10px;
+  flex-shrink: 0;
+}
+
+/* ── 进度条 ── */
+.mp-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px 2px;
+  flex-shrink: 0;
+}
+
+.mp-time {
+  font-size: 8px;
+  color: rgba(120,170,240,0.5);
+  white-space: nowrap;
+  width: 26px;
+  text-align: center;
+}
+
+.mp-progress-bar {
+  flex: 1;
+  height: 3px;
+  background: rgba(79,140,220,0.15);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+}
+
+.mp-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #3a78c0, #78b8f8);
+  width: 0%;
+  transition: width 0.5s linear;
+  pointer-events: none;
+}
+
+.mp-progress-thumb {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #a8d0f8;
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 4px rgba(79,140,220,0.6);
+  pointer-events: none;
+}
+
+/* ── 歌词 ── */
+.mp-lyrics-scroll {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(transparent, rgba(0,0,0,0.8) 20%, rgba(0,0,0,0.8) 80%, transparent);
+  -webkit-mask-image: linear-gradient(transparent, rgba(0,0,0,0.8) 20%, rgba(0,0,0,0.8) 80%, transparent);
+}
+
+.mp-lyrics-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  transition: transform 0.4s ease;
+}
+
+.mp-lyric-line {
+  font-size: 9.5px;
+  color: rgba(120,170,240,0.4);
+  text-align: center;
+  line-height: 1.5;
+  transition: all 0.3s;
+  white-space: pre-wrap;
+}
+
+.mp-lyric-line.active {
+  color: #a8d8ff;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(79,140,220,0.6);
+}
+
+/* ============================================================
+   歌库页
+   ============================================================ */
+.mp-lib-actions {
+  display: flex;
+  gap: 4px;
+  padding: 6px 6px 4px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.mp-lib-btn {
+  background: rgba(79,140,220,0.15);
+  border: 1px solid rgba(79,140,220,0.3);
+  border-radius: 6px;
+  color: #a8d0f8;
+  font-size: 9px;
+  font-weight: 600;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+  white-space: nowrap;
+}
+
+.mp-lib-btn:active {
+  background: rgba(79,140,220,0.3);
+}
+
+/* ── 歌曲列表 ── */
+.mp-song-list {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.mp-song-list::-webkit-scrollbar { display: none; }
+
+.mp-song-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(79,140,220,0.06);
+  transition: background .15s;
+}
+
+.mp-song-item:active,
+.mp-song-item.playing {
+  background: rgba(79,140,220,0.12);
+}
+
+.mp-song-item-cover {
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: rgba(20,50,90,0.6);
+  flex-shrink: 0;
+}
+
+.mp-song-item-cover-ph {
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  background: rgba(20,50,90,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: rgba(79,140,220,0.4);
+  flex-shrink: 0;
+}
+
+.mp-song-item-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.mp-song-item-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: #a8d0f8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mp-song-item-artist {
+  font-size: 8.5px;
+  color: rgba(120,170,240,0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mp-song-item-actions {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.mp-song-action-btn {
+  background: none;
+  border: none;
+  color: rgba(120,170,240,0.5);
+  font-size: 10px;
+  cursor: pointer;
+  padding: 2px 3px;
+  font-family: inherit;
+  border-radius: 4px;
+  transition: all .15s;
+}
+
+.mp-song-action-btn:active {
+  background: rgba(79,140,220,0.2);
+  color: #a8d0f8;
+}
+
+/* ── 歌单列表 ── */
+.mp-playlist-list {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mp-playlist-list::-webkit-scrollbar { display: none; }
+
+.mp-playlist-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: rgba(20,50,90,0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(79,140,220,0.1);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.mp-playlist-item:active {
+  background: rgba(79,140,220,0.15);
+}
+
+.mp-playlist-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.mp-playlist-name {
+  flex: 1;
+  font-size: 10px;
+  font-weight: 600;
+  color: #a8d0f8;
+}
+
+.mp-playlist-count {
+  font-size: 8.5px;
+  color: rgba(120,170,240,0.45);
+}
+
+.mp-playlist-del-btn {
+  background: none;
+  border: none;
+  color: rgba(200,80,80,0.5);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-family: inherit;
+}
+
+/* ── 角色歌单 ── */
+.mp-role-playlist-list {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mp-role-playlist-list::-webkit-scrollbar { display: none; }
+
+.mp-role-playlist-item {
+  background: rgba(20,50,90,0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(79,140,220,0.1);
+  overflow: hidden;
+}
+
+.mp-role-playlist-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.mp-role-playlist-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.mp-role-playlist-name {
+  flex: 1;
+  font-size: 10px;
+  font-weight: 600;
+  color: #a8d0f8;
+}
+
+.mp-role-playlist-songs {
+  padding: 0 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mp-role-playlist-song-item {
+  font-size: 9px;
+  color: rgba(120,170,240,0.5);
+  padding: 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── 播放队列 ── */
+.mp-queue-list {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 4px 0;
+}
+
+.mp-queue-list::-webkit-scrollbar { display: none; }
+
+.mp-queue-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(79,140,220,0.06);
+  transition: background .15s;
+}
+
+.mp-queue-item.playing {
+  background: rgba(79,140,220,0.12);
+}
+
+.mp-queue-item-num {
+  font-size: 9px;
+  color: rgba(120,170,240,0.3);
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.mp-queue-item-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.mp-queue-item-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: #a8d0f8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mp-queue-item-artist {
+  font-size: 8.5px;
+  color: rgba(120,170,240,0.45);
+}
+
+/* ============================================================
+   电台页
+   ============================================================ */
+.mp-radio-tabs {
+  display: flex;
+  gap: 0;
+  padding: 4px 6px 0;
+  flex-shrink: 0;
+}
+
+.mp-radio-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(120,170,240,0.4);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 0 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+}
+
+.mp-radio-tab.active {
+  color: #a8d8ff;
+  border-bottom-color: rgba(79,140,220,0.6);
+}
+
+.mp-radio-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.mp-radio-panel {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 6px 8px;
+  gap: 6px;
+}
+
+.mp-radio-panel::-webkit-scrollbar { display: none; }
+
+.mp-radio-panel.active {
+  display: flex;
+}
+
+.mp-radio-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  background: rgba(20,50,90,0.4);
+  border-radius: 10px;
+  border: 1px solid rgba(79,140,220,0.1);
+}
+
+.mp-radio-icon {
+  font-size: 22px;
+}
+
+.mp-radio-desc {
+  font-size: 9px;
+  color: rgba(120,170,240,0.55);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.mp-radio-start-btn {
+  background: linear-gradient(135deg, rgba(79,140,220,0.3), rgba(40,80,160,0.4));
+  border: 1.5px solid rgba(79,140,220,0.5);
+  border-radius: 10px;
+  color: #a8d8ff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 0;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+  width: 100%;
+}
+
+.mp-radio-start-btn:active {
+  background: rgba(79,140,220,0.4);
+}
+
+.mp-radio-start-btn.on-air {
+  background: linear-gradient(135deg, rgba(220,60,60,0.25), rgba(160,30,30,0.35));
+  border-color: rgba(220,60,60,0.5);
+  color: #ffb0b0;
+}
+
+.mp-radio-comments {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mp-radio-comments::-webkit-scrollbar { display: none; }
+
+.mp-radio-comment-item {
+  display: flex;
+  gap: 5px;
+  align-items: flex-start;
+}
+
+.mp-radio-comment-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.mp-radio-comment-body {
+  flex: 1;
+}
+
+.mp-radio-comment-name {
+  font-size: 8px;
+  color: rgba(120,170,240,0.5);
+  margin-bottom: 1px;
+}
+
+.mp-radio-comment-text {
+  font-size: 9.5px;
+  color: #a8d0f8;
+  line-height: 1.4;
+}
+
+.mp-role-radio-select {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.mp-select {
+  flex: 1;
+  background: rgba(10,25,50,0.8);
+  border: 1px solid rgba(79,140,220,0.3);
+  border-radius: 8px;
+  color: #a8d0f8;
+  font-size: 10px;
+  padding: 5px 8px;
+  font-family: inherit;
+  outline: none;
+}
+
+.mp-radio-now {
+  background: rgba(20,50,90,0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(79,140,220,0.1);
+  padding: 6px 8px;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   聊天室页
+   ============================================================ */
+.mp-chatroom-now {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  background: rgba(10,30,60,0.5);
+  border-bottom: 1px solid rgba(79,140,220,0.1);
+  flex-shrink: 0;
+}
+
+.mp-chatroom-cover-wrap {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.mp-chatroom-cover {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.mp-chatroom-cover-ph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  background: rgba(20,50,90,0.7);
+  border-radius: 4px;
+  color: rgba(79,140,220,0.4);
+}
+
+.mp-chatroom-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.mp-chatroom-song {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #a8d0f8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mp-chatroom-artist {
+  font-size: 8px;
+  color: rgba(120,170,240,0.45);
+}
+
+.mp-chatroom-change-btn {
+  background: rgba(79,140,220,0.15);
+  border: 1px solid rgba(79,140,220,0.3);
+  border-radius: 6px;
+  color: #a8d0f8;
+  font-size: 9px;
+  font-weight: 600;
+  padding: 3px 7px;
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.mp-chatroom-msgs {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mp-chatroom-msgs::-webkit-scrollbar { display: none; }
+
+.mp-chatroom-msg-item {
+  display: flex;
+  gap: 5px;
+  align-items: flex-start;
+}
+
+.mp-chatroom-msg-item.user-msg {
+  flex-direction: row-reverse;
+}
+
+.mp-chatroom-msg-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.mp-chatroom-msg-body {
+  max-width: 70%;
+}
+
+.mp-chatroom-msg-name {
+  font-size: 7.5px;
+  color: rgba(120,170,240,0.45);
+  margin-bottom: 1px;
+}
+
+.mp-chatroom-msg-text {
+  font-size: 9.5px;
+  color: #a8d0f8;
+  background: rgba(20,50,90,0.5);
+  border-radius: 6px;
+  padding: 4px 7px;
+  line-height: 1.4;
+  display: inline-block;
+}
+
+.mp-chatroom-msg-item.user-msg .mp-chatroom-msg-text {
+  background: rgba(79,140,220,0.25);
+}
+
+.mp-chatroom-input-row {
+  display: flex;
+  gap: 4px;
+  padding: 4px 6px 5px;
+  border-top: 1px solid rgba(79,140,220,0.1);
+  flex-shrink: 0;
+}
+
+.mp-chatroom-input {
+  flex: 1;
+  background: rgba(10,25,50,0.7);
+  border: 1px solid rgba(79,140,220,0.25);
+  border-radius: 8px;
+  color: #a8d0f8;
+  font-size: 9.5px;
+  padding: 4px 8px;
+  font-family: inherit;
+  outline: none;
+}
+
+.mp-chatroom-send-btn {
+  background: rgba(79,140,220,0.25);
+  border: 1px solid rgba(79,140,220,0.4);
+  border-radius: 8px;
+  color: #a8d8ff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ============================================================
+   按键区
+   ============================================================ */
+.mp-keypad {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── 功能键行 ── */
+.mp-keyrow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.mp-key {
+  background: linear-gradient(145deg, #c8daf0, #a0b8d0);
+  border: none;
+  border-radius: 8px;
+  box-shadow:
+    0 3px 0 #6888a8,
+    0 4px 6px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.7);
+  color: #2a4868;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .1s;
+}
+
+.mp-key:active {
+  box-shadow:
+    0 1px 0 #6888a8,
+    0 2px 3px rgba(0,0,0,0.2),
+    inset 0 2px 4px rgba(0,0,0,0.15);
+  transform: translateY(2px);
+}
+
+.mp-key-sm {
+  width: 44px;
+  height: 28px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── 圆形方向盘 ── */
+.mp-dpad-wrap {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
+}
+
+.mp-dpad {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+/* 外环装饰 */
+.mp-dpad-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.mp-dpad-ring-outer {
+  inset: 0;
+  background: conic-gradient(
+    #8ab0d0 0deg, #c8daf0 30deg, #8ab0d0 60deg,
+    #c8daf0 90deg, #8ab0d0 120deg, #c8daf0 150deg,
+    #8ab0d0 180deg, #c8daf0 210deg, #8ab0d0 240deg,
+    #c8daf0 270deg, #8ab0d0 300deg, #c8daf0 330deg,
+    #8ab0d0 360deg
+  );
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.5),
+    0 0 0 2px #6888a8;
+}
+
+.mp-dpad-ring-inner {
+  inset: 14px;
+  background: linear-gradient(145deg, #b0c8e0, #8aaac8);
+  box-shadow:
+    inset 0 3px 8px rgba(0,0,0,0.25),
+    0 1px 0 rgba(255,255,255,0.3);
+}
+
+/* 方向按钮 */
+.mp-dpad-btn {
+  position: absolute;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all .1s;
+}
+
+.mp-dpad-btn span {
+  font-size: 13px;
+  color: #2a4868;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.mp-dpad-up {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  padding-bottom: 6px;
+}
+
+.mp-dpad-down {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  padding-top: 6px;
+}
+
+.mp-dpad-left {
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  padding-right: 6px;
+}
+
+.mp-dpad-right {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  padding-left: 6px;
+}
+
+.mp-dpad-btn:active span {
+  opacity: 0.5;
+  transform: scale(0.88);
+}
+
+/* 中心播放按钮 */
+.mp-dpad-center {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 40% 35%,
+    #d8eaff, #7aaad0 50%, #4a80b8
+  );
+  border: none;
+  box-shadow:
+    0 3px 8px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    0 0 0 2px #5888b8,
+    0 0 0 4px rgba(79,140,220,0.2);
+  cursor: pointer;
+  z-index: 3;
+  transition: all .1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mp-dpad-center:active {
+  box-shadow:
+    0 1px 4px rgba(0,0,0,0.3),
+    inset 0 2px 6px rgba(0,0,0,0.2),
+    0 0 0 2px #5888b8;
+  transform: translate(-50%, -50%) scale(0.95);
+}
+
+.mp-dpad-center span {
+  font-size: 16px;
+  color: #1a3a60;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+  pointer-events: none;
+}
+
+/* ============================================================
+   悬浮迷你播放条
+   ============================================================ */
+.mp-mini-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  background: rgba(8,20,45,0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(79,140,220,0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+}
+
+.mp-mini-cover {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: rgba(20,50,90,0.6);
+  flex-shrink: 0;
+}
+
+.mp-mini-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.mp-mini-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #a8d0f8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mp-mini-artist {
+  font-size: 9px;
+  color: rgba(120,170,240,0.5);
+}
+
+.mp-mini-play-btn,
+.mp-mini-open-btn {
+  background: rgba(79,140,220,0.2);
+  border: 1px solid rgba(79,140,220,0.35);
+  border-radius: 8px;
+  color: #a8d8ff;
+  font-size: 13px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+
+.mp-mini-play-btn:active,
+.mp-mini-open-btn:active {
+  background: rgba(79,140,220,0.35);
+}
+
+/* ============================================================
+   弹窗
+   ============================================================ */
+.mp-modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(5,15,35,0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.mp-modal-box {
+  background: linear-gradient(160deg, #0d1e38, #081525);
+  border: 1px solid rgba(79,140,220,0.25);
+  border-radius: 18px;
+  width: 100%;
+  max-width: 320px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 18px 16px 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  scrollbar-width: none;
+}
+
+.mp-modal-box::-webkit-scrollbar { display: none; }
+
+.mp-modal-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #a8d0f8;
+  text-align: center;
+  margin-bottom: 14px;
+  letter-spacing: 0.08em;
+}
+
+.mp-modal-label {
+  display: block;
+  font-size: 10px;
+  color: rgba(120,170,240,0.55);
+  margin-bottom: 4px;
+  margin-top: 10px;
+  letter-spacing: 0.05em;
+}
+
+.mp-modal-input {
+  width: 100%;
+  background: rgba(10,25,50,0.7);
+  border: 1px solid rgba(79,140,220,0.25);
+  border-radius: 10px;
+  color: #a8d0f8;
+  font-size: 12px;
+  padding: 8px 10px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  margin-bottom: 2px;
+  transition: border-color .15s;
+}
+
+.mp-modal-input:focus {
+  border-color: rgba(79,140,220,0.55);
+}
+
+.mp-modal-textarea {
+  width: 100%;
+  background: rgba(10,25,50,0.7);
+  border: 1px solid rgba(79,140,220,0.25);
+  border-radius: 10px;
+  color: #a8d0f8;
+  font-size: 11px;
+  padding: 8px 10px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  resize: vertical;
+  transition: border-color .15s;
+  line-height: 1.6;
+}
+
+.mp-modal-textarea:focus {
+  border-color: rgba(79,140,220,0.55);
+}
+
+.mp-modal-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.mp-modal-btn-primary {
+  flex: 1;
+  background: linear-gradient(135deg, rgba(79,140,220,0.35), rgba(40,80,160,0.45));
+  border: 1.5px solid rgba(79,140,220,0.5);
+  border-radius: 10px;
+  color: #c8e8ff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 0;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+}
+
+.mp-modal-btn-primary:active {
+  background: rgba(79,140,220,0.5);
+}
+
+.mp-modal-btn-ghost {
+  flex: 1;
+  background: rgba(79,140,220,0.08);
+  border: 1px solid rgba(79,140,220,0.2);
+  border-radius: 10px;
+  color: rgba(120,170,240,0.7);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 0;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+}
+
+.mp-modal-btn-ghost:active {
+  background: rgba(79,140,220,0.18);
+}
+
+/* ── 歌单选择列表 ── */
+.mp-playlist-pick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  margin-top: 4px;
+}
+
+.mp-playlist-pick-list::-webkit-scrollbar { display: none; }
+
+.mp-playlist-pick-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  background: rgba(20,50,90,0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(79,140,220,0.1);
+  cursor: pointer;
+  font-size: 11px;
+  color: #a8d0f8;
+  transition: all .15s;
+}
+
+.mp-playlist-pick-item:active {
+  background: rgba(79,140,220,0.2);
+}
+
+/* ── 角色选择列表 ── */
+.mp-role-pick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 160px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  margin-top: 4px;
+}
+
+.mp-role-pick-list::-webkit-scrollbar { display: none; }
+
+.mp-role-pick-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(20,50,90,0.4);
+  border-radius: 8px;
+  border: 1.5px solid rgba(79,140,220,0.1);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.mp-role-pick-item.selected {
+  border-color: rgba(79,140,220,0.5);
+  background: rgba(79,140,220,0.15);
+}
+
+.mp-role-pick-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.mp-role-pick-name {
+  font-size: 11px;
+  color: #a8d0f8;
+  flex: 1;
+}
+
+/* ── 搜索结果 ── */
+.mp-search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 220px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  margin-top: 8px;
+}
+
+.mp-search-results::-webkit-scrollbar { display: none; }
+
+.mp-search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: rgba(20,50,90,0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(79,140,220,0.1);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.mp-search-result-item:active {
+  background: rgba(79,140,220,0.18);
+}
+
+.mp-search-result-cover {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: rgba(20,50,90,0.6);
+  flex-shrink: 0;
+}
+
+.mp-search-result-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.mp-search-result-title {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #a8d0f8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mp-search-result-artist {
+  font-size: 9px;
+  color: rgba(120,170,240,0.5);
+}
+
+.mp-search-result-apply {
+  font-size: 9px;
+  color: rgba(79,140,220,0.7);
+  background: rgba(79,140,220,0.12);
+  border: 1px solid rgba(79,140,220,0.25);
+  border-radius: 5px;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+/* ── 分享卡片预览 ── */
+.mp-share-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(20,50,90,0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(79,140,220,0.2);
+  margin-bottom: 8px;
+}
+
+.mp-share-cover {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: rgba(20,50,90,0.6);
+  flex-shrink: 0;
+}
+
+.mp-share-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.mp-share-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #a8d0f8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mp-share-artist {
+  font-size: 10px;
+  color: rgba(120,170,240,0.5);
+}
+
+/* ── 模式按钮 ── */
+.mp-mode-btn {
+  flex: 1;
+  background: rgba(79,140,220,0.08);
+  border: 1.5px solid rgba(79,140,220,0.2);
+  border-radius: 8px;
+  color: rgba(120,170,240,0.5);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 7px 0;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+}
+
+.mp-mode-btn.active {
+  background: rgba(79,140,220,0.22);
+  border-color: rgba(79,140,220,0.5);
+  color: #a8d8ff;
+}
+
+/* ============================================================
+   了了聊天界面 音乐卡片气泡
+   ============================================================ */
+.music-card-bubble {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: linear-gradient(135deg, rgba(10,25,55,0.9), rgba(20,45,90,0.85));
+  border-radius: 12px;
+  border: 1px solid rgba(79,140,220,0.25);
+  min-width: 160px;
+  max-width: 220px;
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.music-card-bubble:active {
+  background: rgba(79,140,220,0.15);
+}
+
+.music-card-cover {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: rgba(20,50,90,0.6);
+  flex-shrink: 0;
+}
+
+.music-card-cover-ph {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: rgba(20,50,90,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: rgba(79,140,220,0.4);
+  flex-shrink: 0;
+}
+
+.music-card-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.music-card-label {
+  font-size: 8px;
+  color: rgba(79,140,220,0.6);
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
+}
+
+.music-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #a8d0f8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.music-card-artist {
+  font-size: 9px;
+  color: rgba(120,170,240,0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.music-card-play-icon {
+  font-size: 16px;
+  color: rgba(79,140,220,0.6);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   响应式：小屏幕适配
+   ============================================================ */
+@media (max-height: 700px) {
+  .mp-screen {
+    height: 220px;
+  }
+
+  .mp-cover-wrap {
+    width: 70px;
+    height: 70px;
+    margin: 4px auto 2px;
+  }
+
+  .mp-dpad-wrap {
+    width: 130px;
+    height: 130px;
+  }
+
+  .mp-dpad-center {
+    width: 44px;
+    height: 44px;
+  }
+
+  .mp-key-sm {
+    width: 38px;
+    height: 24px;
+    font-size: 12px;
+  }
+}
+
+@media (max-height: 600px) {
+  .mp-shell {
+    gap: 5px;
+    padding: 6px 12px 10px;
+  }
+
+  .mp-screen {
+    height: 180px;
+  }
+
+  .mp-cover-wrap {
+    width: 56px;
+    height: 56px;
+  }
+
+  .mp-dpad-wrap {
+    width: 110px;
+    height: 110px;
+  }
+}
