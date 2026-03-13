@@ -145,6 +145,27 @@
       return;
     }
   }
+/* AI 专用：从当前强度平滑过渡到目标强度 */
+function smoothToSpeed(targetSpeed, durationMs) {
+  stopPattern();
+  const start    = _curSpeed;
+  const diff     = targetSpeed - start;
+  const steps    = 20;
+  const interval = (durationMs || 800) / steps;
+  let   step     = 0;
+
+  if (diff === 0) { sendSpeed(targetSpeed); return; }
+
+  _patTimer = setInterval(() => {
+    step++;
+    const eased = start + diff * (step / steps);
+    sendSpeed(Math.round(eased));
+    if (step >= steps) {
+      clearInterval(_patTimer);
+      _patTimer = null;
+    }
+  }, interval);
+}
 
   /* ============================================================
      UI 更新
@@ -265,7 +286,7 @@
         addAiLog('⚠ 设备未连接，指令忽略');
         return;
       }
-      startPattern(speed);
+      smoothToSpeed(speed, 800);
       addAiLog('角色控制强度 → ' + speed);
     }
   }
