@@ -549,6 +549,13 @@ function initSpecialBar() {
     document.getElementById('liao-image-preview').src = '';
     document.getElementById('liao-image-modal').style.display = 'flex';
   });
+/* 涟漪按钮 */
+const csbRipple = document.getElementById('csb-ripple');
+if (csbRipple) {
+  csbRipple.addEventListener('click', () => {
+    if (typeof rplOpenFloat === 'function') rplOpenFloat();
+  });
+}
 
   /* ---- rolephone 入口：完全由 rolephone.js 的 bindRpEntry 处理，此处不重复绑定 ---- */
 

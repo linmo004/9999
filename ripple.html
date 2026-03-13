@@ -1,0 +1,72 @@
+<!-- 涟漪 App —— 蓝牙玩具控制 -->
+<div id="ripple-app" style="display:none;position:fixed;inset:0;z-index:800;flex-direction:column;">
+
+  <!-- 主界面 -->
+  <div id="ripple-main" class="rpl-screen" style="display:flex;">
+    <!-- 顶栏 -->
+    <div class="rpl-topbar">
+      <button class="rpl-back-btn" id="ripple-close-btn">←</button>
+      <div class="rpl-topbar-title">涟漪</div>
+      <div class="rpl-topbar-right" id="rpl-connect-status">
+        <div class="rpl-status-dot disconnected" id="rpl-status-dot"></div>
+        <span class="rpl-status-text" id="rpl-status-text">未连接</span>
+      </div>
+    </div>
+
+    <!-- 连接区 -->
+    <div class="rpl-connect-area" id="rpl-connect-area">
+      <div class="rpl-ripple-icon" id="rpl-ripple-icon">
+        <div class="rpl-ripple-ring r1"></div>
+        <div class="rpl-ripple-ring r2"></div>
+        <div class="rpl-ripple-ring r3"></div>
+        <div class="rpl-ripple-center"></div>
+      </div>
+      <button class="rpl-connect-btn" id="rpl-connect-btn">连接设备</button>
+      <div class="rpl-device-name" id="rpl-device-name"></div>
+    </div>
+
+    <!-- 模式切换 -->
+    <div class="rpl-mode-tabs" id="rpl-mode-tabs">
+      <button class="rpl-mode-btn active" data-mode="manual">手动模式</button>
+      <button class="rpl-mode-btn" data-mode="ai">AI 模式</button>
+    </div>
+
+    <!-- 手动模式面板 -->
+    <div class="rpl-panel" id="rpl-panel-manual">
+      <div class="rpl-intensity-display" id="rpl-intensity-display">0</div>
+      <div class="rpl-intensity-label">强度</div>
+      <input class="rpl-slider" id="rpl-slider" type="range" min="0" max="100" value="0">
+      <div class="rpl-preset-btns">
+        <button class="rpl-preset-btn" data-val="0">停止</button>
+        <button class="rpl-preset-btn" data-val="25">弱</button>
+        <button class="rpl-preset-btn" data-val="50">中</button>
+        <button class="rpl-preset-btn" data-val="75">强</button>
+        <button class="rpl-preset-btn" data-val="100">最强</button>
+      </div>
+      <!-- 模式按钮 -->
+      <div class="rpl-pattern-btns">
+        <button class="rpl-pattern-btn active" data-pattern="steady">持续</button>
+        <button class="rpl-pattern-btn" data-pattern="pulse">脉冲</button>
+        <button class="rpl-pattern-btn" data-pattern="wave">波浪</button>
+        <button class="rpl-pattern-btn" data-pattern="climb">渐强</button>
+      </div>
+    </div>
+
+    <!-- AI 模式面板 -->
+    <div class="rpl-panel" id="rpl-panel-ai" style="display:none;">
+      <div class="rpl-ai-status" id="rpl-ai-status">
+        <div class="rpl-ai-icon">✦</div>
+        <div class="rpl-ai-desc">AI 模式下，角色可以通过<br>回复指令控制设备强度</div>
+      </div>
+      <div class="rpl-ai-current">
+        <div class="rpl-ai-current-label">当前强度</div>
+        <div class="rpl-ai-current-val" id="rpl-ai-current-val">0</div>
+      </div>
+      <div class="rpl-ai-log-title">AI 控制记录</div>
+      <div class="rpl-ai-log" id="rpl-ai-log"></div>
+      <button class="rpl-ai-stop-btn" id="rpl-ai-stop-btn">紧急停止</button>
+    </div>
+
+  </div>
+
+</div>

@@ -28,6 +28,7 @@
 <link rel="stylesheet" href="storage-manager.css">
 <link rel="stylesheet" href="liao-schedule.css">
 <link rel="stylesheet" href="liao-autoreply.css">
+<link rel="stylesheet" href="ripple.css">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="https://unpkg.com/dexie@3/dist/dexie.js"></script>
 </head>
@@ -47,6 +48,7 @@
 <div id="partial-chess-app"></div>
 <div id="partial-batoru"></div>
 <div id="partial-storage-manager"></div>
+<div id="partial-ripple"></div>
 <script>
 (function () {
   const partials = [
@@ -62,7 +64,8 @@
     { id: 'partial-rolephone',    file: 'rolephone.html' },
     { id: 'partial-chess-app',    file: 'chess-app.html' },
     { id: 'partial-batoru', file: 'batoru.html' },
-     { id: 'partial-storage-manager', file: 'storage-manager.html' },
+    { id: 'partial-storage-manager', file: 'storage-manager.html' },
+    { id: 'partial-ripple', file: 'ripple.html' },
   ];
 
   async function loadAll() {
@@ -131,6 +134,7 @@
     await loadScript('liao-cardbook.js');
     await loadScript('storage-manager.js');
     await loadScript('liao-autoreply.js');
+    await loadScript('ripple.js');
     if (typeof lucide !== 'undefined') lucide.createIcons();
     if (typeof window.initSettings === 'function') window.initSettings();
   }

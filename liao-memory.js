@@ -601,6 +601,13 @@ function processAiResponse(rawContent, role, chat) {
   }
   /* 从回复内容中移除状态指令，不显示给用户 */
   rawContent = rawContent.replace(/\[STATUS:(online|offline)\]/gi, '').trim();
+  
+/* 识别涟漪 TOY 指令 */
+if (typeof rplParseAiCmd === 'function') {
+  rplParseAiCmd(rawContent);
+}
+/* 从回复内容中移除 TOY 指令，不显示给用户 */
+rawContent = rawContent.replace(/\[TOY:vibe=\d+\]/gi, '').trim();
 
   /* ---- 提取并剥离状态栏块 ---- */
   let extractedStatusBar = null;
