@@ -501,3 +501,9 @@
 .rpl-float-open-btn:active {
   background: rgba(79,195,247,0.25);
 }
+
+/* 浮窗 AI 日志条目 */
+#rpl-float-ai-log .rpl-ai-log-item {
+  font-size: 10.5px;
+  padding: 4px 8px;
+}
