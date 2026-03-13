@@ -538,6 +538,17 @@ async function triggerAiReply() {
 用户开启了 AI 控制模式才会生效，否则指令会被忽略。
 ` : '';
 
+/* ---- 一起听：当前播放歌曲注入 ---- */
+let listenTogetherSection = '';
+if (typeof mpQueue !== 'undefined' && mpQueue && mpQueue.length > 0 &&
+    typeof mpQueueIdx !== 'undefined' && mpQueue[mpQueueIdx]) {
+  const nowSong = mpQueue[mpQueueIdx];
+  listenTogetherSection =
+    '\n\n【正在一起听的歌曲】\n' +
+    '你和' + chatUserName2 + '现在正在一起听歌：《' + (nowSong.title || '未知歌曲') + '》by ' +
+    (nowSong.artist || '未知歌手') + '。\n' +
+    '你可以自然地在聊天中提到这首歌，比如评价歌曲、分享感受、或者说和这首歌有关的话。不需要强行提，顺其自然。';
+}
 
   /* ---- 状态栏输出要求 ---- */
   const statusBarSection =
@@ -558,6 +569,7 @@ async function triggerAiReply() {
     userSection +
     rulesSection +
     rippleSection +
+    listenTogetherSection +
     statusBarSection;
 
   /* 构建历史消息 */

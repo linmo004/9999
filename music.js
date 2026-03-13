@@ -148,6 +148,7 @@
     _audio.play().catch(() => {});
     updatePlayerUI(song);
     syncChatroomNow(song);
+    if (typeof window.mpOnSongChange === 'function') window.mpOnSongChange();
   }
 
   function playByIdx(idx) {

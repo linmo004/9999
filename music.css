@@ -1727,3 +1727,252 @@
     height: 110px;
   }
 }
+
+/* ============================================================
+   一起听浮窗
+   ============================================================ */
+
+/* 悬浮卡片模式 */
+.liao-listen-float {
+  position: fixed;
+  z-index: 850;
+  flex-direction: column;
+  font-family: 'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+  overflow: hidden;
+}
+
+.liao-listen-float-card {
+  bottom: 100px;
+  right: 16px;
+  width: 220px;
+  background: rgba(15,10,35,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(160,120,255,0.3);
+  border-radius: 18px;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(160,120,255,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+/* 顶部横条模式 */
+.liao-listen-float-top {
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: rgba(10,5,25,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(160,120,255,0.25);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+}
+
+/* 头部 */
+.llf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px 6px;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  border-bottom: 1px solid rgba(160,120,255,0.1);
+}
+
+.liao-listen-float-top .llf-header {
+  cursor: default;
+}
+
+.llf-header:active { cursor: grabbing; }
+
+.llf-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(200,180,255,0.9);
+  letter-spacing: 0.1em;
+}
+
+.llf-header-btns {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.llf-mode-btn,
+.llf-close-btn {
+  background: none;
+  border: none;
+  color: rgba(180,150,255,0.6);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 5px;
+  font-family: inherit;
+  border-radius: 6px;
+  transition: all .15s;
+  line-height: 1;
+}
+
+.llf-mode-btn:active,
+.llf-close-btn:active {
+  background: rgba(160,120,255,0.15);
+  color: rgba(200,170,255,0.9);
+}
+
+/* 主体 */
+.llf-body {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.liao-listen-float-top .llf-body {
+  flex-direction: row;
+  align-items: center;
+  padding: 6px 12px 8px;
+  gap: 12px;
+}
+
+/* 头像区 */
+.llf-avatars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.liao-listen-float-top .llf-avatars {
+  flex-shrink: 0;
+}
+
+.llf-avatar-wrap {
+  position: relative;
+  width: 38px;
+  height: 38px;
+}
+
+.liao-listen-float-top .llf-avatar-wrap {
+  width: 30px;
+  height: 30px;
+}
+
+.llf-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+}
+
+.llf-avatar-ring {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  animation: llf-ring-spin 4s linear infinite;
+}
+
+.llf-ring-user {
+  background: conic-gradient(
+    rgba(120,180,255,0.7) 0deg,
+    transparent 120deg,
+    rgba(120,180,255,0.3) 240deg,
+    transparent 360deg
+  );
+}
+
+.llf-ring-role {
+  background: conic-gradient(
+    rgba(200,120,255,0.7) 0deg,
+    transparent 120deg,
+    rgba(200,120,255,0.3) 240deg,
+    transparent 360deg
+  );
+}
+
+@keyframes llf-ring-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.llf-avatar-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: rgba(160,120,255,0.15);
+  border-radius: 50%;
+  border: 1px solid rgba(160,120,255,0.3);
+  flex-shrink: 0;
+}
+
+/* 歌曲信息 */
+.llf-song-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.llf-cover {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.liao-listen-float-top .llf-cover {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+}
+
+.llf-cover-ph {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(40,20,80,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(160,120,255,0.5);
+  flex-shrink: 0;
+}
+
+.liao-listen-float-top .llf-cover-ph {
+  width: 28px;
+  height: 28px;
+}
+
+.llf-song-text {
+  flex: 1;
+  overflow: hidden;
+}
+
+.llf-song-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(220,200,255,0.95);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.llf-song-artist {
+  font-size: 9.5px;
+  color: rgba(180,150,255,0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.llf-song-with {
+  font-size: 9px;
+  color: rgba(160,120,255,0.5);
+  margin-top: 1px;
+  letter-spacing: 0.03em;
+}
