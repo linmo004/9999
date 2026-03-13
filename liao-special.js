@@ -1291,7 +1291,7 @@ document.getElementById('liao-persona-pick-cancel').addEventListener('click', ()
 /* ============================================================
    和角色一起听 — 浮窗
    ============================================================ */
-let _listenFloatMode = 'float'; /* float | top */
+let _listenFloatMode = 'float';
 let _listenFloatOn   = false;
 
 function openListenTogetherFloat() {
@@ -1301,25 +1301,93 @@ function openListenTogetherFloat() {
   if (!role) return;
 
   _listenFloatOn = true;
-  updateListenFloat(role, chat);
 
   let modal = document.getElementById('liao-listen-float');
   if (!modal) {
     modal = document.createElement('div');
     modal.id = 'liao-listen-float';
     document.body.appendChild(modal);
-    bindListenFloatEvents(modal);
+
+    /* 事件委托，只绑定一次，永不失效 */
+    modal.addEventListener('click', function(e) {
+      const closeBtn  = e.target.closest('#llf-close');
+      const modeBtn   = e.target.closest('#llf-switch-mode');
+      if (closeBtn) {
+        modal.style.display = 'none';
+        _listenFloatOn = false;
+        return;
+      }
+      if (modeBtn) {
+        _listenFloatMode = _listenFloatMode === 'float' ? 'top' : 'float';
+        /* 切换模式时重置位置 */
+        modal.style.left   = '';
+        modal.style.top    = '';
+        modal.style.right  = '';
+        modal.style.bottom = '';
+        renderListenFloat();
+        return;
+      }
+    });
+
+    /* 拖动事件也只绑定一次 */
+    let dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
+    modal.addEventListener('mousedown', function(e) {
+      if (!e.target.closest('#llf-header')) return;
+      if (_listenFloatMode !== 'float') return;
+      e.preventDefault();
+      dragging = true;
+      const rect = modal.getBoundingClientRect();
+      sx = e.clientX; sy = e.clientY;
+      ox = rect.left;  oy = rect.top;
+      modal.style.right  = 'auto';
+      modal.style.bottom = 'auto';
+      modal.style.left   = ox + 'px';
+      modal.style.top    = oy + 'px';
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      modal.style.left = (ox + e.clientX - sx) + 'px';
+      modal.style.top  = (oy + e.clientY - sy) + 'px';
+    });
+    document.addEventListener('mouseup', () => { dragging = false; });
+
+    modal.addEventListener('touchstart', function(e) {
+      if (!e.target.closest('#llf-header')) return;
+      if (_listenFloatMode !== 'float') return;
+      e.preventDefault();
+      dragging = true;
+      const rect = modal.getBoundingClientRect();
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+      ox = rect.left; oy = rect.top;
+      modal.style.right  = 'auto';
+      modal.style.bottom = 'auto';
+      modal.style.left   = ox + 'px';
+      modal.style.top    = oy + 'px';
+    }, { passive: false });
+    modal.addEventListener('touchmove', function(e) {
+      if (!dragging) return;
+      e.preventDefault();
+      modal.style.left = (ox + e.touches[0].clientX - sx) + 'px';
+      modal.style.top  = (oy + e.touches[0].clientY - sy) + 'px';
+    }, { passive: false });
+    modal.addEventListener('touchend', () => { dragging = false; });
   }
+
   modal.style.display = 'flex';
-  updateListenFloat(role, chat);
+  renderListenFloat();
 }
 
-function updateListenFloat(role, chat) {
+function renderListenFloat() {
   const modal = document.getElementById('liao-listen-float');
   if (!modal) return;
+  if (currentChatIdx < 0) return;
 
-  /* 获取当前播放歌曲 */
-  const song = (typeof mpQueue !== 'undefined' && mpQueue && mpQueue.length > 0 && typeof mpQueueIdx !== 'undefined')
+  const chat = liaoChats[currentChatIdx];
+  const role = liaoRoles.find(r => r.id === chat.roleId);
+  if (!role) return;
+
+  const song = (typeof mpQueue !== 'undefined' && mpQueue && mpQueue.length > 0 &&
+                typeof mpQueueIdx !== 'undefined' && mpQueueIdx >= 0)
     ? mpQueue[mpQueueIdx] : null;
 
   const userAvatar = chat.chatUserAvatar || liaoUserAvatar ||
@@ -1333,121 +1401,56 @@ function updateListenFloat(role, chat) {
 
   const isTop = _listenFloatMode === 'top';
 
-  modal.className = 'liao-listen-float ' + (_listenFloatMode === 'top' ? 'liao-listen-float-top' : 'liao-listen-float-card');
+  modal.className = 'liao-listen-float ' +
+    (isTop ? 'liao-listen-float-top' : 'liao-listen-float-card');
 
-  modal.innerHTML = `
-    <div class="llf-header" id="llf-header">
-      <div class="llf-title">一起听</div>
-      <div class="llf-header-btns">
-        <button class="llf-mode-btn" id="llf-switch-mode" title="切换样式">
-          ${isTop ? '⬇' : '⬆'}
-        </button>
-        <button class="llf-close-btn" id="llf-close">×</button>
-      </div>
-    </div>
-    <div class="llf-body">
-      <div class="llf-avatars">
-        <div class="llf-avatar-wrap">
-          <img class="llf-avatar" src="${escHtml(userAvatar)}" alt="">
-          <div class="llf-avatar-ring llf-ring-user"></div>
-        </div>
-        <div class="llf-avatar-note">
-          <i data-lucide="music-2" style="width:14px;height:14px;color:rgba(180,140,255,0.8);"></i>
-        </div>
-        <div class="llf-avatar-wrap">
-          <img class="llf-avatar" src="${escHtml(roleAvatar)}" alt="">
-          <div class="llf-avatar-ring llf-ring-role"></div>
-        </div>
-      </div>
-      <div class="llf-song-info">
-        ${songCover
-          ? `<img class="llf-cover" src="${escHtml(songCover)}" alt="">`
-          : `<div class="llf-cover-ph"><i data-lucide="music" style="width:16px;height:16px;"></i></div>`
-        }
-        <div class="llf-song-text">
-          <div class="llf-song-title">${escHtml(songTitle)}</div>
-          <div class="llf-song-artist">${escHtml(songArtist)}</div>
-          <div class="llf-song-with">与 ${escHtml(roleName)} 一起听</div>
-        </div>
-      </div>
-    </div>
-  `;
+  modal.innerHTML =
+    '<div class="llf-header" id="llf-header">' +
+      '<div class="llf-title">一起听</div>' +
+      '<div class="llf-header-btns">' +
+        '<button class="llf-mode-btn" id="llf-switch-mode" title="切换样式">' +
+          (isTop ? '⬇' : '⬆') +
+        '</button>' +
+        '<button class="llf-close-btn" id="llf-close">×</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="llf-body">' +
+      '<div class="llf-avatars">' +
+        '<div class="llf-avatar-wrap">' +
+          '<img class="llf-avatar" src="' + escHtml(userAvatar) + '" alt="">' +
+          '<div class="llf-avatar-ring llf-ring-user"></div>' +
+        '</div>' +
+        '<div class="llf-avatar-note">' +
+          '<i data-lucide="music-2" style="width:13px;height:13px;"></i>' +
+        '</div>' +
+        '<div class="llf-avatar-wrap">' +
+          '<img class="llf-avatar" src="' + escHtml(roleAvatar) + '" alt="">' +
+          '<div class="llf-avatar-ring llf-ring-role"></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="llf-song-info">' +
+        (songCover
+          ? '<img class="llf-cover" src="' + escHtml(songCover) + '" alt="">'
+          : '<div class="llf-cover-ph"><i data-lucide="music" style="width:14px;height:14px;"></i></div>'
+        ) +
+        '<div class="llf-song-text">' +
+          '<div class="llf-song-title">' + escHtml(songTitle) + '</div>' +
+          '<div class="llf-song-artist">' + escHtml(songArtist) + '</div>' +
+          '<div class="llf-song-with">与 ' + escHtml(roleName) + ' 一起听</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
 
   if (typeof lucide !== 'undefined') lucide.createIcons();
-  bindListenFloatEvents(modal);
 }
 
-function bindListenFloatEvents(modal) {
-  /* 关闭 */
-  const closeBtn = modal.querySelector('#llf-close');
-  if (closeBtn) {
-    closeBtn.onclick = () => {
-      modal.style.display = 'none';
-      _listenFloatOn = false;
-    };
-  }
-
-  /* 切换样式 */
-  const modeBtn = modal.querySelector('#llf-switch-mode');
-  if (modeBtn) {
-    modeBtn.onclick = () => {
-      _listenFloatMode = _listenFloatMode === 'float' ? 'top' : 'float';
-      if (currentChatIdx >= 0) {
-        const chat = liaoChats[currentChatIdx];
-        const role = liaoRoles.find(r => r.id === chat.roleId);
-        if (role) updateListenFloat(role, chat);
-      }
-    };
-  }
-
-  /* 拖动（仅 float 模式） */
-  const header = modal.querySelector('#llf-header');
-  if (header && _listenFloatMode === 'float') {
-    let dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
-
-    function dragStart(cx, cy) {
-      dragging = true;
-      const rect = modal.getBoundingClientRect();
-      sx = cx; sy = cy;
-      ox = rect.left; oy = rect.top;
-      modal.style.right  = 'auto';
-      modal.style.bottom = 'auto';
-      modal.style.left   = ox + 'px';
-      modal.style.top    = oy + 'px';
-    }
-    function dragMove(cx, cy) {
-      if (!dragging) return;
-      modal.style.left = (ox + cx - sx) + 'px';
-      modal.style.top  = (oy + cy - sy) + 'px';
-    }
-    function dragEnd() { dragging = false; }
-
-    header.addEventListener('mousedown',  e => { e.preventDefault(); dragStart(e.clientX, e.clientY); });
-    document.addEventListener('mousemove', e => dragMove(e.clientX, e.clientY));
-    document.addEventListener('mouseup',   dragEnd);
-
-    header.addEventListener('touchstart', e => {
-      e.preventDefault();
-      dragStart(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: false });
-    header.addEventListener('touchmove', e => {
-      e.preventDefault();
-      dragMove(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: false });
-    header.addEventListener('touchend', dragEnd);
-  }
-}
-
-/* 歌曲切换时自动更新浮窗 */
 window.mpOnSongChange = function() {
   if (!_listenFloatOn) return;
   const modal = document.getElementById('liao-listen-float');
   if (!modal || modal.style.display === 'none') return;
-  if (currentChatIdx < 0) return;
-  const chat = liaoChats[currentChatIdx];
-  const role = liaoRoles.find(r => r.id === chat.roleId);
-  if (role) updateListenFloat(role, chat);
+  renderListenFloat();
 };
+
 
 /* ============================================================
    初始化

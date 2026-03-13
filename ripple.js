@@ -371,6 +371,12 @@ function smoothToSpeed(targetSpeed, durationMs) {
   }
 
   function bindFloatEvents(modal) {
+  modal.addEventListener('click', function(e) {
+  if (e.target.id === 'rpl-float-close' || e.target.closest('#rpl-float-close')) {
+    modal.style.display = 'none';
+  }
+});
+
     /* 拖动（同时支持鼠标和触摸） */
 const header = modal.querySelector('#rpl-float-header');
 let dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
@@ -418,12 +424,6 @@ header.addEventListener('touchmove', e => {
   dragMove(t.clientX, t.clientY);
 }, { passive: false });
 header.addEventListener('touchend', dragEnd);
-
-
-    /* 关闭 */
-    modal.querySelector('#rpl-float-close').addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
 
     /* 滑块 */
     const sldr = modal.querySelector('#rpl-float-slider');

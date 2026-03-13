@@ -549,6 +549,19 @@ if (typeof mpQueue !== 'undefined' && mpQueue && mpQueue.length > 0 &&
     (nowSong.artist || '未知歌手') + '。\n' +
     '你可以自然地在聊天中提到这首歌，比如评价歌曲、分享感受、或者说和这首歌有关的话。不需要强行提，顺其自然。';
 }
+/* ---- 角色切歌指令 ---- */
+let roleChangeSongSection = '';
+if (typeof window.mpGetSongTitles === 'function') {
+  const titles = window.mpGetSongTitles();
+  if (titles.length) {
+    roleChangeSongSection =
+      '\n\n【角色切歌功能】\n' +
+      '如果你想切换正在播放的歌曲，可以在回复里单独一行写：[MUSIC:play=歌曲名]\n' +
+      '歌曲名必须从以下列表中选择，不在列表中的歌曲无法播放：\n' +
+      titles.join('、') + '\n' +
+      '只有在对话情境自然需要切歌时才使用，不要强行切歌。切歌后可以说一句为什么切这首。';
+  }
+}
 
   /* ---- 状态栏输出要求 ---- */
   const statusBarSection =
@@ -570,6 +583,7 @@ if (typeof mpQueue !== 'undefined' && mpQueue && mpQueue.length > 0 &&
     rulesSection +
     rippleSection +
     listenTogetherSection +
+    roleChangeSongSection +
     statusBarSection;
 
   /* 构建历史消息 */
@@ -633,6 +647,17 @@ if (typeof rplParseAiCmd === 'function') {
 }
 /* 从回复内容中移除 TOY 指令，不显示给用户 */
 rawContent = rawContent.replace(/\[TOY:vibe=\d+\]/gi, '').trim();
+/* 识别角色切歌指令 */
+const musicPlayRe = /\[MUSIC:play=([^\]]+)\]/gi;
+let musicPlayMatch;
+while ((musicPlayMatch = musicPlayRe.exec(rawContent)) !== null) {
+  const songTitle = musicPlayMatch[1].trim();
+  if (typeof window.mpPlayByName === 'function') {
+    window.mpPlayByName(songTitle);
+  }
+}
+/* 从回复内容中移除切歌指令，不显示给用户 */
+rawContent = rawContent.replace(/\[MUSIC:play=[^\]]+\]/gi, '').trim();
 
   /* ---- 提取并剥离状态栏块 ---- */
   let extractedStatusBar = null;

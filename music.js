@@ -581,7 +581,7 @@
     }
 
     mpRolePlaylists.forEach(rpl => {
-      const role = (typeof liaoRoles !== 'undefined') ? liaoRoles.find(r => r.id === rpl.roleId) : null;
+      const role = (typeof window.liaoRoles !== 'undefined') ? liaoRoles.find(r => r.id === rpl.roleId) : null;
       const item = document.createElement('div');
       item.className = 'mp-role-playlist-item';
 
@@ -868,8 +868,8 @@
      ============================================================ */
   function triggerRadioComment(song) {
     if (!mpRadioOn) return;
-    const roles = (typeof liaoRoles !== 'undefined') ? liaoRoles : [];
-    if (!roles.length) return;
+    const roles = (typeof window.liaoRoles !== 'undefined') ? window.liaoRoles : [];
+if (!roles.length) return;
 
     if (mpRadioTimer) clearTimeout(mpRadioTimer);
     mpRadioTimer = setTimeout(async () => {
@@ -947,7 +947,7 @@
 
   /* ── 角色电台 ── */
   async function startRoleRadio(roleId) {
-    const role = (typeof liaoRoles !== 'undefined') ? liaoRoles.find(r => r.id === roleId) : null;
+    const role = (typeof window.liaoRoles !== 'undefined') ? liaoRoles.find(r => r.id === roleId) : null;
     if (!role) return;
 
     const roleName = role.nickname || role.realname;
@@ -999,7 +999,7 @@
         }
 
         /* 角色互动评论（其他角色也会评论） */
-        const allRoles = (typeof liaoRoles !== 'undefined') ? liaoRoles : [];
+        const allRoles = (typeof window.liaoRoles !== 'undefined') ? liaoRoles : [];
         const others   = allRoles.filter(r => r.id !== roleId);
         if (others.length) {
           const commenter = others[Math.floor(Math.random() * others.length)];
@@ -1146,7 +1146,7 @@
     /* 填充角色列表 */
     if (roleSelect) {
       roleSelect.innerHTML = '';
-      const roles = (typeof liaoRoles !== 'undefined') ? liaoRoles : [];
+      const roles = (typeof window.liaoRoles !== 'undefined') ? liaoRoles : [];
       roles.forEach(role => {
         const opt = document.createElement('option');
         opt.value = role.id;
@@ -1214,7 +1214,7 @@
      AI 生成角色歌单
      ============================================================ */
   async function genRolePlaylist(roleId) {
-    const role = (typeof liaoRoles !== 'undefined') ? liaoRoles.find(r => r.id === roleId) : null;
+    const role = (typeof window.liaoRoles !== 'undefined') ? liaoRoles.find(r => r.id === roleId) : null;
     if (!role) return;
 
     const cfg   = (typeof loadApiConfig === 'function') ? loadApiConfig() : null;
@@ -1308,7 +1308,7 @@
 
     if (roleList) {
       roleList.innerHTML = '';
-      const roles = (typeof liaoRoles !== 'undefined') ? liaoRoles : [];
+      const roles = (typeof window.liaoRoles !== 'undefined') ? liaoRoles : [];
       roles.forEach(role => {
         const item = document.createElement('div');
         item.className = 'mp-role-pick-item' + (mpChatroomRoles.some(r => r.id === role.id) ? ' selected' : '');
@@ -1358,7 +1358,7 @@
           const select = document.getElementById('mp-role-radio-select');
           if (select) {
             select.innerHTML = '';
-            const roles = (typeof liaoRoles !== 'undefined') ? liaoRoles : [];
+            const roles = (typeof window.liaoRoles !== 'undefined') ? liaoRoles : [];
             roles.forEach(role => {
               const opt = document.createElement('option');
               opt.value = role.id;
@@ -1678,7 +1678,7 @@
     const genRolePLBtn = document.getElementById('mp-gen-role-playlist-btn');
     if (genRolePLBtn) {
       genRolePLBtn.addEventListener('click', () => {
-        const roles = (typeof liaoRoles !== 'undefined') ? liaoRoles : [];
+        const roles = (typeof window.liaoRoles !== 'undefined') ? liaoRoles : [];
         if (!roles.length) { alert('请先在了了中添加角色'); return; }
         /* 弹出角色选择 */
         const roleId = roles.length === 1
@@ -1737,17 +1737,19 @@
         }
 
         /* 读取选中角色 */
-        if (roleList) {
-          const selectedItems = roleList.querySelectorAll('.mp-role-pick-item.selected');
-          const allRoles = (typeof liaoRoles !== 'undefined') ? liaoRoles : [];
-          mpChatroomRoles = [];
-          selectedItems.forEach(item => {
-            const name = item.querySelector('.mp-role-pick-name')?.textContent || '';
-            const role = allRoles.find(r => (r.nickname || r.realname) === name);
-            if (role) mpChatroomRoles.push(role);
-          });
-          mpChatroom.roleIds = mpChatroomRoles.map(r => r.id);
-        }
+        /* 读取选中角色 */
+if (roleList) {
+  const allRoles = (typeof window.liaoRoles !== 'undefined') ? window.liaoRoles : [];
+  mpChatroomRoles = [];
+  const roleItems = roleList.querySelectorAll('.mp-role-pick-item');
+  roleItems.forEach((item, idx) => {
+    if (item.classList.contains('selected') && allRoles[idx]) {
+      mpChatroomRoles.push(allRoles[idx]);
+    }
+  });
+  mpChatroom.roleIds = mpChatroomRoles.map(r => r.id);
+}
+
 
         mpChatroom.anon = mpChatroomAnon;
         lSave('mpChatroom', mpChatroom);
@@ -1867,6 +1869,71 @@
       });
     });
 
+/* ── 设置面板 ── */
+const settingsBtn   = document.getElementById('mp-shell-settings-btn');
+const settingsPanel = document.getElementById('mp-settings-panel');
+if (settingsBtn && settingsPanel) {
+  settingsBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    settingsPanel.style.display = settingsPanel.style.display === 'none' ? 'flex' : 'none';
+  });
+  document.addEventListener('click', () => {
+    if (settingsPanel) settingsPanel.style.display = 'none';
+  });
+}
+
+/* ── 视图切换 ── */
+document.querySelectorAll('.mp-view-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.mp-view-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const view = this.dataset.view;
+    const app  = document.getElementById('music-app');
+    if (view === 'fullscreen') {
+      app.classList.add('mp-fullscreen');
+    } else {
+      app.classList.remove('mp-fullscreen');
+    }
+    lSave('mpViewMode', view);
+    if (settingsPanel) settingsPanel.style.display = 'none';
+  });
+
+/* ── 主题色切换 ── */
+document.querySelectorAll('.mp-theme-swatch').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.mp-theme-swatch').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const theme = this.dataset.theme;
+    const app   = document.getElementById('music-app');
+    /* 移除所有主题类 */
+    app.classList.remove('mp-theme-rosegold','mp-theme-dark','mp-theme-green','mp-theme-purple','mp-theme-gold');
+    if (theme !== 'blue') {
+      app.classList.add('mp-theme-' + theme);
+    }
+    lSave('mpTheme', theme);
+  });
+});
+
+/* ── 恢复保存的视图和主题 ── */
+const savedView  = lLoad('mpViewMode', 'outline');
+const savedTheme = lLoad('mpTheme', 'blue');
+const app = document.getElementById('music-app');
+
+if (savedView === 'fullscreen') {
+  app.classList.add('mp-fullscreen');
+  const fullBtn = document.getElementById('mp-view-fullscreen');
+  const outBtn  = document.getElementById('mp-view-outline');
+  if (fullBtn) fullBtn.classList.add('active');
+  if (outBtn)  outBtn.classList.remove('active');
+}
+
+if (savedTheme && savedTheme !== 'blue') {
+  app.classList.add('mp-theme-' + savedTheme);
+  document.querySelectorAll('.mp-theme-swatch').forEach(b => {
+    b.classList.toggle('active', b.dataset.theme === savedTheme);
+  });
+}
+
     /* ── 进度条 ── */
     initProgressBar();
 
@@ -1934,6 +2001,28 @@
 
   /* 暴露给 liao-special.js 里的 renderSpecialContent，让它能处理 music 类型的消息 */
   window.mpRenderMusicCard = renderMusicCardInLiao;
+  
+  /* 暴露给 liao-memory.js 调用，角色切歌用 */
+window.mpPlayByName = function(title) {
+  if (!mpSongs || !mpSongs.length) return false;
+  /* 优先完全匹配，其次模糊匹配 */
+  let found = mpSongs.find(s => s.title === title);
+  if (!found) found = mpSongs.find(s => s.title && s.title.includes(title));
+  if (!found) return false;
+  mpQueue    = mpSongs.slice();
+  mpQueueIdx = mpSongs.indexOf(found);
+  playSong(found);
+  renderQueueList();
+  if (typeof window.mpOnSongChange === 'function') window.mpOnSongChange();
+  return true;
+};
+
+/* 暴露歌单列表给 prompt 用 */
+window.mpGetSongTitles = function() {
+  if (!mpSongs || !mpSongs.length) return [];
+  return mpSongs.map(s => s.title || '未知歌曲');
+};
+
 
   /* ============================================================
      全局接口

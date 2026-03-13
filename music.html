@@ -193,6 +193,42 @@
 
     <!-- 外壳品牌标志 -->
     <div class="mp-brand">HALO · 九</div>
+    
+    <!-- 设置按钮行 -->
+<div class="mp-shell-controls">
+  <button class="mp-shell-settings-btn" id="mp-shell-settings-btn" title="设置">
+    <i data-lucide="settings-2" style="width:13px;height:13px;"></i>
+  </button>
+</div>
+
+<!-- 设置面板 -->
+<div class="mp-settings-panel" id="mp-settings-panel" style="display:none;">
+
+  <!-- 全屏/轮廓切换 -->
+  <div class="mp-settings-section-title">显示模式</div>
+  <div class="mp-settings-row">
+    <button class="mp-view-btn active" id="mp-view-outline" data-view="outline">
+      <i data-lucide="tablet-smartphone" style="width:12px;height:12px;"></i>
+      有轮廓
+    </button>
+    <button class="mp-view-btn" id="mp-view-fullscreen" data-view="fullscreen">
+      <i data-lucide="maximize-2" style="width:12px;height:12px;"></i>
+      全屏
+    </button>
+  </div>
+
+  <!-- 主题色选择 -->
+  <div class="mp-settings-section-title">主题色</div>
+  <div class="mp-theme-swatches" id="mp-theme-swatches">
+    <button class="mp-theme-swatch active" data-theme="blue" style="background:linear-gradient(135deg,#4a80b8,#a0c8e8);" title="蓝银"></button>
+    <button class="mp-theme-swatch" data-theme="rosegold" style="background:linear-gradient(135deg,#c8886a,#e8c0b0);" title="玫瑰金银"></button>
+    <button class="mp-theme-swatch" data-theme="dark" style="background:linear-gradient(135deg,#2a3040,#8090a8);" title="极夜银"></button>
+    <button class="mp-theme-swatch" data-theme="green" style="background:linear-gradient(135deg,#2a6858,#60b098);" title="翡翠银"></button>
+    <button class="mp-theme-swatch" data-theme="purple" style="background:linear-gradient(135deg,#5840a0,#a890d8);" title="暮紫银"></button>
+    <button class="mp-theme-swatch" data-theme="gold" style="background:linear-gradient(135deg,#8a6020,#d8b060);" title="琥珀金银"></button>
+  </div>
+
+</div>
 
     <!-- 圆形按键区 -->
     <div class="mp-keypad">
